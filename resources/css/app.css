@@ -412,6 +412,31 @@ body {
         font-size: 13px; /* Comfortable legible base font on smartphones */
     }
 
+    /* Mobile Navbar Header Alignment (Logo and brand on left next to toggler) */
+    .navbar-vertical > .container-fluid,
+    .navbar-vertical .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+    }
+    .navbar-vertical .navbar-toggler {
+        margin-right: 0.65rem !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+    .navbar-vertical .navbar-brand {
+        margin: 0 !important;
+        padding: 0.35rem 0 !important;
+        text-align: left !important;
+        border-bottom: none !important;
+        background-color: transparent !important;
+    }
+    .navbar-vertical .navbar-brand a {
+        justify-content: flex-start !important;
+    }
+    .navbar-vertical .navbar-nav.d-md-none {
+        margin-left: auto !important;
+    }
+
     /* Container padding on smartphones */
     .container-xl, .container-fluid {
         padding-left: 0.85rem !important;
