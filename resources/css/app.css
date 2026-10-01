@@ -1,0 +1,384 @@
+@import "@tabler/core/dist/css/tabler.min.css";
+@import "@tabler/icons-webfont/dist/tabler-icons.min.css";
+@import url('https://rsms.me/inter/inter.css');
+
+:root {
+    --tblr-font-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --tblr-sidebar-width: 16.75rem;
+    --tblr-primary: #1d4ed8;
+    --tblr-primary-rgb: 29, 78, 216;
+}
+
+/* Scaled proportional base size for crisp, compact, non-bulky 100% zoom */
+html {
+    font-size: 13.5px;
+}
+
+body {
+    font-feature-settings: "cv03", "cv04", "cv11";
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+/* Typography refinements */
+.page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #0f172a;
+}
+.page-pretitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    color: #64748b;
+}
+
+/* Card & Spacing Optimizations */
+.page-header {
+    margin-bottom: 1.15rem;
+}
+.card {
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+}
+.card-body {
+    padding: 1rem 1.25rem;
+}
+.card-header {
+    padding: 0.75rem 1.25rem;
+    min-height: 2.75rem;
+    background-color: #ffffff;
+    border-bottom: 1px solid #f1f5f9;
+}
+.card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* Table Compact Styling */
+.table.card-table th {
+    padding: 0.6rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #64748b;
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+.table.card-table td {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.85rem;
+    vertical-align: middle;
+}
+
+/* Form and Button Sizing */
+.form-control, .form-select {
+    padding: 0.42rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 5px;
+    border-color: #cbd5e1;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+.btn {
+    padding: 0.42rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 5px;
+}
+.btn-sm {
+    padding: 0.28rem 0.65rem;
+    font-size: 0.785rem;
+}
+
+/* Badge Refinements - Clean, subtle, professional */
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    padding: 0.3em 0.6em;
+    border: none !important;
+}
+
+/* Custom styling for status indicators without emojis */
+.status-dot-animated {
+    animation: dot-pulse 1.5s infinite;
+}
+
+@keyframes dot-pulse {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    50% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* Ensure vertical navbar displays solidly on desktop with comfortable width */
+@media (min-width: 768px) {
+    .navbar-vertical.navbar-expand-md {
+        display: flex !important;
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        inset-inline-start: 0 !important;
+        width: var(--tblr-sidebar-width, 16.75rem) !important;
+        z-index: 1030 !important;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), margin-inline-start 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .navbar-vertical.navbar-expand-md ~ .page-wrapper,
+    .navbar-vertical.navbar-expand-md ~ .navbar {
+        margin-inline-start: var(--tblr-sidebar-width, 16.75rem) !important;
+        transition: margin-inline-start 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    /* Collapsed / Hidden Sidebar State */
+    body.sidebar-collapsed .navbar-vertical.navbar-expand-md {
+        transform: translateX(-100%) !important;
+    }
+    body.sidebar-collapsed .navbar-vertical.navbar-expand-md ~ .page-wrapper,
+    body.sidebar-collapsed .navbar-vertical.navbar-expand-md ~ .navbar {
+        margin-inline-start: 0 !important;
+    }
+}
+
+/* Modern Soft Light Sidebar Aesthetics - Clean, Off-White / Light Slate */
+.navbar-vertical {
+    background-color: #fbfcfd !important;
+    border-right: 1px solid #e2e8f0 !important;
+}
+.navbar-vertical .navbar-brand {
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 0.85rem 1.15rem !important;
+    background-color: #ffffff !important;
+}
+.navbar-vertical .nav-link {
+    color: #475569 !important;
+    padding: 0.48rem 0.85rem !important;
+    font-size: 0.86rem !important;
+    font-weight: 500 !important;
+    border-radius: 6px !important;
+    margin: 1px 0.5rem !important;
+    transition: all 0.15s ease-in-out !important;
+}
+.navbar-vertical .nav-link .nav-link-icon {
+    color: #64748b !important;
+    transition: color 0.15s ease-in-out !important;
+}
+.navbar-vertical .nav-link:hover {
+    color: #0f172a !important;
+    background-color: #f1f5f9 !important;
+}
+.navbar-vertical .nav-link:hover .nav-link-icon {
+    color: #0f172a !important;
+}
+.navbar-vertical .nav-item.active > .nav-link {
+    color: #1d4ed8 !important;
+    background-color: #eff6ff !important;
+    font-weight: 600 !important;
+}
+.navbar-vertical .nav-item.active > .nav-link .nav-link-icon {
+    color: #1d4ed8 !important;
+}
+
+/* Sidebar Submenus / Dropdown - Refined Tree Indentation */
+.navbar-vertical .dropdown-menu {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0.2rem 0 0.2rem 0.75rem !important;
+    margin-left: 1.5rem !important;
+    border-left: 2px solid #e2e8f0 !important;
+}
+.navbar-vertical .dropdown-item {
+    color: #64748b !important;
+    padding: 0.36rem 0.75rem !important;
+    font-size: 0.815rem !important;
+    line-height: 1.35 !important;
+    white-space: normal !important;
+    border-radius: 5px !important;
+    margin: 2px 0 !important;
+    transition: all 0.15s ease-in-out !important;
+}
+.navbar-vertical .dropdown-item:hover {
+    color: #0f172a !important;
+    background-color: #f1f5f9 !important;
+}
+.navbar-vertical .dropdown-item.active {
+    color: #1d4ed8 !important;
+    background-color: #eff6ff !important;
+    font-weight: 600 !important;
+}
+
+/* ==========================================================================
+   Refined Clean Dark Mode Styles (Tabler Native Data Attribute)
+   ========================================================================== */
+[data-bs-theme="dark"] body {
+    background-color: #0b1120 !important;
+    color: #e2e8f0 !important;
+}
+
+[data-bs-theme="dark"] .page-title {
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] .page-pretitle {
+    color: #94a3b8 !important;
+}
+
+/* Dark Mode Cards */
+[data-bs-theme="dark"] .card {
+    background-color: #151e2d !important;
+    border-color: #243042 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.25) !important;
+    color: #e2e8f0 !important;
+}
+
+[data-bs-theme="dark"] .card-header {
+    background-color: #151e2d !important;
+    border-bottom: 1px solid #243042 !important;
+}
+
+[data-bs-theme="dark"] .card-title {
+    color: #f8fafc !important;
+}
+
+/* Dark Mode Tables */
+[data-bs-theme="dark"] .table.card-table th {
+    background-color: #151e2d !important;
+    color: #94a3b8 !important;
+    border-bottom: 1px solid #243042 !important;
+}
+
+[data-bs-theme="dark"] .table.card-table td {
+    border-color: #243042 !important;
+    color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+[data-bs-theme="dark"] .table tr:hover {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Dark Mode Topbar Header */
+[data-bs-theme="dark"] header.navbar {
+    background-color: #151e2d !important;
+    border-bottom: 1px solid #243042 !important;
+}
+
+/* Dark Mode Sidebar (Clean Deep Slate, Not Harsh Pitch Black) */
+[data-bs-theme="dark"] .navbar-vertical {
+    background-color: #0f172a !important;
+    border-right: 1px solid #1e293b !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .navbar-brand {
+    background-color: #0f172a !important;
+    border-bottom: 1px solid #1e293b !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .navbar-brand .text-dark {
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .nav-link {
+    color: #94a3b8 !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .nav-link .nav-link-icon {
+    color: #64748b !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .nav-link:hover {
+    color: #ffffff !important;
+    background-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .nav-link:hover .nav-link-icon {
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .nav-item.active > .nav-link {
+    color: #60a5fa !important;
+    background-color: rgba(37, 99, 235, 0.2) !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .nav-item.active > .nav-link .nav-link-icon {
+    color: #60a5fa !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .dropdown-menu {
+    border-left: 2px solid #334155 !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .dropdown-item {
+    color: #94a3b8 !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .dropdown-item:hover {
+    color: #ffffff !important;
+    background-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .navbar-vertical .dropdown-item.active {
+    color: #60a5fa !important;
+    background-color: rgba(37, 99, 235, 0.25) !important;
+}
+
+/* Dark Mode Text Utilities & List Groups */
+[data-bs-theme="dark"] .text-dark {
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] .list-group-item {
+    background-color: #151e2d !important;
+    border-color: #243042 !important;
+    color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .list-group-item:hover {
+    background-color: #1e293b !important;
+}
+
+[data-bs-theme="dark"] .list-group-item-action:hover {
+    background-color: #1e293b !important;
+}
+
+/* Dark Mode Form Inputs */
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+    background-color: #0b1120 !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+    border-color: #60a5fa !important;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2) !important;
+}
+
+/* Dark Mode Dropdown Menus */
+[data-bs-theme="dark"] .dropdown-menu {
+    background-color: #151e2d !important;
+    border-color: #243042 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-bs-theme="dark"] .dropdown-item {
+    color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .dropdown-item:hover {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .dropdown-divider {
+    border-color: #243042 !important;
+}
