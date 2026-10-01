@@ -27,44 +27,51 @@
                 <table class="table table-vcenter card-table table-striped">
                     <thead>
                         <tr>
-                            <th>Nama Router</th>
-                            <th>Metode Koneksi</th>
-                            <th>Host / Tunnel IP</th>
-                            <th>Port API</th>
-                            <th>Pelanggan</th>
-                            <th>Status Koneksi</th>
-                            <th>Terakhir Terlihat</th>
-                            <th class="w-1">Aksi</th>
+                            <th>Nama Router & IP</th>
+                            <th class="d-none d-lg-table-cell">Metode Koneksi</th>
+                            <th class="d-none d-md-table-cell">Host / Tunnel IP</th>
+                            <th class="d-none d-xl-table-cell">Port API</th>
+                            <th class="d-none d-md-table-cell">Pelanggan</th>
+                            <th>Status</th>
+                            <th class="d-none d-md-table-cell">Terakhir Terlihat</th>
+                            <th class="w-1 text-end">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($routers as $r)
                             <tr>
                                 <td>
-                                    <div class="fw-bold">{{ $r->name }}</div>
-                                    <div class="text-secondary small">User API: {{ $r->username ?? '-' }}</div>
+                                    <div class="fw-bold text-dark">{{ $r->name }}</div>
+                                    <!-- Mobile-only IP and connection info -->
+                                    <div class="d-md-none mt-1 d-flex flex-wrap gap-1 align-items-center">
+                                        <code class="text-secondary small" style="font-size: 0.72rem;">
+                                            {{ $r->connection_type === 'VPN_TUNNEL' ? ($r->tunnel_ip ?? 'VPN Tunnel') : ($r->host ?? '-') }}
+                                        </code>
+                                        <span class="badge bg-blue-lt" style="font-size: 0.7rem;">{{ $r->customers_count }} User</span>
+                                    </div>
+                                    <div class="text-secondary small d-none d-md-block">User API: {{ $r->username ?? '-' }}</div>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <x-badge :status="$r->connection_type" />
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <code class="text-dark">
                                         {{ $r->connection_type === 'VPN_TUNNEL' ? ($r->tunnel_ip ?? 'Pending Tunnel') : ($r->host ?? '-') }}
                                     </code>
                                 </td>
-                                <td>{{ $r->port }}</td>
-                                <td>
+                                <td class="d-none d-xl-table-cell">{{ $r->port }}</td>
+                                <td class="d-none d-md-table-cell">
                                     <span class="badge bg-blue-lt">{{ $r->customers_count }} Pelanggan</span>
                                 </td>
                                 <td>
                                     <x-badge :status="$r->status" :dot="true" />
                                     @if($r->last_error)
-                                        <div class="text-danger small mt-1" title="{{ $r->last_error }}">
+                                        <div class="text-danger small mt-1" title="{{ $r->last_error }}" style="font-size: 0.7rem;">
                                             <i class="ti ti-alert-triangle"></i> Gagal koneksi
                                         </div>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <span class="text-secondary small">
                                         {{ $r->last_seen_at ? $r->last_seen_at->diffForHumans() : 'Belum pernah' }}
                                     </span>

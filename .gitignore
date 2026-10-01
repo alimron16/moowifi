@@ -17,7 +17,6 @@ node_modules/
 /services/baileys/node_modules/
 /services/baileys/sessions/
 /services/baileys/auth_info*
-/public/build
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage

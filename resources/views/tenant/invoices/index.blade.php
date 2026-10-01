@@ -57,50 +57,57 @@
                 <table class="table table-vcenter card-table table-striped">
                     <thead>
                         <tr>
-                            <th>Nomor Tagihan</th>
-                            <th>Pelanggan</th>
-                            <th>Periode</th>
-                            <th>Jatuh Tempo</th>
+                            <th>Tagihan & Pelanggan</th>
+                            <th class="d-none d-md-table-cell">Pelanggan</th>
+                            <th class="d-none d-lg-table-cell">Periode</th>
+                            <th class="d-none d-md-table-cell">Jatuh Tempo</th>
                             <th>Total Tagihan</th>
                             <th>Status</th>
-                            <th class="w-1">Aksi</th>
+                            <th class="w-1 text-end">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($invoices as $inv)
                             <tr>
                                 <td>
-                                    <a href="{{ route('tenant.invoices.show', $inv->id) }}" class="fw-bold text-decoration-none">
+                                    <a href="{{ route('tenant.invoices.show', $inv->id) }}" class="fw-bold text-decoration-none font-monospace">
                                         {{ $inv->invoice_number }}
                                     </a>
-                                    <div class="text-secondary small">{{ $inv->created_at->format('d/m/Y H:i') }}</div>
+                                    <!-- Mobile-only Customer & Due Date metadata -->
+                                    <div class="d-md-none mt-1">
+                                        <div class="fw-medium text-dark">{{ $inv->customer->name ?? '-' }}</div>
+                                        <div class="text-secondary small" style="font-size: 0.72rem;">
+                                            JT: <span class="{{ $inv->due_date->isPast() && !$inv->isPaid() ? 'text-danger fw-bold' : '' }}">{{ $inv->due_date->format('d/m/Y') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-secondary small d-none d-md-block">{{ $inv->created_at->format('d/m/Y H:i') }}</div>
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <div class="fw-medium">{{ $inv->customer->name ?? '-' }}</div>
                                     <div class="text-secondary small">{{ $inv->customer->customer_code ?? '' }}</div>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <span class="text-secondary small">
                                         {{ $inv->period_start->format('d/m/Y') }} s/d {{ $inv->period_end->format('d/m/Y') }}
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <span class="{{ $inv->due_date->isPast() && !$inv->isPaid() ? 'text-danger fw-bold' : '' }}">
                                         {{ $inv->due_date->format('d/m/Y') }}
                                     </span>
                                 </td>
-                                <td class="fw-bold">
+                                <td class="fw-bold text-dark">
                                     Rp {{ number_format($inv->total_amount, 0, ',', '.') }}
                                 </td>
                                 <td>
                                     <x-badge :status="$inv->status" />
                                 </td>
-                                <td>
-                                    <div class="btn-list flex-nowrap">
-                                        <a href="{{ route('tenant.invoices.show', $inv->id) }}" class="btn btn-sm btn-ghost-primary">
+                                <td class="text-end">
+                                    <div class="btn-list flex-nowrap justify-content-end">
+                                        <a href="{{ route('tenant.invoices.show', $inv->id) }}" class="btn btn-sm btn-ghost-primary" title="Rincian Tagihan">
                                             Rincian
                                         </a>
-                                        <a href="{{ $inv->payment_url }}" target="_blank" class="btn btn-sm btn-ghost-secondary" title="Buka Halaman Pembayaran Pelanggan">
+                                        <a href="{{ $inv->payment_url }}" target="_blank" class="btn btn-sm btn-ghost-secondary" title="Buka Halaman Pembayaran">
                                             <i class="ti ti-external-link"></i>
                                         </a>
                                     </div>

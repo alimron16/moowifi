@@ -382,3 +382,136 @@ body {
 [data-bs-theme="dark"] .dropdown-divider {
     border-color: #243042 !important;
 }
+
+/* ==========================================================================
+   MOBILE FIRST & TOUCH RESPONSIVE STYLING (Phones & Tablets)
+   ========================================================================== */
+
+/* Smooth momentum scrolling for responsive tables */
+.table-responsive {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 5px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+[data-bs-theme="dark"] .table-responsive::-webkit-scrollbar-thumb {
+    background: #334155;
+}
+
+/* Mobile specific styling (< 768px) */
+@media (max-width: 767.98px) {
+    html {
+        font-size: 13px; /* Comfortable legible base font on smartphones */
+    }
+
+    /* Container padding on smartphones */
+    .container-xl, .container-fluid {
+        padding-left: 0.85rem !important;
+        padding-right: 0.85rem !important;
+    }
+
+    /* Page Header mobile optimization */
+    .page-header {
+        margin-bottom: 0.85rem;
+    }
+
+    .page-header .page-title {
+        font-size: 1.15rem;
+    }
+
+    .page-header .btn-list {
+        width: 100%;
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .page-header .btn-list .btn {
+        flex: 1 1 auto;
+        justify-content: center;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.825rem;
+    }
+
+    /* Card Padding & Mobile Spacing */
+    .card-body {
+        padding: 0.85rem;
+    }
+
+    .card-header {
+        padding: 0.75rem 0.85rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .card-header .card-actions,
+    .card-header .btn {
+        margin-left: auto;
+    }
+
+    /* Mobile Table Compactness & Comfort */
+    .table.card-table th {
+        padding: 0.5rem 0.65rem;
+        font-size: 0.7rem;
+        white-space: nowrap;
+    }
+
+    .table.card-table td {
+        padding: 0.55rem 0.65rem;
+        font-size: 0.8125rem;
+    }
+
+    /* Touch-friendly buttons on mobile */
+    .btn-sm, .table .btn-sm {
+        min-height: 34px;
+        padding: 0.35rem 0.65rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Metric cards on mobile - 2x2 Grid compact metrics */
+    .metric-value-mobile {
+        font-size: 1.35rem !important;
+        line-height: 1.2;
+    }
+
+    /* Mobile form filters */
+    .form-control, .form-select {
+        font-size: 0.85rem;
+        min-height: 38px;
+    }
+
+    /* Mobile Dropdown Menu */
+    .dropdown-menu {
+        max-width: 90vw;
+    }
+
+    /* Hide excessive whitespace and borders on mobile status bars */
+    .border-start-md {
+        border-left: none !important;
+        border-top: 1px dashed #e2e8f0;
+        padding-top: 0.5rem;
+    }
+
+    [data-bs-theme="dark"] .border-start-md {
+        border-top: 1px dashed #334155;
+    }
+}
+
+/* Tablet adjustments (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .container-xl {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+}
+

@@ -69,79 +69,91 @@
             </div>
         </div>
 
-        <!-- Primary Metric Cards (Soft & Cohesive) -->
+        <!-- Primary Metric Cards (Soft & Cohesive - 2x2 Grid on Mobile) -->
         <div class="row row-deck row-cards mb-4">
-            <div class="col-sm-6 col-lg-3">
+            <div class="col-6 col-lg-3">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body p-2 p-md-3">
                         <div class="d-flex align-items-center">
-                            <div class="subheader text-secondary">Pelanggan Aktif</div>
-                            <div class="ms-auto lh-1">
+                            <div class="subheader text-secondary text-truncate">Pelanggan Aktif</div>
+                            <div class="ms-auto lh-1 d-none d-sm-block">
                                 <span class="avatar avatar-sm bg-blue-lt text-blue rounded">
                                     <i class="ti ti-users fs-2"></i>
                                 </span>
                             </div>
                         </div>
-                        <div class="fs-1 fw-bold text-dark mt-2 mb-1">{{ number_format($activeCustomers) }}</div>
-                        <div class="text-secondary small">
-                            Dari total <strong>{{ number_format($totalCustomers) }}</strong> pelanggan terdaftar
+                        <div class="fs-1 fw-bold text-dark mt-1 mt-md-2 mb-1 metric-value-mobile">{{ number_format($activeCustomers) }}</div>
+                        <div class="text-secondary small d-none d-sm-block">
+                            Dari total <strong>{{ number_format($totalCustomers) }}</strong> terdaftar
+                        </div>
+                        <div class="text-secondary small d-sm-none" style="font-size: 0.72rem;">
+                            Total: {{ number_format($totalCustomers) }}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-sm-6 col-lg-3">
+            <div class="col-6 col-lg-3">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body p-2 p-md-3">
                         <div class="d-flex align-items-center">
-                            <div class="subheader text-secondary">Tagihan Menunggak</div>
-                            <div class="ms-auto lh-1">
+                            <div class="subheader text-secondary text-truncate">Tagihan Menunggak</div>
+                            <div class="ms-auto lh-1 d-none d-sm-block">
                                 <span class="avatar avatar-sm bg-yellow-lt text-yellow rounded">
                                     <i class="ti ti-clock-pause fs-2"></i>
                                 </span>
                             </div>
                         </div>
-                        <div class="fs-1 fw-bold text-dark mt-2 mb-1">{{ number_format($unpaidCustomers) }} <span class="fs-4 fw-normal text-secondary">User</span></div>
-                        <div class="text-secondary small">
-                            Total Piutang: <strong>Rp {{ number_format($receivables, 0, ',', '.') }}</strong>
+                        <div class="fs-1 fw-bold text-dark mt-1 mt-md-2 mb-1 metric-value-mobile">{{ number_format($unpaidCustomers) }} <span class="fs-4 fw-normal text-secondary d-none d-sm-inline">User</span></div>
+                        <div class="text-secondary small d-none d-sm-block">
+                            Piutang: <strong>Rp {{ number_format($receivables, 0, ',', '.') }}</strong>
+                        </div>
+                        <div class="text-secondary small d-sm-none" style="font-size: 0.72rem;">
+                            Rp {{ number_format($receivables / 1000, 0) }}k
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-sm-6 col-lg-3">
+            <div class="col-6 col-lg-3">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body p-2 p-md-3">
                         <div class="d-flex align-items-center">
-                            <div class="subheader text-secondary">Terisolir (Auto-Cut)</div>
-                            <div class="ms-auto lh-1">
+                            <div class="subheader text-secondary text-truncate">Terisolir</div>
+                            <div class="ms-auto lh-1 d-none d-sm-block">
                                 <span class="avatar avatar-sm bg-red-lt text-red rounded">
                                     <i class="ti ti-wifi-off fs-2"></i>
                                 </span>
                             </div>
                         </div>
-                        <div class="fs-1 fw-bold text-dark mt-2 mb-1">{{ number_format($isolatedCustomers) }} <span class="fs-4 fw-normal text-secondary">User</span></div>
-                        <div class="text-secondary small">
+                        <div class="fs-1 fw-bold text-dark mt-1 mt-md-2 mb-1 metric-value-mobile">{{ number_format($isolatedCustomers) }} <span class="fs-4 fw-normal text-secondary d-none d-sm-inline">User</span></div>
+                        <div class="text-secondary small d-none d-sm-block">
                             Akses internet dibatasi otomatis
+                        </div>
+                        <div class="text-secondary small d-sm-none" style="font-size: 0.72rem;">
+                            Auto-Cut
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-sm-6 col-lg-3">
+            <div class="col-6 col-lg-3">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body p-2 p-md-3">
                         <div class="d-flex align-items-center">
-                            <div class="subheader text-secondary">Pendapatan Bulan Ini</div>
-                            <div class="ms-auto lh-1">
+                            <div class="subheader text-secondary text-truncate">Pendapatan Bulan Ini</div>
+                            <div class="ms-auto lh-1 d-none d-sm-block">
                                 <span class="avatar avatar-sm bg-green-lt text-green rounded">
                                     <i class="ti ti-wallet fs-2"></i>
                                 </span>
                             </div>
                         </div>
-                        <div class="fs-1 fw-bold text-dark mt-2 mb-1">Rp {{ number_format($revenueThisMonth, 0, ',', '.') }}</div>
-                        <div class="text-secondary small">
+                        <div class="fs-1 fw-bold text-dark mt-1 mt-md-2 mb-1 metric-value-mobile">Rp {{ number_format($revenueThisMonth, 0, ',', '.') }}</div>
+                        <div class="text-secondary small d-none d-sm-block">
                             Periode berjalan: <strong>{{ now()->translatedFormat('F Y') }}</strong>
+                        </div>
+                        <div class="text-secondary small d-sm-none" style="font-size: 0.72rem;">
+                            {{ now()->translatedFormat('M Y') }}
                         </div>
                     </div>
                 </div>

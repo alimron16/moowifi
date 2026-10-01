@@ -57,47 +57,60 @@
                 <table class="table table-vcenter card-table table-striped">
                     <thead>
                         <tr>
-                            <th>Kode & Pelanggan</th>
-                            <th>Kontak</th>
-                            <th>Paket / Router</th>
-                            <th>Akun MikroTik</th>
-                            <th>Siklus Tagihan</th>
+                            <th>Pelanggan & Layanan</th>
+                            <th class="d-none d-md-table-cell">Kontak</th>
+                            <th class="d-none d-lg-table-cell">Paket / Router</th>
+                            <th class="d-none d-xl-table-cell">Akun MikroTik</th>
+                            <th class="d-none d-md-table-cell">Siklus Tagihan</th>
                             <th>Status</th>
-                            <th class="w-1">Aksi</th>
+                            <th class="w-1 text-end">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($customers as $c)
                             <tr>
                                 <td>
-                                    <div class="fw-bold">{{ $c->name }}</div>
-                                    <div class="text-secondary small">{{ $c->customer_code }}</div>
+                                    <div class="fw-bold text-dark">{{ $c->name }}</div>
+                                    <div class="text-secondary small font-monospace">{{ $c->customer_code }}</div>
+                                    <!-- Mobile-Only Meta Info -->
+                                    <div class="d-md-none mt-1 d-flex flex-wrap align-items-center gap-1">
+                                        <span class="badge bg-blue-lt" style="font-size: 0.7rem;">{{ $c->package->name ?? 'Tanpa Paket' }}</span>
+                                        @if($c->phone)
+                                            <span class="text-secondary small" style="font-size: 0.72rem;">{{ $c->phone }}</span>
+                                        @endif
+                                        @if($c->mikrotik_username)
+                                            <span class="text-muted small font-monospace" style="font-size: 0.7rem;">({{ $c->mikrotik_username }})</span>
+                                        @endif
+                                    </div>
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <div>{{ $c->phone }}</div>
                                     <div class="text-secondary small">{{ $c->address ?? '-' }}</div>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <div>{{ $c->package->name ?? 'Tanpa Paket' }}</div>
                                     <div class="text-secondary small">Router: {{ $c->router->name ?? 'Default' }}</div>
                                 </td>
-                                <td>
+                                <td class="d-none d-xl-table-cell">
                                     <div class="font-monospace small">{{ $c->mikrotik_username ?? '-' }}</div>
                                     <div class="text-secondary small">{{ $c->connection_type }}</div>
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <div>Tgl {{ $c->billing_day }} - JT: Tgl {{ $c->due_day }}</div>
                                     <div class="text-secondary small">{{ $c->billing_type }}</div>
                                 </td>
                                 <td>
                                     <x-badge :status="$c->status" :dot="true" />
+                                    <div class="d-md-none text-secondary mt-1" style="font-size: 0.7rem;">
+                                        JT: Tgl {{ $c->due_day }}
+                                    </div>
                                 </td>
-                                <td>
+                                <td class="text-end">
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-ghost-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                             Opsi
                                         </button>
-                                        <div class="dropdown-menu dropdown-menu-end">
+                                        <div class="dropdown-menu dropdown-menu-end shadow-sm">
                                             @if($c->status === 'ISOLATED')
                                                 <form action="{{ route('tenant.customers.force-restore', $c->id) }}" method="POST">
                                                     @csrf

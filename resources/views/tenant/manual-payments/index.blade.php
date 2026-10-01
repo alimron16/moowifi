@@ -41,37 +41,43 @@
                     <thead>
                         <tr>
                             <th>Nomor Tagihan</th>
-                            <th>Pelanggan</th>
-                            <th>Data Pengirim</th>
-                            <th>Nominal Ditransfer</th>
-                            <th>Tgl Transfer</th>
-                            <th>Bukti Foto</th>
-                            <th class="w-1">Aksi</th>
+                            <th>Pelanggan & Pengirim</th>
+                            <th class="d-none d-lg-table-cell">Data Pengirim</th>
+                            <th>Nominal</th>
+                            <th class="d-none d-md-table-cell">Tgl Transfer</th>
+                            <th>Bukti</th>
+                            <th class="w-1 text-end">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($confirmations as $c)
                             <tr>
                                 <td>
-                                    <a href="{{ route('tenant.invoices.show', $c->invoice_id) }}" class="fw-bold">
+                                    <a href="{{ route('tenant.invoices.show', $c->invoice_id) }}" class="fw-bold font-monospace text-decoration-none">
                                         {{ $c->invoice->invoice_number }}
                                     </a>
+                                    <div class="text-secondary small d-md-none" style="font-size: 0.72rem;">
+                                        {{ $c->transfer_date->format('d/m/Y') }}
+                                    </div>
                                 </td>
                                 <td>
-                                    <div>{{ $c->invoice->customer->name ?? '-' }}</div>
+                                    <div class="fw-medium text-dark">{{ $c->invoice->customer->name ?? '-' }}</div>
                                     <div class="text-secondary small">{{ $c->invoice->customer->customer_code ?? '' }}</div>
+                                    <div class="d-lg-none mt-1 text-secondary small" style="font-size: 0.72rem;">
+                                        Dari: <strong>{{ $c->sender_name }}</strong> ({{ $c->bank_name }})
+                                    </div>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <div class="fw-medium">{{ $c->sender_name }}</div>
                                     <div class="text-secondary small">{{ $c->bank_name }} ({{ $c->account_number ?? '-' }})</div>
                                 </td>
                                 <td class="fw-bold text-success">
                                     Rp {{ number_format($c->transfer_amount, 0, ',', '.') }}
                                 </td>
-                                <td>{{ $c->transfer_date->format('d/m/Y') }}</td>
+                                <td class="d-none d-md-table-cell">{{ $c->transfer_date->format('d/m/Y') }}</td>
                                 <td>
-                                    <a href="{{ asset('storage/' . $c->proof_image_path) }}" target="_blank" class="btn btn-sm btn-outline-secondary">
-                                        <i class="ti ti-photo me-1"></i> Lihat Foto
+                                    <a href="{{ asset('storage/' . $c->proof_image_path) }}" target="_blank" class="btn btn-sm btn-outline-secondary" title="Lihat Bukti Transfer">
+                                        <i class="ti ti-photo me-1"></i> Bukti
                                     </a>
                                 </td>
                                 <td>

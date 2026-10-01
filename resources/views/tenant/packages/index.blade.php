@@ -27,23 +27,32 @@
                 <table class="table table-vcenter card-table table-striped">
                     <thead>
                         <tr>
-                            <th>Nama Paket</th>
-                            <th>Kecepatan (DL / UL)</th>
-                            <th>Profil MikroTik</th>
-                            <th>Harga Bulanan</th>
-                            <th>Pelanggan</th>
+                            <th>Paket Layanan</th>
+                            <th class="d-none d-md-table-cell">Kecepatan</th>
+                            <th class="d-none d-lg-table-cell">Profil MikroTik</th>
+                            <th>Harga</th>
+                            <th class="d-none d-md-table-cell">Pelanggan</th>
                             <th>Status</th>
-                            <th class="w-1">Aksi</th>
+                            <th class="w-1 text-end">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($packages as $p)
                             <tr>
                                 <td>
-                                    <div class="fw-bold">{{ $p->name }}</div>
-                                    <div class="text-secondary small">{{ $p->description ?? '-' }}</div>
+                                    <div class="fw-bold text-dark">{{ $p->name }}</div>
+                                    <!-- Mobile-only speed & customer chips -->
+                                    <div class="d-md-none mt-1 d-flex flex-wrap gap-1 align-items-center">
+                                        <span class="badge bg-blue-lt" style="font-size: 0.7rem;">
+                                            <i class="ti ti-arrow-down"></i> {{ $p->download_speed }} / <i class="ti ti-arrow-up"></i> {{ $p->upload_speed }}
+                                        </span>
+                                        <span class="badge bg-azure-lt" style="font-size: 0.7rem;">
+                                            {{ $p->customers_count }} User
+                                        </span>
+                                    </div>
+                                    <div class="text-secondary small d-none d-md-block">{{ $p->description ?? '-' }}</div>
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <span class="badge bg-blue-lt">
                                         <i class="ti ti-arrow-down me-1"></i> {{ $p->download_speed }}
                                     </span>
@@ -51,13 +60,13 @@
                                         <i class="ti ti-arrow-up me-1"></i> {{ $p->upload_speed }}
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-lg-table-cell">
                                     <code class="text-dark">{{ $p->mikrotik_profile ?? 'default' }}</code>
                                 </td>
                                 <td class="fw-bold text-success">
                                     Rp {{ number_format($p->price, 0, ',', '.') }}
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <a href="{{ route('tenant.customers.index') }}" class="badge bg-azure-lt text-decoration-none">
                                         {{ $p->customers_count }} Pelanggan
                                     </a>

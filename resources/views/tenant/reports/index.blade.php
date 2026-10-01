@@ -24,7 +24,7 @@
         <!-- Top Horizontal Navigation Tabs (Section 8: Revenue, Receivables, Customers, Payments, Monthly Report) -->
         <div class="card mb-3">
             <div class="card-header border-bottom-0 pb-0">
-                <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                <ul class="nav nav-tabs card-header-tabs flex-nowrap overflow-auto" role="tablist">
                     <li class="nav-item">
                         <a href="{{ route('tenant.reports.index', ['tab' => 'revenue']) }}" class="nav-link {{ $tab === 'revenue' ? 'active fw-bold' : '' }}">
                             <i class="ti ti-chart-line me-1"></i> Pendapatan (Revenue)

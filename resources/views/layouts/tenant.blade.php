@@ -22,17 +22,27 @@
             </a>
         </h1>
 
-        <!-- Mobile User Avatar -->
-        <div class="navbar-nav flex-row d-md-none">
+        <!-- Mobile Actions (Theme Toggle & User Avatar) -->
+        <div class="navbar-nav flex-row d-md-none align-items-center gap-2">
+            <button type="button" class="btn btn-icon btn-ghost-secondary border-0 btn-toggle-theme-mobile" aria-label="Toggle Dark Mode" title="Ganti Mode Gelap / Terang">
+                <i class="ti ti-moon fs-2 icon-toggle-theme-mobile"></i>
+            </button>
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown">
-                    <span class="avatar avatar-sm bg-primary-lt text-primary">{{ substr(Auth::user()->name, 0, 2) }}</span>
+                <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Menu Pengguna">
+                    <span class="avatar avatar-sm bg-primary-lt text-primary fw-bold">{{ strtoupper(substr(Auth::user()->name, 0, 2)) }}</span>
                 </a>
-                <div class="dropdown-menu dropdown-menu-end">
-                    <a href="{{ route('tenant.settings.index') }}" class="dropdown-item">Pengaturan</a>
+                <div class="dropdown-menu dropdown-menu-end shadow-sm">
+                    <div class="dropdown-header text-dark fw-bold">{{ Auth::user()->name }}</div>
+                    <div class="dropdown-item-text small text-secondary py-0 pb-2">{{ Auth::user()->role }} - {{ Auth::user()->tenant?->name }}</div>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('tenant.settings.index') }}" class="dropdown-item">
+                        <i class="ti ti-settings me-2"></i> Pengaturan
+                    </a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="dropdown-item text-danger">Keluar</button>
+                        <button type="submit" class="dropdown-item text-danger">
+                            <i class="ti ti-logout me-2"></i> Keluar
+                        </button>
                     </form>
                 </div>
             </div>
@@ -403,30 +413,33 @@
             });
         }
 
-        // 2. Dark / Light Theme Toggle
+        // 2. Dark / Light Theme Toggle (Desktop & Mobile)
         const themeBtn = document.getElementById('btn-toggle-theme');
         const themeIcon = document.getElementById('icon-toggle-theme');
+        const mobileThemeBtn = document.querySelector('.btn-toggle-theme-mobile');
+        const mobileThemeIcon = document.querySelector('.icon-toggle-theme-mobile');
 
         function applyTheme(theme) {
             document.documentElement.setAttribute('data-bs-theme', theme);
             document.body.setAttribute('data-bs-theme', theme);
-            if (themeIcon) {
-                themeIcon.className = theme === 'dark' ? 'ti ti-sun fs-2' : 'ti ti-moon fs-2';
-            }
+            const iconClass = theme === 'dark' ? 'ti ti-sun fs-2' : 'ti ti-moon fs-2';
+            if (themeIcon) themeIcon.className = iconClass;
+            if (mobileThemeIcon) mobileThemeIcon.className = iconClass;
         }
 
         const currentTheme = localStorage.getItem('mwifi_theme') || 'light';
         applyTheme(currentTheme);
 
-        if (themeBtn) {
-            themeBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const activeTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
-                const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
-                localStorage.setItem('mwifi_theme', nextTheme);
-                applyTheme(nextTheme);
-            });
+        function toggleThemeAction(e) {
+            e.preventDefault();
+            const activeTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+            const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('mwifi_theme', nextTheme);
+            applyTheme(nextTheme);
         }
+
+        if (themeBtn) themeBtn.addEventListener('click', toggleThemeAction);
+        if (mobileThemeBtn) mobileThemeBtn.addEventListener('click', toggleThemeAction);
     });
 </script>
 @endsection
