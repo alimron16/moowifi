@@ -14,6 +14,7 @@ class SaasPlan extends Model
         'name',
         'code',
         'price',
+        'description',
         'max_customers',
         'max_routers',
         'features',

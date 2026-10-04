@@ -55,27 +55,41 @@
                                 Rp {{ number_format($p->price, 0, ',', '.') }}
                                 <span class="fs-4 text-secondary fw-normal">/bulan</span>
                             </div>
+
+                            @if($p->description)
+                                <p class="text-secondary small my-3 px-2 border-top border-bottom py-2">{{ $p->description }}</p>
+                            @endif
+
                             <ul class="list-unstyled lh-lg text-start my-4">
-                                <li>
-                                    <i class="ti ti-check text-success me-2"></i>
-                                    Maksimal <strong>{{ $p->max_customers == 0 ? 'Unlimited' : $p->max_customers }} Pelanggan</strong>
-                                </li>
-                                <li>
-                                    <i class="ti ti-check text-success me-2"></i>
-                                    Maksimal <strong>{{ $p->max_routers }} Router MikroTik</strong>
-                                </li>
-                                <li>
-                                    <i class="ti ti-check text-success me-2"></i>
-                                    Billing & Invoice Otomatis
-                                </li>
-                                <li>
-                                    <i class="ti ti-check text-success me-2"></i>
-                                    Payment Gateway & Manual
-                                </li>
-                                <li>
-                                    <i class="ti ti-check text-success me-2"></i>
-                                    Auto-Cut & Auto-Restore MikroTik
-                                </li>
+                                @if(is_array($p->features) && count($p->features) > 0)
+                                    @foreach($p->features as $feat)
+                                        <li>
+                                            <i class="ti ti-check text-success me-2"></i>
+                                            {{ $feat }}
+                                        </li>
+                                    @endforeach
+                                @else
+                                    <li>
+                                        <i class="ti ti-check text-success me-2"></i>
+                                        Maksimal <strong>{{ $p->max_customers == 0 ? 'Unlimited' : $p->max_customers }} Pelanggan</strong>
+                                    </li>
+                                    <li>
+                                        <i class="ti ti-check text-success me-2"></i>
+                                        Maksimal <strong>{{ $p->max_routers }} Router MikroTik</strong>
+                                    </li>
+                                    <li>
+                                        <i class="ti ti-check text-success me-2"></i>
+                                        Billing & Invoice Otomatis
+                                    </li>
+                                    <li>
+                                        <i class="ti ti-check text-success me-2"></i>
+                                        Payment Gateway & Manual
+                                    </li>
+                                    <li>
+                                        <i class="ti ti-check text-success me-2"></i>
+                                        Auto-Cut & Auto-Restore MikroTik
+                                    </li>
+                                @endif
                             </ul>
                         </div>
                         <div class="card-footer d-flex justify-content-between align-items-center bg-body-tertiary">
@@ -115,15 +129,24 @@
                                         <label class="form-label required">Harga Langganan Bulanan (Rp)</label>
                                         <input type="number" name="price" class="form-control" value="{{ (int)$p->price }}" required>
                                     </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Deskripsi Singkat Paket</label>
+                                        <textarea name="description" rows="2" class="form-control" placeholder="Contoh: Cocok untuk RT/RW Net rintisan skala 1 RW...">{{ $p->description }}</textarea>
+                                    </div>
                                     <div class="row g-2 mb-3">
                                         <div class="col-6">
                                             <label class="form-label required">Limit Pelanggan</label>
                                             <input type="number" name="max_customers" class="form-control" value="{{ $p->max_customers }}" required>
+                                            <small class="text-secondary">0 = Unlimited</small>
                                         </div>
                                         <div class="col-6">
                                             <label class="form-label required">Limit Router</label>
                                             <input type="number" name="max_routers" class="form-control" value="{{ $p->max_routers }}" required>
                                         </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Daftar Fitur Paket <span class="form-label-description text-secondary">1 baris per fitur</span></label>
+                                        <textarea name="features_text" rows="5" class="form-control" placeholder="Maksimal 100 Pelanggan&#10;Maksimal 1 Router MikroTik&#10;Billing & Invoice Otomatis">{{ is_array($p->features) && count($p->features) > 0 ? implode("\n", $p->features) : "Maksimal " . ($p->max_customers == 0 ? 'Unlimited' : $p->max_customers) . " Pelanggan\nMaksimal " . $p->max_routers . " Router MikroTik\nBilling & Invoice Otomatis\nPayment Gateway & Manual\nAuto-Cut & Auto-Restore MikroTik" }}</textarea>
                                     </div>
                                     <div class="mb-2">
                                         <label class="form-check form-switch">
@@ -177,15 +200,24 @@
                         <label class="form-label required">Harga Langganan Bulanan (Rp)</label>
                         <input type="number" name="price" class="form-control" placeholder="150000" required>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi Singkat Paket</label>
+                        <textarea name="description" rows="2" class="form-control" placeholder="Contoh: Paket ideal untuk RT/RW Net yang sedang berkembang pesat..."></textarea>
+                    </div>
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label required">Limit Pelanggan</label>
                             <input type="number" name="max_customers" class="form-control" value="200" required>
+                            <small class="text-secondary">0 = Unlimited</small>
                         </div>
                         <div class="col-6">
                             <label class="form-label required">Limit Router</label>
                             <input type="number" name="max_routers" class="form-control" value="2" required>
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Daftar Fitur Paket <span class="form-label-description text-secondary">1 baris per fitur</span></label>
+                        <textarea name="features_text" rows="5" class="form-control" placeholder="Maksimal 200 Pelanggan&#10;Maksimal 2 Router MikroTik&#10;Billing & Invoice Otomatis&#10;Payment Gateway & Manual&#10;Auto-Cut & Auto-Restore MikroTik"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -1,17 +1,17 @@
 @extends('layouts.base')
 
 @section('content')
-<aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
+<aside class="navbar navbar-vertical navbar-expand-lg navbar-light bg-white border-end" id="sidebar-main">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu" aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <h1 class="navbar-brand navbar-brand-autodark">
+        <h1 class="navbar-brand py-2 my-1">
             <a href="{{ route('super-admin.dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none">
-                <img src="{{ asset('logo.png') }}" alt="MooWiFi" class="rounded p-1 bg-white" style="width: 36px; height: 36px; object-fit: contain;">
+                <img src="{{ asset('logo.png') }}" alt="MooWiFi" class="rounded p-1 bg-white border" style="width: 36px; height: 36px; object-fit: contain;">
                 <div class="text-start">
-                    <div class="fs-2 fw-bold text-white lh-1">MooWiFi</div>
-                    <div class="fs-6 text-danger-lt fw-normal">Super Admin Panel</div>
+                    <div class="fs-3 fw-bold text-dark lh-1">MooWiFi</div>
+                    <div class="small text-danger fw-semibold mt-1">Super Admin Panel</div>
                 </div>
             </a>
         </h1>

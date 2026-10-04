@@ -20,10 +20,18 @@ class SaasPlanController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'code' => ['required', 'string', 'max:30', 'unique:saas_plans,code'],
             'price' => ['required', 'numeric', 'min:0'],
+            'description' => ['nullable', 'string', 'max:500'],
             'max_customers' => ['required', 'integer'],
             'max_routers' => ['required', 'integer'],
+            'features_text' => ['nullable', 'string'],
         ]);
 
+        if ($request->filled('features_text')) {
+            $lines = array_filter(array_map('trim', explode("\n", (string) $request->input('features_text'))));
+            $validated['features'] = array_values($lines);
+        }
+
+        unset($validated['features_text']);
         $validated['is_active'] = true;
         SaasPlan::create($validated);
 
@@ -36,11 +44,19 @@ class SaasPlanController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'code' => ['required', 'string', 'max:30', 'unique:saas_plans,code,' . $plan->id],
             'price' => ['required', 'numeric', 'min:0'],
+            'description' => ['nullable', 'string', 'max:500'],
             'max_customers' => ['required', 'integer'],
             'max_routers' => ['required', 'integer'],
+            'features_text' => ['nullable', 'string'],
             'is_active' => ['nullable', 'boolean'],
         ]);
 
+        if ($request->has('features_text')) {
+            $lines = array_filter(array_map('trim', explode("\n", (string) $request->input('features_text'))));
+            $validated['features'] = array_values($lines);
+        }
+
+        unset($validated['features_text']);
         $validated['is_active'] = $request->boolean('is_active', true);
         $plan->update($validated);
 
