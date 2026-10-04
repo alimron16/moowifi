@@ -263,62 +263,74 @@
                             <!-- TAB 2: Bantuan, Keamanan & FAQ -->
                             <div x-show="activeTab === 'help'" x-cloak>
                                 <!-- Keamanan -->
-                                <div class="mb-3">
-                                    <div class="fw-bold text-dark small mb-2 d-flex align-items-center gap-1">
-                                        <i class="ti ti-shield-check text-success fs-3"></i> Standar Keamanan MooWiFi
+                                <div class="mb-4">
+                                    <div class="text-uppercase text-secondary fw-bold mb-2" style="font-size: 0.72rem; letter-spacing: 0.04em;">
+                                        <i class="ti ti-shield-check text-success me-1"></i> Standar Keamanan &amp; Hak Akses
                                     </div>
-                                    <div class="card bg-light-subtle border-0 p-3 small text-secondary">
-                                        <p class="mb-2 lh-base">
-                                            <strong>Hak Akses Dibatasi:</strong> User API hanya diberikan izin <code>read, write, api, test</code>. Akses berbahaya seperti <code>reboot</code>, <code>sensitive</code>, <code>password</code>, dan <code>ftp</code> diblokir demi keamanan perangkat.
-                                        </p>
-                                        <p class="mb-0 lh-base">
-                                            <strong>Enkripsi:</strong> Koneksi terowongan dilindungi enkripsi SSL/TLS, aman dari penyadapan jaringan publik.
-                                        </p>
+                                    <div class="list-group list-group-flush border rounded-3 bg-white p-2">
+                                        <div class="list-group-item d-flex align-items-start gap-2 border-0 px-2 py-2">
+                                            <i class="ti ti-check text-success mt-1"></i>
+                                            <div class="small text-secondary lh-base">
+                                                <strong class="text-dark">Hak Akses Minimum:</strong> User API hanya diberi izin <code>read, write, api, test</code>. Hak berbahaya seperti <code>reboot</code>, <code>sensitive</code>, dan <code>password</code> diblokir demi keamanan perangkat.
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item d-flex align-items-start gap-2 border-0 px-2 py-2">
+                                            <i class="ti ti-check text-success mt-1"></i>
+                                            <div class="small text-secondary lh-base">
+                                                <strong class="text-dark">Koneksi Terenkripsi:</strong> Terowongan VPN diamankan enkripsi SSTP (TLS) berstandar tinggi sehingga aman dari penyadapan jaringan publik.
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- FAQ / Troubleshooting -->
                                 <div>
-                                    <div class="fw-bold text-dark small mb-2 d-flex align-items-center gap-1">
-                                        <i class="ti ti-help text-warning fs-3"></i> Tanya Jawab &amp; Pemecahan Masalah
+                                    <div class="text-uppercase text-secondary fw-bold mb-2" style="font-size: 0.72rem; letter-spacing: 0.04em;">
+                                        <i class="ti ti-help-circle text-azure me-1"></i> Tanya Jawab &amp; Pemecahan Masalah
                                     </div>
-                                    <div class="accordion" id="accordionHelpRouter">
-                                        <div class="accordion-item border rounded mb-2">
-                                            <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed py-2 px-3 small fw-semibold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#help1">
-                                                    Status router tetap OFFLINE setelah script di-paste?
-                                                </button>
-                                            </h2>
-                                            <div id="help1" class="accordion-collapse collapse" data-bs-parent="#accordionHelpRouter">
-                                                <div class="accordion-body py-2 px-3 small text-secondary lh-base">
-                                                    Buka Winbox menu <strong>Interfaces</strong>, cari <code>mwifi-tunnel</code>. Pastikan ada bendera <strong>R (Running)</strong>. Jika tidak ada, pastikan router MikroTik memiliki akses internet aktif untuk melakukan dial-out.
-                                                </div>
+                                    <div class="list-group list-group-flush border rounded-3 bg-white">
+                                        <!-- Item 1 -->
+                                        <div class="list-group-item p-3 border-bottom">
+                                            <a class="d-flex align-items-center justify-content-between text-dark text-decoration-none fw-semibold" 
+                                               data-bs-toggle="collapse" 
+                                               href="#help1" 
+                                               role="button" 
+                                               style="font-size: 0.85rem;">
+                                                <span>Status router tetap OFFLINE setelah script di-paste?</span>
+                                                <i class="ti ti-chevron-down text-secondary ms-2"></i>
+                                            </a>
+                                            <div class="collapse show mt-2 pt-2 border-top border-light-subtle text-secondary" id="help1" style="font-size: 0.8rem; line-height: 1.5;">
+                                                Buka Winbox menu <strong>Interfaces</strong>, cari interface <code>mwifi-tunnel</code>. Pastikan ada bendera <strong>R (Running)</strong>. Jika tidak ada, pastikan router MikroTik memiliki koneksi internet aktif untuk melakukan dial-out.
                                             </div>
                                         </div>
 
-                                        <div class="accordion-item border rounded mb-2">
-                                            <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed py-2 px-3 small fw-semibold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#help2">
-                                                    Apakah ada port firewall yang harus dibuka?
-                                                </button>
-                                            </h2>
-                                            <div id="help2" class="accordion-collapse collapse" data-bs-parent="#accordionHelpRouter">
-                                                <div class="accordion-body py-2 px-3 small text-secondary lh-base">
-                                                    Jika Anda memiliki filter firewall <code>drop input</code>, pastikan port <code>8728</code> diizinkan untuk interface <code>mwifi-tunnel</code> di menu <strong>IP -> Firewall -> Filter Rules</strong>.
-                                                </div>
+                                        <!-- Item 2 -->
+                                        <div class="list-group-item p-3 border-bottom">
+                                            <a class="d-flex align-items-center justify-content-between text-dark text-decoration-none fw-semibold collapsed" 
+                                               data-bs-toggle="collapse" 
+                                               href="#help2" 
+                                               role="button" 
+                                               style="font-size: 0.85rem;">
+                                                <span>Apakah ada port firewall yang harus dibuka?</span>
+                                                <i class="ti ti-chevron-down text-secondary ms-2"></i>
+                                            </a>
+                                            <div class="collapse mt-2 pt-2 border-top border-light-subtle text-secondary" id="help2" style="font-size: 0.8rem; line-height: 1.5;">
+                                                Jika Anda memiliki filter firewall <code>drop input</code>, pastikan port <code>8728</code> diizinkan untuk interface <code>mwifi-tunnel</code> di menu <strong>IP -&gt; Firewall -&gt; Filter Rules</strong>.
                                             </div>
                                         </div>
 
-                                        <div class="accordion-item border rounded">
-                                            <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed py-2 px-3 small fw-semibold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#help3">
-                                                    Tipe router MikroTik apa saja yang didukung?
-                                                </button>
-                                            </h2>
-                                            <div id="help3" class="accordion-collapse collapse" data-bs-parent="#accordionHelpRouter">
-                                                <div class="accordion-body py-2 px-3 small text-secondary lh-base">
-                                                    Semua tipe RouterOS v6 dan v7 (hEX, hAP, RB450, RB750, RB1100, CCR, hingga Cloud Hosted Router / CHR).
-                                                </div>
+                                        <!-- Item 3 -->
+                                        <div class="list-group-item p-3 border-0">
+                                            <a class="d-flex align-items-center justify-content-between text-dark text-decoration-none fw-semibold collapsed" 
+                                               data-bs-toggle="collapse" 
+                                               href="#help3" 
+                                               role="button" 
+                                               style="font-size: 0.85rem;">
+                                                <span>Tipe router MikroTik apa saja yang didukung?</span>
+                                                <i class="ti ti-chevron-down text-secondary ms-2"></i>
+                                            </a>
+                                            <div class="collapse mt-2 pt-2 border-top border-light-subtle text-secondary" id="help3" style="font-size: 0.8rem; line-height: 1.5;">
+                                                Mendukung seluruh perangkat RouterOS v6 dan v7 (hEX, hAP, RB450, RB750, RB1100, CCR, hingga Cloud Hosted Router / CHR).
                                             </div>
                                         </div>
                                     </div>
