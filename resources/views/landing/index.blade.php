@@ -516,19 +516,6 @@
                 <!-- Right Hero Mockup Card -->
                 <div class="col-lg-6 hero-right">
                     <div class="hero-mockup-card">
-                        <!-- Window Header -->
-                        <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="rounded-circle" style="width: 10px; height: 10px; background: #f87171; display: inline-block;"></span>
-                                <span class="rounded-circle" style="width: 10px; height: 10px; background: #fbbf24; display: inline-block;"></span>
-                                <span class="rounded-circle" style="width: 10px; height: 10px; background: #34d399; display: inline-block;"></span>
-                                <span class="ms-2 small text-muted font-monospace" style="font-size: 0.78rem;">dasbor.moowifi.id/billing</span>
-                            </div>
-                            <span class="badge" style="background: rgba(5, 150, 105, 0.1); color: #059669; font-weight: 600; font-size: 0.75rem; border-radius: 50px; padding: 5px 12px; border: 1px solid rgba(5, 150, 105, 0.2);">
-                                <i class="fas fa-bolt text-success me-1"></i> Otomasi Realtime
-                            </span>
-                        </div>
-
                         <!-- Invoice Confirmation Card -->
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <div>
