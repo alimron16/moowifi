@@ -489,9 +489,10 @@
             <div class="row align-items-center gy-5">
                 <!-- Left Content -->
                 <div class="col-lg-6 hero-left">
-                    <span class="badge text-bg-secondary rounded-pill fw-normal d-inline-flex align-items-center py-2 px-3 mb-3">
-                        <i class="ti ti-router me-2 text-warning"></i> <span>Platform Billing &amp; MikroTik RT/RW Net No. 1</span>
-                    </span>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill mb-3" style="background: rgba(0, 58, 67, 0.06); border: 1px solid rgba(0, 58, 67, 0.14); color: #003A43; font-size: 0.85rem; font-weight: 600;">
+                        <span class="rounded-circle bg-success" style="width: 8px; height: 8px; display: inline-block;"></span>
+                        <span>Platform Billing &amp; Otomasi MikroTik RT/RW Net</span>
+                    </div>
 
                     <h1 class="display-3 mb-4">
                         Otomatisasi Jaringan RT/RW Net, <span style="color: #FF8D6D;">Maksimalkan Cuan</span> Tanpa Pusing
@@ -520,16 +521,17 @@
                 <!-- Right Hero Mockup Card -->
                 <div class="col-lg-6 hero-right">
                     <div class="hero-mockup-card">
+                        <!-- Control Panel Header -->
                         <div class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-4">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="badge" style="background: rgba(0, 110, 47, 0.12); color: #006E2F; font-size: 0.82rem; font-weight: 600; padding: 7px 14px; border-radius: 50px;">
-                                    <i class="fas fa-circle text-success me-1.5" style="font-size: 0.55rem;"></i> Router Utama Online
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <span class="badge" style="background: rgba(5, 150, 105, 0.12); color: #059669; font-size: 0.8rem; font-weight: 600; padding: 6px 12px; border-radius: 50px; border: 1px solid rgba(5, 150, 105, 0.2);">
+                                    <i class="fas fa-circle text-success me-1.5" style="font-size: 0.5rem;"></i> MikroTik NOC: Terhubung
                                 </span>
-                                <span class="badge" style="background: #eef2f5; color: #475569; font-size: 0.82rem; font-weight: 600; padding: 7px 14px; border-radius: 50px;">
-                                    RB4011 / CCR
+                                <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 0.8rem; font-weight: 600; padding: 6px 12px; border-radius: 50px; border: 1px solid #e2e8f0;">
+                                    RouterOS v7 (RB4011 / CCR)
                                 </span>
                             </div>
-                            <span class="small text-muted font-monospace"><i class="fas fa-bolt text-warning me-1"></i> Latency: 3ms</span>
+                            <span class="small text-muted font-monospace"><i class="fas fa-bolt text-success me-1"></i> Latency: 2ms</span>
                         </div>
 
                         <!-- Mini Dashboard Highlights -->
@@ -538,33 +540,46 @@
                                 <div class="p-3 bg-light rounded-4 border">
                                     <div class="small text-muted fw-semibold mb-1">Invoice Bulan Ini</div>
                                     <div class="fs-4 fw-bold text-dark mb-1">485 Tagihan</div>
-                                    <div class="small text-success fw-medium"><i class="fas fa-check-double me-1"></i> 442 Terbayar Otomatis</div>
+                                    <div class="small text-success fw-medium"><i class="fas fa-check-circle me-1"></i> 442 Terbayar Otomatis</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="p-3 bg-light rounded-4 border">
-                                    <div class="small text-muted fw-semibold mb-1">Auto-Cut Isolir</div>
-                                    <div class="fs-4 fw-bold text-danger mb-1">43 Terisolir</div>
-                                    <div class="small text-muted fw-medium"><i class="fas fa-sync-alt me-1"></i> Auto Restore Aktif</div>
+                                    <div class="small text-muted fw-semibold mb-1">Pelanggan Menunggak</div>
+                                    <div class="fs-4 fw-bold text-dark mb-1">43 Terisolir</div>
+                                    <div class="small text-muted fw-medium"><i class="fas fa-sync-alt me-1"></i> Auto-Restore Standby</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Payment & Notification Simulation Bar -->
+                        <!-- WhatsApp Notification Simulation (End-User Clean Message + ISP Automation Log) -->
                         <div class="border rounded-4 p-3 bg-white mb-4 shadow-xs">
                             <div class="d-flex align-items-center justify-content-between mb-2">
-                                <span class="small fw-bold text-dark d-flex align-items-center gap-1"><i class="fab fa-whatsapp text-success fs-6"></i> WhatsApp Billing Engine</span>
-                                <span class="badge bg-success text-white px-2.5 py-1" style="font-size: 0.72rem; letter-spacing: 0.03em;">TERKIRIM OTOMATIS</span>
+                                <span class="small fw-bold text-dark d-flex align-items-center gap-1.5">
+                                    <i class="fab fa-whatsapp text-success fs-5"></i> Notifikasi WhatsApp ke Pelanggan
+                                </span>
+                                <span class="badge" style="background: rgba(5, 150, 105, 0.12); color: #059669; font-size: 0.72rem; font-weight: 600; padding: 4px 8px; border-radius: 6px;">
+                                    <i class="fas fa-check-double me-1"></i> TERKIRIM
+                                </span>
                             </div>
-                            <p class="small text-muted mb-0 lh-base">"Halo Bpk. Budi, tagihan internet 20 Mbps Anda Rp150.000 sudah terbayar. Router MikroTik telah diaktifkan kembali secara otomatis. Terima kasih!"</p>
+                            <div class="p-2.5 rounded-3 mb-2 text-dark small lh-base border-start border-3 border-success" style="background: #f8fafc; font-size: 0.84rem;">
+                                "Halo Bpk. Budi, pembayaran tagihan internet Paket 20 Mbps sebesar Rp150.000 sudah kami terima. Layanan internet Anda telah aktif kembali secara normal. Terima kasih!"
+                            </div>
+                            <div class="d-flex align-items-center gap-1.5 text-muted px-1" style="font-size: 0.75rem;">
+                                <i class="fas fa-server text-primary"></i>
+                                <span><strong>Otomasi MikroTik:</strong> Profil PPP Secret <code>budi_home</code> dipulihkan ke profil normal realtime.</span>
+                            </div>
                         </div>
 
-                        <!-- Gateway Integration Badges -->
-                        <div class="d-flex flex-wrap gap-2 pt-3 border-top align-items-center">
-                            <span class="badge bg-light text-dark border px-3 py-2 fw-medium"><i class="fas fa-shield-alt text-primary me-1"></i> Duitku</span>
-                            <span class="badge bg-light text-dark border px-3 py-2 fw-medium"><i class="fas fa-bolt text-info me-1"></i> Midtrans</span>
-                            <span class="badge bg-light text-dark border px-3 py-2 fw-medium"><i class="fas fa-credit-card text-success me-1"></i> Xendit</span>
-                            <span class="badge bg-light text-dark border px-3 py-2 fw-medium"><i class="fas fa-qrcode text-warning me-1"></i> Tripay QRIS</span>
+                        <!-- Gateway Integration Badges (Harmonized, Clean & Subtle) -->
+                        <div class="d-flex flex-wrap align-items-center justify-content-between pt-3 border-top gap-2">
+                            <span class="small text-muted fw-semibold" style="font-size: 0.78rem;">Payment Gateway Milik Anda:</span>
+                            <div class="d-flex flex-wrap gap-1.5">
+                                <span class="badge bg-light text-secondary border px-2.5 py-1.5 fw-medium" style="font-size: 0.78rem;"><i class="fas fa-shield-alt text-secondary me-1"></i> Duitku</span>
+                                <span class="badge bg-light text-secondary border px-2.5 py-1.5 fw-medium" style="font-size: 0.78rem;"><i class="fas fa-bolt text-secondary me-1"></i> Midtrans</span>
+                                <span class="badge bg-light text-secondary border px-2.5 py-1.5 fw-medium" style="font-size: 0.78rem;"><i class="fas fa-credit-card text-secondary me-1"></i> Xendit</span>
+                                <span class="badge bg-light text-secondary border px-2.5 py-1.5 fw-medium" style="font-size: 0.78rem;"><i class="fas fa-qrcode text-secondary me-1"></i> Tripay QRIS</span>
+                            </div>
                         </div>
                     </div>
                 </div>
