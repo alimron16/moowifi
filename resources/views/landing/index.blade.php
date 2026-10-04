@@ -516,51 +516,58 @@
                 <!-- Right Hero Mockup Card -->
                 <div class="col-lg-6 hero-right">
                     <div class="hero-mockup-card">
-                        <!-- Mini Dashboard Highlights -->
-                        <div class="row g-3 mb-4">
-                            <div class="col-6">
-                                <div class="p-3 bg-light rounded-4 border">
-                                    <div class="small text-muted fw-semibold mb-1">Invoice Bulan Ini</div>
-                                    <div class="fs-4 fw-bold text-dark mb-1">485 Tagihan</div>
-                                    <div class="small text-success fw-medium"><i class="fas fa-check-circle me-1"></i> 442 Terbayar Otomatis</div>
-                                </div>
+                        <!-- Window Header -->
+                        <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="rounded-circle" style="width: 10px; height: 10px; background: #f87171; display: inline-block;"></span>
+                                <span class="rounded-circle" style="width: 10px; height: 10px; background: #fbbf24; display: inline-block;"></span>
+                                <span class="rounded-circle" style="width: 10px; height: 10px; background: #34d399; display: inline-block;"></span>
+                                <span class="ms-2 small text-muted font-monospace" style="font-size: 0.78rem;">dasbor.moowifi.id/billing</span>
                             </div>
-                            <div class="col-6">
-                                <div class="p-3 bg-light rounded-4 border">
-                                    <div class="small text-muted fw-semibold mb-1">Pelanggan Menunggak</div>
-                                    <div class="fs-4 fw-bold text-dark mb-1">43 Terisolir</div>
-                                    <div class="small text-muted fw-medium"><i class="fas fa-sync-alt me-1"></i> Auto-Restore Standby</div>
-                                </div>
+                            <span class="badge" style="background: rgba(5, 150, 105, 0.1); color: #059669; font-weight: 600; font-size: 0.75rem; border-radius: 50px; padding: 5px 12px; border: 1px solid rgba(5, 150, 105, 0.2);">
+                                <i class="fas fa-bolt text-success me-1"></i> Otomasi Realtime
+                            </span>
+                        </div>
+
+                        <!-- Invoice Confirmation Card -->
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div>
+                                <div class="text-muted small fw-medium">Pembayaran Tagihan Terverifikasi</div>
+                                <h3 class="h2 fw-bold text-dark mb-0 mt-1">Rp 150.000</h3>
+                            </div>
+                            <span class="badge bg-success text-white px-3 py-2 rounded-pill fw-semibold" style="font-size: 0.8rem; letter-spacing: 0.02em;">
+                                <i class="fas fa-check-circle me-1"></i> LUNAS OTOMATIS
+                            </span>
+                        </div>
+
+                        <!-- Clean Detail Information List -->
+                        <div class="p-3.5 rounded-3 mb-4" style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1.25rem;">
+                            <div class="d-flex justify-content-between py-2 border-bottom small">
+                                <span class="text-muted">Pelanggan</span>
+                                <span class="fw-semibold text-dark">Bpk. Budi Santoso (Home-042)</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2 border-bottom small">
+                                <span class="text-muted">Paket Langganan</span>
+                                <span class="fw-semibold text-dark">Family 20 Mbps Unlimited</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2 border-bottom small">
+                                <span class="text-muted">Metode Pembayaran</span>
+                                <span class="fw-semibold text-dark">QRIS Merchant / Virtual Account</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-2 small">
+                                <span class="text-muted">Status Isolir Jaringan</span>
+                                <span class="fw-semibold text-success"><i class="fas fa-wifi me-1"></i> Pulih Otomatis (Aktif)</span>
                             </div>
                         </div>
 
-                        <!-- WhatsApp Notification Simulation (End-User Clean Message + ISP Automation Log) -->
-                        <div class="border rounded-4 p-3 bg-white mb-4 shadow-xs">
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                <span class="small fw-bold text-dark d-flex align-items-center gap-1.5">
-                                    <i class="fab fa-whatsapp text-success fs-5"></i> Notifikasi WhatsApp ke Pelanggan
-                                </span>
-                                <span class="badge" style="background: rgba(5, 150, 105, 0.12); color: #059669; font-size: 0.72rem; font-weight: 600; padding: 4px 8px; border-radius: 6px;">
-                                    <i class="fas fa-check-double me-1"></i> TERKIRIM
-                                </span>
+                        <!-- Clean WhatsApp Dispatch Strip -->
+                        <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background: rgba(5, 150, 105, 0.06); border: 1px solid rgba(5, 150, 105, 0.16);">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 36px; height: 36px; background: #25D366; flex-shrink: 0;">
+                                <i class="fab fa-whatsapp fs-5"></i>
                             </div>
-                            <div class="p-2.5 rounded-3 mb-2 text-dark small lh-base border-start border-3 border-success" style="background: #f8fafc; font-size: 0.84rem;">
-                                "Halo Bpk. Budi, pembayaran tagihan internet Paket 20 Mbps sebesar Rp150.000 sudah kami terima. Layanan internet Anda telah aktif kembali secara normal. Terima kasih!"
-                            </div>
-                            <div class="d-flex align-items-center gap-1.5 text-muted px-1" style="font-size: 0.75rem;">
-                                <i class="fas fa-server text-primary"></i>
-                                <span><strong>Otomasi MikroTik:</strong> Profil PPP Secret <code>budi_home</code> dipulihkan ke profil normal realtime.</span>
-                            </div>
-                        </div>
-
-                        <!-- Gateway Integration Badges (Harmonized, Clean & Subtle) -->
-                        <div class="d-flex flex-wrap align-items-center justify-content-between pt-3 border-top gap-2">
-                            <span class="small text-muted fw-semibold" style="font-size: 0.78rem;">Payment Gateway Milik Anda:</span>
-                            <div class="d-flex flex-wrap gap-1.5">
-                                <span class="badge bg-light text-secondary border px-2.5 py-1.5 fw-medium" style="font-size: 0.78rem;"><i class="fas fa-shield-alt text-secondary me-1"></i> Duitku</span>
-                                <span class="badge bg-light text-secondary border px-2.5 py-1.5 fw-medium" style="font-size: 0.78rem;"><i class="fas fa-bolt text-secondary me-1"></i> Midtrans</span>
-                                <span class="badge bg-light text-secondary border px-2.5 py-1.5 fw-medium" style="font-size: 0.78rem;"><i class="fas fa-credit-card text-secondary me-1"></i> Xendit</span>
-                                <span class="badge bg-light text-secondary border px-2.5 py-1.5 fw-medium" style="font-size: 0.78rem;"><i class="fas fa-qrcode text-secondary me-1"></i> Tripay QRIS</span>
+                            <div class="small">
+                                <div class="fw-semibold text-dark">Struk Pembayaran Terkirim ke WhatsApp</div>
+                                <div class="text-muted" style="font-size: 0.78rem;">Pesan konfirmasi lunas &amp; akses aktif langsung terkirim ke nomor pelanggan.</div>
                             </div>
                         </div>
                     </div>
