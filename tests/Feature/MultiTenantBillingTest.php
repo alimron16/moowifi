@@ -14,10 +14,11 @@ class MultiTenantBillingTest extends TestCase
 
     protected bool $seed = true;
 
-    public function test_root_redirects_to_login(): void
+    public function test_root_landing_page_renders_cleanly(): void
     {
         $response = $this->get('/');
-        $response->assertRedirect('/login');
+        $response->assertStatus(200);
+        $response->assertSee('MooWiFi');
     }
 
     public function test_login_page_renders_cleanly(): void

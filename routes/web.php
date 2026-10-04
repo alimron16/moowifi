@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Public\LandingPageController;
 use App\Http\Controllers\Public\PaymentPageController;
 use App\Http\Controllers\SuperAdmin\SaasPlanController;
 use App\Http\Controllers\SuperAdmin\SuperAdminDashboardController;
@@ -19,15 +22,24 @@ use App\Http\Controllers\Tenant\SettingsController;
 use App\Http\Controllers\Webhook\PaymentWebhookController;
 use Illuminate\Support\Facades\Route;
 
-// Redirect root to login
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+// Public Landing Page (Moonbyte inspired design)
+Route::get('/', [LandingPageController::class, 'index'])->name('landing.index');
+Route::post('/tickets', [LandingPageController::class, 'storeTicket'])->name('landing.ticket.store');
+Route::post('/tickets/check', [LandingPageController::class, 'checkTicket'])->name('landing.ticket.check');
 
-// Authentication Routes
+// Authentication & Registration Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
+// Email Verification Routes
+Route::get('/email/verify', [VerificationController::class, 'notice'])->middleware('auth')->name('verification.notice');
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
+Route::post('/email/verification-notification', [VerificationController::class, 'resend'])->middleware('auth')->name('verification.send');
+Route::post('/email/verify/simulate', [VerificationController::class, 'simulate'])->middleware('auth')->name('verification.simulate');
 
 // Public Payment Link Routes (No login required)
 Route::get('/pay/{token}', [PaymentPageController::class, 'show'])->name('payment.show');
@@ -79,6 +91,7 @@ Route::middleware(['auth', 'super_admin'])->prefix('super-admin')->name('super-a
     Route::get('/announcements', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'announcements'])->name('announcements.index');
     Route::post('/announcements', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'storeAnnouncement'])->name('announcements.store');
     Route::get('/support', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'support'])->name('support.index');
+    Route::post('/support/{ticket}/reply', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'replyTicket'])->name('support.reply');
     Route::get('/settings', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'settings'])->name('settings.index');
     Route::post('/settings', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'updateSettings'])->name('settings.update');
 });

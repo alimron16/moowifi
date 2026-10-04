@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\PlatformSetting;
+use App\Models\SupportTicket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -271,8 +272,37 @@ class PlatformSettingsController extends Controller
         return back()->with('success', 'Pengumuman platform berhasil disiarkan.');
     }
 
-    public function support()
+    public function support(Request $request)
     {
-        return view('super-admin.settings.support');
+        $status = $request->query('status');
+        $query = SupportTicket::latest();
+        if ($status) {
+            $query->where('status', strtoupper($status));
+        }
+        $tickets = $query->paginate(15);
+        $counts = [
+            'all' => SupportTicket::count(),
+            'open' => SupportTicket::where('status', 'OPEN')->count(),
+            'in_progress' => SupportTicket::where('status', 'IN_PROGRESS')->count(),
+            'resolved' => SupportTicket::where('status', 'RESOLVED')->count(),
+        ];
+
+        return view('super-admin.settings.support', compact('tickets', 'counts', 'status'));
+    }
+
+    public function replyTicket(Request $request, SupportTicket $ticket)
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'in:OPEN,IN_PROGRESS,RESOLVED,CLOSED'],
+            'admin_reply' => ['required', 'string'],
+        ]);
+
+        $ticket->update([
+            'status' => $validated['status'],
+            'admin_reply' => $validated['admin_reply'],
+            'replied_at' => now(),
+        ]);
+
+        return back()->with('success', "Tiket #{$ticket->ticket_number} berhasil dibalas dan status diperbarui.");
     }
 }

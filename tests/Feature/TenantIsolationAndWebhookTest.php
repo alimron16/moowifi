@@ -35,6 +35,7 @@ class TenantIsolationAndWebhookTest extends TestCase
             'password' => Hash::make('password'),
             'role' => 'OWNER',
             'status' => 'ACTIVE',
+            'email_verified_at' => now(),
         ]);
 
         // Customer from Tenant A (BudiNet)

@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'SUPER_ADMIN',
             'status' => 'ACTIVE',
+            'email_verified_at' => now(),
         ]);
 
         // 2. SaaS Plans
@@ -38,8 +39,17 @@ class DatabaseSeeder extends Seeder
             'name' => 'Starter 100 User',
             'code' => 'STARTER',
             'price' => 100000,
+            'description' => 'Paket rintisan ideal untuk RT/RW Net pemula skala 1 lingkungan RT.',
             'max_customers' => 100,
             'max_routers' => 1,
+            'features' => [
+                'Maksimal 100 Pelanggan Aktif',
+                'Maksimal 1 Router MikroTik',
+                'Billing & Invoice Otomatis Setiap Bulan',
+                'Notifikasi Tagihan WhatsApp & Email',
+                'Payment Gateway QRIS & Manual Bank',
+                'Auto-Cut & Auto-Restore MikroTik',
+            ],
             'is_active' => true,
         ]);
 
@@ -47,8 +57,18 @@ class DatabaseSeeder extends Seeder
             'name' => 'Pro 500 User',
             'code' => 'PRO',
             'price' => 250000,
+            'description' => 'Paket paling populer untuk ISP lokal dan RT/RW Net berkembang.',
             'max_customers' => 500,
             'max_routers' => 3,
+            'features' => [
+                'Maksimal 500 Pelanggan Aktif',
+                'Maksimal 3 Router MikroTik',
+                'Billing & Invoice Otomatis Setiap Bulan',
+                'Notifikasi Tagihan WhatsApp & Email',
+                'Payment Gateway (Duitku, Midtrans, Xendit, Tripay)',
+                'Auto-Cut & Auto-Restore MikroTik Realtime',
+                'VPN Tunneling Auto-Dial (Solusi CGNAT)',
+            ],
             'is_active' => true,
         ]);
 
@@ -56,8 +76,18 @@ class DatabaseSeeder extends Seeder
             'name' => 'Enterprise Unlimited',
             'code' => 'ENTERPRISE',
             'price' => 500000,
+            'description' => 'Solusi tanpa batas untuk ISP regional dan jaringan skala besar.',
             'max_customers' => 0,
             'max_routers' => 10,
+            'features' => [
+                'Unlimited Pelanggan Aktif (Tanpa Batas)',
+                'Hingga 10 Router MikroTik',
+                'Semua Fitur Otomasi Billing & MikroTik',
+                'Multi Payment Gateway & QRIS Dinamis',
+                'Prioritas Jalur WhatsApp Gateway',
+                'VPN Tunneling & Dedicated Monitoring',
+                'Dukungan Teknis Prioritas 24/7',
+            ],
             'is_active' => true,
         ]);
 
@@ -97,6 +127,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'OWNER',
             'status' => 'ACTIVE',
+            'email_verified_at' => now(),
         ]);
 
         // Tenant Staff
@@ -108,6 +139,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'TECHNICIAN',
             'status' => 'ACTIVE',
+            'email_verified_at' => now(),
         ]);
 
         // 4. Demo Packages

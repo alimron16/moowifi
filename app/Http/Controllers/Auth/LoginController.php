@@ -44,6 +44,10 @@ class LoginController extends Controller
                 return back()->withErrors(['email' => 'Akun tenant Anda sedang disuspend. Hubungi Super Admin.']);
             }
 
+            if (!$user->hasVerifiedEmail()) {
+                return redirect()->route('verification.notice');
+            }
+
             return redirect()->intended(route('tenant.dashboard'));
         }
 

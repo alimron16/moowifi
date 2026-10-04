@@ -42,5 +42,9 @@
             </div>
         </form>
     </div>
+    <div class="card-footer text-center py-3 bg-body-tertiary">
+        <span class="text-secondary small">Belum memiliki akun RT/RW Net?</span>
+        <a href="{{ route('register') }}" class="ms-1 fw-bold text-decoration-none">Daftar Coba Gratis</a>
+    </div>
 </div>
 @endsection
