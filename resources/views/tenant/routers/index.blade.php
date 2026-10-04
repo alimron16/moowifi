@@ -101,9 +101,11 @@
                                     @if($r->connection_type === 'VPN_TUNNEL')
                                         <!-- Modal Script Winbox -->
                                         @php
-                                            $modalScript = "/interface sstp-client add name=\"mwifi-tunnel\" connect-to=\"" . request()->getHost() . "\" user=\"" . $r->vpn_user . "\" password=\"" . $r->decrypted_vpn_password . "\" profile=default-encryption disabled=no\n"
+                                            $vpnPass = $r->decrypted_vpn_password ?: 'password_anda';
+                                            $vpnUser = $r->vpn_user ?: 'mwifi_vpn';
+                                            $modalScript = "/interface sstp-client add name=\"mwifi-tunnel\" connect-to=\"" . request()->getHost() . "\" user=\"" . $vpnUser . "\" password=\"" . $vpnPass . "\" profile=default-encryption disabled=no\n"
                                                          . "/user group add name=saas-grp policy=read,write,api,test\n"
-                                                         . "/user add name=mwifi_api group=saas-grp password=\"" . $r->decrypted_vpn_password . "\"\n"
+                                                         . "/user add name=mwifi_api group=saas-grp password=\"" . $vpnPass . "\"\n"
                                                          . "/ip service set api port=8728 disabled=no";
                                         @endphp
                                         <div class="modal modal-blur fade" id="modal-script-{{ $r->id }}" tabindex="-1" role="dialog" aria-hidden="true" x-data="{ copied: false }">

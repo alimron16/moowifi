@@ -50,7 +50,15 @@ class Router extends Model
 
     public function getDecryptedPasswordAttribute(): ?string
     {
-        return $this->encrypted_password ? Crypt::decryptString($this->encrypted_password) : null;
+        if (! $this->encrypted_password) {
+            return null;
+        }
+
+        try {
+            return Crypt::decryptString($this->encrypted_password);
+        } catch (\Throwable) {
+            return $this->encrypted_password;
+        }
     }
 
     public function setVpnPasswordAttribute(?string $value): void
@@ -60,7 +68,15 @@ class Router extends Model
 
     public function getDecryptedVpnPasswordAttribute(): ?string
     {
-        return $this->encrypted_vpn_password ? Crypt::decryptString($this->encrypted_vpn_password) : null;
+        if (! $this->encrypted_vpn_password) {
+            return null;
+        }
+
+        try {
+            return Crypt::decryptString($this->encrypted_vpn_password);
+        } catch (\Throwable) {
+            return $this->encrypted_vpn_password;
+        }
     }
 
     public function isOnline(): bool

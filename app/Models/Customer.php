@@ -76,7 +76,15 @@ class Customer extends Model
 
     public function getDecryptedMikrotikPasswordAttribute(): ?string
     {
-        return $this->encrypted_mikrotik_password ? Crypt::decryptString($this->encrypted_mikrotik_password) : null;
+        if (! $this->encrypted_mikrotik_password) {
+            return null;
+        }
+
+        try {
+            return Crypt::decryptString($this->encrypted_mikrotik_password);
+        } catch (\Throwable) {
+            return $this->encrypted_mikrotik_password;
+        }
     }
 
     public function isIsolated(): bool
