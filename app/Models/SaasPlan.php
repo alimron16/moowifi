@@ -36,4 +36,19 @@ class SaasPlan extends Model
     {
         return $this->hasMany(Subscription::class);
     }
+
+    public function getYearlyPriceAttribute(): float
+    {
+        return round((float) $this->price * 12 * 0.8);
+    }
+
+    public function getMonthlyEquivalentYearlyAttribute(): float
+    {
+        return round((float) $this->price * 0.8);
+    }
+
+    public function getYearlySavingsAttribute(): float
+    {
+        return round((float) $this->price * 12 * 0.2);
+    }
 }

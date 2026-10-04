@@ -26,7 +26,7 @@ class RegisterController extends Controller
                 : redirect()->route('tenant.dashboard');
         }
 
-        $plans = SaasPlan::where('is_active', true)->get();
+        $plans = SaasPlan::where('is_active', true)->orderBy('price')->get();
         $selectedPlanCode = strtoupper($request->query('plan', ''));
         $selectedPlanId = $request->query('plan_id');
 

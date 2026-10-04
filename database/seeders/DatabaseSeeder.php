@@ -34,59 +34,97 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]);
 
-        // 2. SaaS Plans
-        $planStarter = SaasPlan::create([
-            'name' => 'Starter 100 User',
-            'code' => 'STARTER',
-            'price' => 100000,
-            'description' => 'Paket rintisan ideal untuk RT/RW Net pemula skala 1 lingkungan RT.',
-            'max_customers' => 100,
+        // 2. SaaS Plans (Competitive Tiers)
+        $planFree = SaasPlan::updateOrCreate(['code' => 'FREE'], [
+            'name' => 'Gratis',
+            'price' => 0,
+            'description' => 'Cocok untuk pemula atau rintisan RT/RW Net skala kecil.',
+            'max_customers' => 20,
             'max_routers' => 1,
             'features' => [
-                'Maksimal 100 Pelanggan Aktif',
-                'Maksimal 1 Router MikroTik',
-                'Billing & Invoice Otomatis Setiap Bulan',
-                'Notifikasi Tagihan WhatsApp & Email',
-                'Payment Gateway QRIS & Manual Bank',
+                '20 Pelanggan Aktif',
+                '1 Akses MikroTik',
+                'Manajemen Tugas (terbatas)',
+                'WhatsApp Gateway (Wiku / QR Device)',
+                'Gratis Auto-VPN Tunnel',
+                'Server RADIUS Ready',
+                'Billing & Isolir Otomatis',
+            ],
+            'is_active' => true,
+        ]);
+
+        $planStandar = SaasPlan::updateOrCreate(['code' => 'STANDAR'], [
+            'name' => 'Standar',
+            'price' => 59000,
+            'description' => 'Cocok untuk pemula atau RT/RW Net skala kecil.',
+            'max_customers' => 150,
+            'max_routers' => 1,
+            'features' => [
+                '150 Pelanggan Aktif',
+                '1 Akses MikroTik',
+                'Manajemen Tugas (Full Akses)',
+                '1 WhatsApp Gateway',
+                'Gratis Auto-VPN Tunnel',
+                'Server RADIUS Ready',
+                'Payment Gateway & Transfer Manual',
                 'Auto-Cut & Auto-Restore MikroTik',
             ],
             'is_active' => true,
         ]);
 
-        $planPro = SaasPlan::create([
-            'name' => 'Pro 500 User',
-            'code' => 'PRO',
-            'price' => 250000,
-            'description' => 'Paket paling populer untuk ISP lokal dan RT/RW Net berkembang.',
-            'max_customers' => 500,
-            'max_routers' => 3,
+        $planPro = SaasPlan::updateOrCreate(['code' => 'PRO'], [
+            'name' => 'Pro',
+            'price' => 119000,
+            'description' => 'Solusi lengkap & performa terbaik untuk ISP Profesional & RT/RW Net berkembang.',
+            'max_customers' => 450,
+            'max_routers' => 2,
             'features' => [
-                'Maksimal 500 Pelanggan Aktif',
-                'Maksimal 3 Router MikroTik',
-                'Billing & Invoice Otomatis Setiap Bulan',
-                'Notifikasi Tagihan WhatsApp & Email',
-                'Payment Gateway (Duitku, Midtrans, Xendit, Tripay)',
-                'Auto-Cut & Auto-Restore MikroTik Realtime',
-                'VPN Tunneling Auto-Dial (Solusi CGNAT)',
+                '450 Pelanggan Aktif',
+                '2 Akses MikroTik',
+                'Manajemen Tugas (Full Akses)',
+                '1 WhatsApp Gateway',
+                'Gratis Auto-VPN Tunnel',
+                'Server RADIUS Ready',
+                'Multi Payment Gateway (Duitku, Midtrans, Xendit, Tripay)',
+                'Auto-Cut & Auto-Restore Realtime',
             ],
             'is_active' => true,
         ]);
 
-        $planEnterprise = SaasPlan::create([
-            'name' => 'Enterprise Unlimited',
-            'code' => 'ENTERPRISE',
-            'price' => 500000,
-            'description' => 'Solusi tanpa batas untuk ISP regional dan jaringan skala besar.',
-            'max_customers' => 0,
-            'max_routers' => 10,
+        $planBisnis = SaasPlan::updateOrCreate(['code' => 'BISNIS'], [
+            'name' => 'Bisnis',
+            'price' => 179000,
+            'description' => 'Cocok untuk pemula atau skala berkembang antar-desa.',
+            'max_customers' => 750,
+            'max_routers' => 3,
             'features' => [
-                'Unlimited Pelanggan Aktif (Tanpa Batas)',
-                'Hingga 10 Router MikroTik',
-                'Semua Fitur Otomasi Billing & MikroTik',
-                'Multi Payment Gateway & QRIS Dinamis',
-                'Prioritas Jalur WhatsApp Gateway',
-                'VPN Tunneling & Dedicated Monitoring',
-                'Dukungan Teknis Prioritas 24/7',
+                '750 Pelanggan Aktif',
+                '3 Akses MikroTik',
+                'Manajemen Tugas (Full Akses)',
+                '1 WhatsApp Gateway',
+                'Gratis Auto-VPN Tunnel',
+                'Server RADIUS Ready',
+                'Otomasi Billing & Rekonsiliasi Finansial',
+                'Monitoring Router & Auto-Health Check',
+            ],
+            'is_active' => true,
+        ]);
+
+        $planEnterprise = SaasPlan::updateOrCreate(['code' => 'ENTERPRISE'], [
+            'name' => 'Enterprise',
+            'price' => 299000,
+            'description' => 'Cocok untuk pemula atau skala berkembang multi-wilayah.',
+            'max_customers' => 2000,
+            'max_routers' => 5,
+            'features' => [
+                '2.000 Pelanggan Aktif',
+                '5 Akses MikroTik',
+                'Manajemen Tugas (Full Akses)',
+                '2 WhatsApp Gateway',
+                'Gratis Auto-VPN Tunnel',
+                'Server RADIUS Ready',
+                'Prioritas Support Teknis 24/7',
+                'Custom Domain & Rekonsiliasi Multi-Gateway',
             ],
             'is_active' => true,
         ]);

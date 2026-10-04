@@ -557,18 +557,53 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Pricing Cards */
+        /* Pricing Cards & Switch */
+        .pricing-switch-wrapper {
+            display: inline-flex;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid var(--mc-gray-200);
+            border-radius: 9999px;
+            padding: 5px;
+            box-shadow: 0 4px 15px rgba(0, 58, 67, 0.06);
+        }
+
+        .pricing-switch-btn {
+            border: none;
+            background: transparent;
+            padding: 8px 22px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            color: #6c757d;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .pricing-switch-btn.active {
+            background: var(--mc-dark-green);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 58, 67, 0.25);
+        }
+
         .pricing-card .card {
-            border-radius: 24px;
-            transition: all 0.25s ease;
-            padding: 2.75rem 2.25rem !important;
+            border-radius: 20px;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 1.75rem 1.35rem !important;
             border: 1px solid var(--mc-gray-200);
         }
 
         .pricing-card .card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 20px 45px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 16px 36px rgba(0, 58, 67, 0.1) !important;
         }
+
+        .pricing-card.is-popular .card {
+            border: 2px solid var(--mc-dark-green) !important;
+            box-shadow: 0 12px 30px rgba(0, 58, 67, 0.12) !important;
+        }
+
+        [x-cloak] { display: none !important; }
 
         /* Mockup Glass Card */
         .hero-mockup-card {
@@ -1035,71 +1070,145 @@
     <!-- ============================================================
          PRICING SECTION (DYNAMIC FROM SAAS PLANS)
     ============================================================ -->
-    <section class="pricing-section bg-light overflow-hidden" id="pricing">
-        <div class="container">
-            <div class="row justify-content-center text-center section-heading-wrap">
-                <div class="col-xl-7">
-                    <h2 class="display-6 mb-3">Pilihan Paket Langganan Platform</h2>
-                    <p class="text-muted">Biaya terjangkau dengan fitur tanpa kompromi. Seluruh pendaftaran baru otomatis mendapatkan masa <strong>Uji Coba Gratis 14 Hari</strong>.</p>
+    <!-- ============================================================
+         PRICING SECTION (DYNAMIC FROM SAAS PLANS)
+    ============================================================ -->
+    <section class="pricing-section bg-light overflow-hidden py-5" id="pricing" x-data="{ billing: 'monthly' }">
+        <div class="container-fluid px-3 px-xxl-5 py-3">
+            <div class="row justify-content-center text-center section-heading-wrap mb-4">
+                <div class="col-xl-8">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 fw-semibold text-uppercase ls-md mb-2">
+                        Transparent Pricing
+                    </span>
+                    <h2 class="display-6 fw-bold mb-3 text-dark">Investasi Untuk Pertumbuhan Bisnis</h2>
+                    <p class="text-secondary fs-6 mb-4">Pilihan paket fleksibel tanpa kompromi fitur. Dirancang untuk RT/RW Net &amp; ISP yang ingin berkembang cepat dan terkelola secara otomatis.</p>
+
+                    <!-- Toggle Bulanan / Tahunan -->
+                    <div class="d-flex justify-content-center align-items-center">
+                        <div class="pricing-switch-wrapper">
+                            <button type="button" 
+                                    class="pricing-switch-btn" 
+                                    :class="{ 'active': billing === 'monthly' }" 
+                                    @click="billing = 'monthly'">
+                                Bulanan
+                            </button>
+                            <button type="button" 
+                                    class="pricing-switch-btn d-flex align-items-center gap-2" 
+                                    :class="{ 'active': billing === 'yearly' }" 
+                                    @click="billing = 'yearly'">
+                                <span>Tahunan</span>
+                                <span class="badge bg-success text-white rounded-pill px-2 py-1" style="font-size: 0.72rem;">Hemat 20%</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="row justify-content-center g-4 g-lg-5">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-3 g-xxl-4 justify-content-center">
                 @foreach($plans as $plan)
-                    <div class="col-lg-4 col-md-6 pricing-card">
-                        <div class="card bg-white border-0 h-100 shadow-sm p-4 d-flex flex-column {{ $plan->code === 'PRO' ? 'border border-2 border-primary position-relative' : '' }}">
-                            @if($plan->code === 'PRO')
-                                <div class="position-absolute top-0 start-50 translate-middle">
-                                    <span class="badge text-bg-primary text-dark rounded-pill fw-semibold px-3 py-2">PALING POPULER</span>
+                    @php
+                        $code = strtoupper($plan->code);
+                        $isPro = ($code === 'PRO');
+                        $isFree = ((float) $plan->price == 0);
+                    @endphp
+                    <div class="col pricing-card {{ $isPro ? 'is-popular' : '' }}">
+                        <div class="card bg-white h-100 shadow-sm p-4 d-flex flex-column {{ $isPro ? 'position-relative' : '' }}">
+                            @if($isPro)
+                                <div class="position-absolute top-0 start-50 translate-middle w-100 text-center" style="z-index: 2;">
+                                    <span class="badge text-white rounded-pill fw-bold px-3 py-1 shadow-sm" style="background-color: var(--mc-dark-green); font-size: 0.75rem; letter-spacing: 0.4px;">
+                                        Best Performance
+                                    </span>
                                 </div>
                             @endif
 
-                            <div class="text-center pt-2">
-                                <span class="small fw-semibold text-secondary text-uppercase ls-md">{{ $plan->code }}</span>
-                                <h3 class="h2 my-2 text-dark">{{ $plan->name }}</h3>
-                                <div class="my-3">
-                                    <span class="fs-1 fw-bold text-dark">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
-                                    <span class="text-muted small">/bulan</span>
+                            <div class="text-center pt-1">
+                                <h3 class="h3 fw-bold my-1 text-dark">{{ $plan->name }}</h3>
+                                <p class="text-secondary small mb-3" style="min-height: 38px; font-size: 0.8rem; line-height: 1.35;">
+                                    {{ $plan->description ?? 'Cocok untuk pemula atau skala kecil' }}
+                                </p>
+
+                                <div class="my-3 py-2 px-2 bg-light rounded-3">
+                                    <!-- Monthly Price -->
+                                    <div x-show="billing === 'monthly'">
+                                        <div class="d-flex align-items-baseline justify-content-center">
+                                            <span class="fs-2 fw-bold text-dark">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
+                                            <span class="text-muted small ms-1">/bulan</span>
+                                        </div>
+                                    </div>
+                                    <!-- Yearly Price (20% Discount) -->
+                                    <div x-show="billing === 'yearly'" x-cloak>
+                                        @if($isFree)
+                                            <div class="d-flex align-items-baseline justify-content-center">
+                                                <span class="fs-2 fw-bold text-dark">Rp 0</span>
+                                                <span class="text-muted small ms-1">/tahun</span>
+                                            </div>
+                                        @else
+                                            <div class="d-flex align-items-baseline justify-content-center">
+                                                <span class="fs-2 fw-bold text-dark">Rp {{ number_format($plan->monthly_equivalent_yearly, 0, ',', '.') }}</span>
+                                                <span class="text-muted small ms-1">/bulan</span>
+                                            </div>
+                                            <div class="text-success small fw-semibold" style="font-size: 0.72rem;">
+                                                Ditagih tahunan Rp {{ number_format($plan->yearly_price, 0, ',', '.') }} (Hemat 20%)
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
-                                @if($plan->description)
-                                    <p class="text-secondary small border-top border-bottom py-2 my-3">{{ $plan->description }}</p>
-                                @endif
                             </div>
 
-                            <ul class="list-unstyled my-4 flex-grow-1 lh-lg small">
+                            <ul class="list-unstyled my-3 flex-grow-1 small" style="font-size: 0.83rem; line-height: 1.6;">
                                 @if(is_array($plan->features) && count($plan->features) > 0)
                                     @foreach($plan->features as $feat)
-                                        <li class="d-flex align-items-center gap-2 mb-2">
-                                            <i class="fas fa-check text-success"></i> <span>{{ $feat }}</span>
+                                        <li class="d-flex align-items-start gap-2 mb-2">
+                                            <i class="fas fa-check-circle text-success mt-1 flex-shrink-0" style="font-size: 0.85rem;"></i>
+                                            <span class="text-dark">{{ $feat }}</span>
                                         </li>
                                     @endforeach
                                 @else
-                                    <li class="d-flex align-items-center gap-2 mb-2">
-                                        <i class="fas fa-check text-success"></i> <span>Maksimal <strong>{{ $plan->max_customers == 0 ? 'Unlimited' : $plan->max_customers }} Pelanggan</strong></span>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">{{ $plan->max_customers == 0 ? 'Unlimited' : number_format($plan->max_customers, 0, ',', '.') }} Pelanggan</span>
                                     </li>
-                                    <li class="d-flex align-items-center gap-2 mb-2">
-                                        <i class="fas fa-check text-success"></i> <span>Maksimal <strong>{{ $plan->max_routers }} Router MikroTik</strong></span>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">{{ $plan->max_routers }} Akses Mikrotik</span>
                                     </li>
-                                    <li class="d-flex align-items-center gap-2 mb-2">
-                                        <i class="fas fa-check text-success"></i> <span>Billing &amp; Invoice Otomatis</span>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">Manajemen Tugas (full akses)</span>
                                     </li>
-                                    <li class="d-flex align-items-center gap-2 mb-2">
-                                        <i class="fas fa-check text-success"></i> <span>Payment Gateway &amp; Manual Bank</span>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">1 Whatsapp Gateway</span>
                                     </li>
-                                    <li class="d-flex align-items-center gap-2 mb-2">
-                                        <i class="fas fa-check text-success"></i> <span>Auto-Cut &amp; Auto-Restore MikroTik</span>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">Gratis VPN</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">Server Radius</span>
                                     </li>
                                 @endif
                             </ul>
 
-                            <div class="d-grid mt-auto">
-                                <a href="{{ route('register', ['plan' => $plan->code, 'plan_id' => $plan->id]) }}" class="btn {{ $plan->code === 'PRO' ? 'btn-primary' : 'btn-outline-secondary' }}">
-                                    Pilih Paket Ini
+                            <div class="d-grid mt-auto pt-2">
+                                <a :href="'{{ route('register') }}?plan={{ $plan->code }}&plan_id={{ $plan->id }}&cycle=' + billing" 
+                                   class="btn {{ $isPro ? 'btn-primary shadow-sm text-white' : 'btn-outline-primary' }} rounded-pill py-2 fw-semibold" style="font-size: 0.85rem;">
+                                    {{ $isFree ? 'Mulai Gratis' : 'Pilih Paket' }}
                                 </a>
                             </div>
                         </div>
                     </div>
                 @endforeach
+            </div>
+
+            <!-- Jaminan / Trust Footer -->
+            <div class="text-center mt-5">
+                <div class="d-inline-flex flex-wrap align-items-center justify-content-center gap-4 text-secondary small py-2 px-4 bg-white rounded-pill shadow-sm border">
+                    <span><i class="fas fa-shield-alt text-success me-1"></i> Tanpa Kontrak Mengikat</span>
+                    <span><i class="fas fa-sync-alt text-primary me-1"></i> Upgrade / Downgrade Kapan Saja</span>
+                    <span><i class="fas fa-clock text-info me-1"></i> Uji Coba Gratis 14 Hari</span>
+                </div>
             </div>
         </div>
     </section>
@@ -1441,5 +1550,7 @@
 
     <!-- Bootstrap 5.3 Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Alpine.js for interactive switches -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 </body>
 </html>

@@ -17,7 +17,7 @@ class LandingPageController extends Controller
 {
     public function index()
     {
-        $plans = SaasPlan::where('is_active', true)->get();
+        $plans = SaasPlan::where('is_active', true)->orderBy('price')->get();
 
         $stats = [
             'tenants' => max(Tenant::count(), 85),
