@@ -332,24 +332,31 @@
             }
         }
 
-        .pg-badge-pill {
+        .pg-logo-card {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
             background: #ffffff;
             border: 1px solid var(--mc-gray-200);
-            padding: 9px 20px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #1e293b;
-            box-shadow: 0 2px 10px rgba(0, 58, 67, 0.04);
+            padding: 10px 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 58, 67, 0.04);
             white-space: nowrap;
             transition: all 0.25s ease;
+            height: 56px;
+            min-width: 120px;
             cursor: default;
         }
 
-        .pg-badge-pill:hover {
+        .pg-logo-card img, .pg-logo-card svg {
+            max-height: 28px;
+            max-width: 125px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .pg-logo-card:hover {
             transform: translateY(-2px);
             border-color: var(--mc-orange);
             box-shadow: 0 6px 18px rgba(0, 58, 67, 0.08);
@@ -636,65 +643,95 @@
             </div>
         </div>
 
-        <!-- Continuous Smooth Moving PG Marquee (Right to Left) -->
+        <!-- Continuous Smooth Moving PG Marquee (Right to Left) with Official Brand Logos -->
         <div class="pg-marquee-container">
             <div class="pg-marquee-track">
                 <!-- Set 1 -->
-                <div class="pg-badge-pill">
-                    <i class="fas fa-shield-alt text-primary fs-5"></i> <span>Duitku Payment Gateway</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/duitku.png') }}" alt="Duitku Payment Gateway" title="Duitku">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-bolt text-info fs-5"></i> <span>Midtrans Snap &amp; Core API</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/midtrans.png') }}" alt="Midtrans" title="Midtrans Payment Gateway">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-credit-card text-success fs-5"></i> <span>Xendit XenPlatform</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/xendit.svg') }}" alt="Xendit" title="Xendit Payment Gateway">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-layer-group text-warning fs-5"></i> <span>Tripay Payment Gateway</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/tripay.png') }}" alt="Tripay" title="Tripay Payment Gateway">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-qrcode text-danger fs-5"></i> <span>QRIS Dinamis Nasional</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/qris.png') }}" alt="QRIS" title="QRIS Nasional">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-university text-primary fs-5"></i> <span>BCA Virtual Account</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/bca.png') }}" alt="BCA" title="BCA Virtual Account">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-university text-warning fs-5"></i> <span>Mandiri Bill Payment</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/mandiri.png') }}" alt="Mandiri" title="Bank Mandiri">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-university text-info fs-5"></i> <span>BRIVA (BRI Virtual Account)</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/bri.png') }}" alt="BRI" title="Bank Rakyat Indonesia (BRIVA)">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-university text-success fs-5"></i> <span>BNI Virtual Account</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/bni.png') }}" alt="BNI" title="Bank Negara Indonesia">
+                </div>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/dana.png') }}" alt="DANA" title="DANA E-Wallet">
+                </div>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/gopay.png') }}" alt="GoPay" title="GoPay">
+                </div>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/shopeepay.png') }}" alt="ShopeePay" title="ShopeePay">
+                </div>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/indomaret.png') }}" alt="Indomaret" title="Indomaret Gerai Retail">
+                </div>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/alfamart.png') }}" alt="Alfamart" title="Alfamart Gerai Retail">
                 </div>
 
                 <!-- Set 2 (Duplicate for Seamless Infinite Marquee Loop) -->
-                <div class="pg-badge-pill">
-                    <i class="fas fa-shield-alt text-primary fs-5"></i> <span>Duitku Payment Gateway</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/duitku.png') }}" alt="Duitku Payment Gateway" title="Duitku">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-bolt text-info fs-5"></i> <span>Midtrans Snap &amp; Core API</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/midtrans.png') }}" alt="Midtrans" title="Midtrans Payment Gateway">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-credit-card text-success fs-5"></i> <span>Xendit XenPlatform</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/xendit.svg') }}" alt="Xendit" title="Xendit Payment Gateway">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-layer-group text-warning fs-5"></i> <span>Tripay Payment Gateway</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/tripay.png') }}" alt="Tripay" title="Tripay Payment Gateway">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-qrcode text-danger fs-5"></i> <span>QRIS Dinamis Nasional</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/qris.png') }}" alt="QRIS" title="QRIS Nasional">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-university text-primary fs-5"></i> <span>BCA Virtual Account</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/bca.png') }}" alt="BCA" title="BCA Virtual Account">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-university text-warning fs-5"></i> <span>Mandiri Bill Payment</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/mandiri.png') }}" alt="Mandiri" title="Bank Mandiri">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-university text-info fs-5"></i> <span>BRIVA (BRI Virtual Account)</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/bri.png') }}" alt="BRI" title="Bank Rakyat Indonesia (BRIVA)">
                 </div>
-                <div class="pg-badge-pill">
-                    <i class="fas fa-university text-success fs-5"></i> <span>BNI Virtual Account</span>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/bni.png') }}" alt="BNI" title="Bank Negara Indonesia">
+                </div>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/dana.png') }}" alt="DANA" title="DANA E-Wallet">
+                </div>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/gopay.png') }}" alt="GoPay" title="GoPay">
+                </div>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/shopeepay.png') }}" alt="ShopeePay" title="ShopeePay">
+                </div>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/indomaret.png') }}" alt="Indomaret" title="Indomaret Gerai Retail">
+                </div>
+                <div class="pg-logo-card">
+                    <img src="{{ asset('images/gateways/alfamart.png') }}" alt="Alfamart" title="Alfamart Gerai Retail">
                 </div>
             </div>
         </div>
