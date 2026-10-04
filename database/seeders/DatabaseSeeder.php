@@ -55,7 +55,7 @@ class DatabaseSeeder extends Seeder
 
         $planStandar = SaasPlan::updateOrCreate(['code' => 'STANDAR'], [
             'name' => 'Standar',
-            'price' => 59000,
+            'price' => 79000,
             'description' => 'Cocok untuk pemula atau RT/RW Net skala kecil.',
             'max_customers' => 150,
             'max_routers' => 1,
@@ -74,7 +74,7 @@ class DatabaseSeeder extends Seeder
 
         $planPro = SaasPlan::updateOrCreate(['code' => 'PRO'], [
             'name' => 'Pro',
-            'price' => 119000,
+            'price' => 149000,
             'description' => 'Solusi lengkap & performa terbaik untuk ISP Profesional & RT/RW Net berkembang.',
             'max_customers' => 450,
             'max_routers' => 2,
@@ -93,7 +93,7 @@ class DatabaseSeeder extends Seeder
 
         $planBisnis = SaasPlan::updateOrCreate(['code' => 'BISNIS'], [
             'name' => 'Bisnis',
-            'price' => 179000,
+            'price' => 249000,
             'description' => 'Cocok untuk pemula atau skala berkembang antar-desa.',
             'max_customers' => 750,
             'max_routers' => 3,
@@ -112,7 +112,7 @@ class DatabaseSeeder extends Seeder
 
         $planEnterprise = SaasPlan::updateOrCreate(['code' => 'ENTERPRISE'], [
             'name' => 'Enterprise',
-            'price' => 299000,
+            'price' => 399000,
             'description' => 'Cocok untuk pemula atau skala berkembang multi-wilayah.',
             'max_customers' => 2000,
             'max_routers' => 5,

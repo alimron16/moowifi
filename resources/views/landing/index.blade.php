@@ -1070,11 +1070,8 @@
     <!-- ============================================================
          PRICING SECTION (DYNAMIC FROM SAAS PLANS)
     ============================================================ -->
-    <!-- ============================================================
-         PRICING SECTION (DYNAMIC FROM SAAS PLANS)
-    ============================================================ -->
     <section class="pricing-section bg-light overflow-hidden py-5" id="pricing" x-data="{ billing: 'monthly' }">
-        <div class="container-fluid px-3 px-xxl-5 py-3">
+        <div class="container py-4">
             <div class="row justify-content-center text-center section-heading-wrap mb-4">
                 <div class="col-xl-8">
                     <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 fw-semibold text-uppercase ls-md mb-2">
@@ -1104,34 +1101,43 @@
                 </div>
             </div>
 
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-3 g-xxl-4 justify-content-center">
-                @foreach($plans as $plan)
+            @php
+                $primaryTiers = $plans->filter(fn($p) => in_array(strtoupper($p->code), ['FREE', 'STANDAR', 'PRO']));
+                $scaleTiers = $plans->filter(fn($p) => in_array(strtoupper($p->code), ['BISNIS', 'ENTERPRISE']));
+            @endphp
+
+            <!-- Baris 1: Paket Populer & Pemula (3 Kolom Lega) -->
+            <div class="row g-4 justify-content-center mb-4">
+                @foreach($primaryTiers as $plan)
                     @php
                         $code = strtoupper($plan->code);
                         $isPro = ($code === 'PRO');
                         $isFree = ((float) $plan->price == 0);
                     @endphp
-                    <div class="col pricing-card {{ $isPro ? 'is-popular' : '' }}">
-                        <div class="card bg-white h-100 shadow-sm p-4 d-flex flex-column {{ $isPro ? 'position-relative' : '' }}">
-                            @if($isPro)
-                                <div class="position-absolute top-0 start-50 translate-middle w-100 text-center" style="z-index: 2;">
-                                    <span class="badge text-white rounded-pill fw-bold px-3 py-1 shadow-sm" style="background-color: var(--mc-dark-green); font-size: 0.75rem; letter-spacing: 0.4px;">
-                                        Best Performance
+                    <div class="col-lg-4 col-md-6 pricing-card {{ $isPro ? 'is-popular' : '' }}">
+                        <div class="card bg-white h-100 shadow-sm p-4 d-flex flex-column {{ $isPro ? 'border border-2 border-primary position-relative' : 'border border-gray-200' }}" style="border-radius: 20px;">
+                            <!-- Header Badge (Inside card to never be clipped) -->
+                            <div class="text-center mb-2" style="min-height: 28px;">
+                                @if($isPro)
+                                    <span class="badge text-white rounded-pill px-3 py-1 fw-bold shadow-sm" style="background-color: var(--mc-dark-green); font-size: 0.75rem; letter-spacing: 0.5px;">
+                                        <i class="fas fa-crown me-1 text-warning"></i> BEST PERFORMANCE
                                     </span>
-                                </div>
-                            @endif
+                                @else
+                                    <span class="badge text-transparent" style="font-size: 0.75rem;">&nbsp;</span>
+                                @endif
+                            </div>
 
-                            <div class="text-center pt-1">
-                                <h3 class="h3 fw-bold my-1 text-dark">{{ $plan->name }}</h3>
-                                <p class="text-secondary small mb-3" style="min-height: 38px; font-size: 0.8rem; line-height: 1.35;">
+                            <div class="text-center">
+                                <h3 class="h3 fw-bold mb-1 text-dark">{{ $plan->name }}</h3>
+                                <p class="text-secondary small mb-3" style="min-height: 42px; font-size: 0.85rem; line-height: 1.4;">
                                     {{ $plan->description ?? 'Cocok untuk pemula atau skala kecil' }}
                                 </p>
 
-                                <div class="my-3 py-2 px-2 bg-light rounded-3">
+                                <div class="my-3 py-3 px-3 bg-light rounded-3">
                                     <!-- Monthly Price -->
                                     <div x-show="billing === 'monthly'">
                                         <div class="d-flex align-items-baseline justify-content-center">
-                                            <span class="fs-2 fw-bold text-dark">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
+                                            <span class="fs-1 fw-bold text-dark">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
                                             <span class="text-muted small ms-1">/bulan</span>
                                         </div>
                                     </div>
@@ -1139,15 +1145,15 @@
                                     <div x-show="billing === 'yearly'" x-cloak>
                                         @if($isFree)
                                             <div class="d-flex align-items-baseline justify-content-center">
-                                                <span class="fs-2 fw-bold text-dark">Rp 0</span>
+                                                <span class="fs-1 fw-bold text-dark">Rp 0</span>
                                                 <span class="text-muted small ms-1">/tahun</span>
                                             </div>
                                         @else
                                             <div class="d-flex align-items-baseline justify-content-center">
-                                                <span class="fs-2 fw-bold text-dark">Rp {{ number_format($plan->monthly_equivalent_yearly, 0, ',', '.') }}</span>
+                                                <span class="fs-1 fw-bold text-dark">Rp {{ number_format($plan->monthly_equivalent_yearly, 0, ',', '.') }}</span>
                                                 <span class="text-muted small ms-1">/bulan</span>
                                             </div>
-                                            <div class="text-success small fw-semibold" style="font-size: 0.72rem;">
+                                            <div class="text-success small fw-semibold mt-1">
                                                 Ditagih tahunan Rp {{ number_format($plan->yearly_price, 0, ',', '.') }} (Hemat 20%)
                                             </div>
                                         @endif
@@ -1155,11 +1161,11 @@
                                 </div>
                             </div>
 
-                            <ul class="list-unstyled my-3 flex-grow-1 small" style="font-size: 0.83rem; line-height: 1.6;">
+                            <ul class="list-unstyled my-3 flex-grow-1 small lh-lg" style="font-size: 0.88rem;">
                                 @if(is_array($plan->features) && count($plan->features) > 0)
                                     @foreach($plan->features as $feat)
                                         <li class="d-flex align-items-start gap-2 mb-2">
-                                            <i class="fas fa-check-circle text-success mt-1 flex-shrink-0" style="font-size: 0.85rem;"></i>
+                                            <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
                                             <span class="text-dark">{{ $feat }}</span>
                                         </li>
                                     @endforeach
@@ -1191,10 +1197,116 @@
                                 @endif
                             </ul>
 
-                            <div class="d-grid mt-auto pt-2">
+                            <div class="d-grid mt-auto pt-3">
                                 <a :href="'{{ route('register') }}?plan={{ $plan->code }}&plan_id={{ $plan->id }}&cycle=' + billing" 
-                                   class="btn {{ $isPro ? 'btn-primary shadow-sm text-white' : 'btn-outline-primary' }} rounded-pill py-2 fw-semibold" style="font-size: 0.85rem;">
-                                    {{ $isFree ? 'Mulai Gratis' : 'Pilih Paket' }}
+                                   class="btn {{ $isPro ? 'btn-primary shadow-sm text-white' : 'btn-outline-primary' }} rounded-pill py-2 fw-semibold">
+                                    {{ $isFree ? 'Mulai Gratis (Trial 14 Hari)' : 'Pilih Paket' }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Pemisah Elegan untuk Paket Skala Besar -->
+            <div class="row justify-content-center text-center mt-5 mb-4">
+                <div class="col-lg-7">
+                    <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-1 fw-semibold text-uppercase small">
+                        Kapasitas Skala Besar &amp; Multi-Tower
+                    </span>
+                    <h3 class="h4 fw-bold mt-2 text-dark">Solusi Jaringan Berkembang &amp; ISP Regional</h3>
+                    <p class="text-secondary small mb-0">Dirancang khusus untuk operator yang mengelola banyak titik router dan ekspansi wilayah.</p>
+                </div>
+            </div>
+
+            <!-- Baris 2: Paket Skala Besar (2 Kolom Centered, Mewah & Lapang) -->
+            <div class="row g-4 justify-content-center">
+                @foreach($scaleTiers as $plan)
+                    @php
+                        $code = strtoupper($plan->code);
+                        $isEnterprise = ($code === 'ENTERPRISE');
+                    @endphp
+                    <div class="col-lg-5 col-md-6 pricing-card">
+                        <div class="card bg-white h-100 shadow-sm p-4 p-xl-5 d-flex flex-column border border-gray-200" style="border-radius: 20px;">
+                            <div class="text-center mb-2" style="min-height: 28px;">
+                                @if($isEnterprise)
+                                    <span class="badge bg-dark text-white rounded-pill px-3 py-1 fw-bold shadow-sm" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                        <i class="fas fa-star me-1 text-warning"></i> ENTERPRISE GRADE
+                                    </span>
+                                @else
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-1 fw-semibold" style="font-size: 0.75rem;">
+                                        HIGH CAPACITY
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="text-center">
+                                <h3 class="h3 fw-bold mb-1 text-dark">{{ $plan->name }}</h3>
+                                <p class="text-secondary small mb-3" style="min-height: 42px; font-size: 0.85rem; line-height: 1.4;">
+                                    {{ $plan->description ?? 'Solusi kapasitas tinggi untuk jaringan berkembang' }}
+                                </p>
+
+                                <div class="my-3 py-3 px-3 bg-light rounded-3">
+                                    <!-- Monthly Price -->
+                                    <div x-show="billing === 'monthly'">
+                                        <div class="d-flex align-items-baseline justify-content-center">
+                                            <span class="fs-1 fw-bold text-dark">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
+                                            <span class="text-muted small ms-1">/bulan</span>
+                                        </div>
+                                    </div>
+                                    <!-- Yearly Price (20% Discount) -->
+                                    <div x-show="billing === 'yearly'" x-cloak>
+                                        <div class="d-flex align-items-baseline justify-content-center">
+                                            <span class="fs-1 fw-bold text-dark">Rp {{ number_format($plan->monthly_equivalent_yearly, 0, ',', '.') }}</span>
+                                            <span class="text-muted small ms-1">/bulan</span>
+                                        </div>
+                                        <div class="text-success small fw-semibold mt-1">
+                                            Ditagih tahunan Rp {{ number_format($plan->yearly_price, 0, ',', '.') }} (Hemat 20%)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <ul class="list-unstyled my-3 flex-grow-1 small lh-lg" style="font-size: 0.88rem;">
+                                @if(is_array($plan->features) && count($plan->features) > 0)
+                                    @foreach($plan->features as $feat)
+                                        <li class="d-flex align-items-start gap-2 mb-2">
+                                            <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                            <span class="text-dark">{{ $feat }}</span>
+                                        </li>
+                                    @endforeach
+                                @else
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">{{ $plan->max_customers == 0 ? 'Unlimited' : number_format($plan->max_customers, 0, ',', '.') }} Pelanggan</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">{{ $plan->max_routers }} Akses Mikrotik</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">Manajemen Tugas (full akses)</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">1 Whatsapp Gateway</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">Gratis VPN</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2 mb-2">
+                                        <i class="fas fa-check-circle text-success mt-1 flex-shrink-0"></i>
+                                        <span class="text-dark">Server Radius</span>
+                                    </li>
+                                @endif
+                            </ul>
+
+                            <div class="d-grid mt-auto pt-3">
+                                <a :href="'{{ route('register') }}?plan={{ $plan->code }}&plan_id={{ $plan->id }}&cycle=' + billing" 
+                                   class="btn btn-outline-primary rounded-pill py-2 fw-semibold">
+                                    Pilih Paket
                                 </a>
                             </div>
                         </div>
@@ -1203,7 +1315,7 @@
             </div>
 
             <!-- Jaminan / Trust Footer -->
-            <div class="text-center mt-5">
+            <div class="text-center mt-5 pt-3">
                 <div class="d-inline-flex flex-wrap align-items-center justify-content-center gap-4 text-secondary small py-2 px-4 bg-white rounded-pill shadow-sm border">
                     <span><i class="fas fa-shield-alt text-success me-1"></i> Tanpa Kontrak Mengikat</span>
                     <span><i class="fas fa-sync-alt text-primary me-1"></i> Upgrade / Downgrade Kapan Saja</span>
