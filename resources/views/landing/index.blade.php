@@ -302,6 +302,59 @@
             box-shadow: 0 6px 16px rgba(0,0,0,0.06);
         }
 
+        /* Marquee Ticker for Payment Gateways */
+        .pg-marquee-container {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            padding: 12px 0 6px 0;
+            mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+        }
+
+        .pg-marquee-track {
+            display: flex;
+            gap: 16px;
+            width: max-content;
+            animation: pg-scroll-left 25s linear infinite;
+        }
+
+        .pg-marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes pg-scroll-left {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .pg-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            border: 1px solid var(--mc-gray-200);
+            padding: 9px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+            box-shadow: 0 2px 10px rgba(0, 58, 67, 0.04);
+            white-space: nowrap;
+            transition: all 0.25s ease;
+            cursor: default;
+        }
+
+        .pg-badge-pill:hover {
+            transform: translateY(-2px);
+            border-color: var(--mc-orange);
+            box-shadow: 0 6px 18px rgba(0, 58, 67, 0.08);
+        }
+
         /* Stats Cards */
         .stat-card-mc {
             background: #ffffff;
@@ -564,23 +617,84 @@
     </section>
 
     <!-- ============================================================
-         TECH STACK LOGOS & ECOSYSTEM
+         TECH STACK LOGOS & PAYMENT GATEWAY MARQUEE
     ============================================================ -->
-    <section class="bg-light clients-tech-section border-top border-bottom">
-        <div class="container">
-            <div class="row align-items-center gy-4">
-                <div class="col-xl-4">
-                    <h5 class="mb-1 text-dark fw-bold">Ekosistem Teknologi Terintegrasi</h5>
-                    <p class="mb-0 small text-muted">Mendukung koneksi langsung IP Publik DDNS &amp; Auto-VPN Tunnel untuk ISP di balik CGNAT.</p>
+    <section class="bg-light clients-tech-section border-top border-bottom overflow-hidden">
+        <div class="container mb-4">
+            <div class="row align-items-center gy-3">
+                <div class="col-xl-5">
+                    <h5 class="mb-1 text-dark fw-bold">Ekosistem &amp; Integrasi Payment Gateway</h5>
+                    <p class="mb-0 small text-muted">Mendukung koneksi langsung MikroTik RouterOS API, Auto-VPN Tunneling CGNAT, serta multi payment gateway otomatis.</p>
                 </div>
-                <div class="col-xl-8">
+                <div class="col-xl-7">
                     <div class="d-flex flex-wrap gap-2 align-items-center justify-content-xl-end">
                         <div class="tech-badge-item"><i class="fas fa-network-wired text-primary"></i> MikroTik RouterOS API</div>
                         <div class="tech-badge-item"><i class="fas fa-lock text-success"></i> SSTP / WireGuard VPN</div>
-                        <div class="tech-badge-item"><i class="fab fa-laravel text-danger"></i> Laravel 12 High Performance</div>
-                        <div class="tech-badge-item"><i class="fab fa-whatsapp text-success"></i> Fonnte &amp; Wablas Gateway</div>
-                        <div class="tech-badge-item"><i class="fas fa-qrcode text-warning"></i> Multi Payment QRIS &amp; VA</div>
+                        <div class="tech-badge-item"><i class="fab fa-whatsapp text-success"></i> Fonnte &amp; Wablas WhatsApp</div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Continuous Smooth Moving PG Marquee (Right to Left) -->
+        <div class="pg-marquee-container">
+            <div class="pg-marquee-track">
+                <!-- Set 1 -->
+                <div class="pg-badge-pill">
+                    <i class="fas fa-shield-alt text-primary fs-5"></i> <span>Duitku Payment Gateway</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-bolt text-info fs-5"></i> <span>Midtrans Snap &amp; Core API</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-credit-card text-success fs-5"></i> <span>Xendit XenPlatform</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-layer-group text-warning fs-5"></i> <span>Tripay Payment Gateway</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-qrcode text-danger fs-5"></i> <span>QRIS Dinamis Nasional</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-university text-primary fs-5"></i> <span>BCA Virtual Account</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-university text-warning fs-5"></i> <span>Mandiri Bill Payment</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-university text-info fs-5"></i> <span>BRIVA (BRI Virtual Account)</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-university text-success fs-5"></i> <span>BNI Virtual Account</span>
+                </div>
+
+                <!-- Set 2 (Duplicate for Seamless Infinite Marquee Loop) -->
+                <div class="pg-badge-pill">
+                    <i class="fas fa-shield-alt text-primary fs-5"></i> <span>Duitku Payment Gateway</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-bolt text-info fs-5"></i> <span>Midtrans Snap &amp; Core API</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-credit-card text-success fs-5"></i> <span>Xendit XenPlatform</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-layer-group text-warning fs-5"></i> <span>Tripay Payment Gateway</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-qrcode text-danger fs-5"></i> <span>QRIS Dinamis Nasional</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-university text-primary fs-5"></i> <span>BCA Virtual Account</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-university text-warning fs-5"></i> <span>Mandiri Bill Payment</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-university text-info fs-5"></i> <span>BRIVA (BRI Virtual Account)</span>
+                </div>
+                <div class="pg-badge-pill">
+                    <i class="fas fa-university text-success fs-5"></i> <span>BNI Virtual Account</span>
                 </div>
             </div>
         </div>
