@@ -149,118 +149,286 @@
             border-color: var(--mc-orange) !important;
         }
 
-        /* Hero & Section Spacing */
+        /* Generous Section Spacing & Layout Tokens (Moonbyte / MediCloud Standard) */
+        .section-py {
+            padding-top: 5.5rem !important;
+            padding-bottom: 5.5rem !important;
+        }
+
+        @media (min-width: 992px) {
+            .section-py {
+                padding-top: 7.5rem !important;
+                padding-bottom: 7.5rem !important;
+            }
+        }
+
+        .section-heading-wrap {
+            margin-bottom: 3.5rem !important;
+        }
+
+        @media (min-width: 992px) {
+            .section-heading-wrap {
+                margin-bottom: 5rem !important;
+            }
+        }
+
         .hero-section {
-            padding-top: 4rem;
-            padding-bottom: 5.5rem;
-            background: radial-gradient(circle at 80% 20%, rgba(255, 141, 109, 0.12) 0%, rgba(255, 255, 255, 0) 50%);
+            padding-top: 5rem;
+            padding-bottom: 6.5rem;
+            background: radial-gradient(circle at 85% 15%, rgba(255, 141, 109, 0.14) 0%, rgba(255, 255, 255, 0) 55%);
         }
 
         @media (min-width: 992px) {
             .hero-section {
-                padding-top: 5.5rem;
-                padding-bottom: 7rem;
+                padding-top: 7rem;
+                padding-bottom: 8.5rem;
+            }
+        }
+
+        .clients-tech-section {
+            padding-top: 3.5rem !important;
+            padding-bottom: 3.5rem !important;
+        }
+
+        @media (min-width: 992px) {
+            .clients-tech-section {
+                padding-top: 4.5rem !important;
+                padding-bottom: 4.5rem !important;
+            }
+        }
+
+        .stats-section {
+            padding-top: 5.5rem !important;
+            padding-bottom: 6rem !important;
+        }
+
+        @media (min-width: 992px) {
+            .stats-section {
+                padding-top: 7rem !important;
+                padding-bottom: 7.5rem !important;
+            }
+        }
+
+        .features-section {
+            padding-top: 6rem !important;
+            padding-bottom: 6.5rem !important;
+        }
+
+        @media (min-width: 992px) {
+            .features-section {
+                padding-top: 8rem !important;
+                padding-bottom: 8.5rem !important;
+            }
+        }
+
+        .how-section {
+            padding-top: 6rem !important;
+            padding-bottom: 6.5rem !important;
+        }
+
+        @media (min-width: 992px) {
+            .how-section {
+                padding-top: 8rem !important;
+                padding-bottom: 8.5rem !important;
+            }
+        }
+
+        .pricing-section {
+            padding-top: 6rem !important;
+            padding-bottom: 6.5rem !important;
+        }
+
+        @media (min-width: 992px) {
+            .pricing-section {
+                padding-top: 8rem !important;
+                padding-bottom: 8.5rem !important;
+            }
+        }
+
+        .ticket-section {
+            padding-top: 6rem !important;
+            padding-bottom: 6.5rem !important;
+        }
+
+        @media (min-width: 992px) {
+            .ticket-section {
+                padding-top: 8rem !important;
+                padding-bottom: 8.5rem !important;
+            }
+        }
+
+        .faq-section {
+            padding-top: 6rem !important;
+            padding-bottom: 7rem !important;
+        }
+
+        @media (min-width: 992px) {
+            .faq-section {
+                padding-top: 8rem !important;
+                padding-bottom: 9rem !important;
+            }
+        }
+
+        .footer-section {
+            padding-top: 6rem !important;
+            padding-bottom: 3.5rem !important;
+        }
+
+        @media (min-width: 992px) {
+            .footer-section {
+                padding-top: 7.5rem !important;
+                padding-bottom: 4rem !important;
             }
         }
 
         .tech-badge-item {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             background: #ffffff;
             border: 1px solid var(--mc-gray-200);
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 50px;
-            font-size: 0.88rem;
-            font-weight: 500;
+            font-size: 0.9rem;
+            font-weight: 600;
             color: var(--mc-gray-800);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            transition: all 0.25s ease;
+        }
+
+        .tech-badge-item:hover {
+            transform: translateY(-2px);
+            border-color: var(--mc-orange);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
         }
 
         /* Stats Cards */
         .stat-card-mc {
-            background: var(--mc-gray-100);
-            border-radius: 16px;
-            padding: 24px;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 32px 24px;
             text-align: center;
             border: 1px solid var(--mc-gray-200);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 20px rgba(0, 58, 67, 0.04);
+            transition: all 0.25s ease;
+            height: 100%;
         }
 
         .stat-card-mc:hover {
-            transform: translateY(-3px);
-            background: #ffffff;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 58, 67, 0.08);
+            border-color: var(--mc-orange);
         }
 
         .stat-num-mc {
-            font-size: 2.3rem;
+            font-size: 2.6rem;
             font-weight: 700;
             color: var(--mc-dark-green);
             line-height: 1.1;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
         }
 
         /* Feature Cards */
         .feature-card .card {
-            border-radius: 16px;
+            border-radius: 22px;
             transition: all 0.25s ease;
+            padding: 2.5rem 2rem !important;
+            border: 1px solid var(--mc-gray-200) !important;
         }
 
         .feature-card .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 16px 36px rgba(0, 58, 67, 0.08);
-            background: #ffffff !important;
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 58, 67, 0.09) !important;
+            border-color: var(--mc-orange) !important;
         }
 
         .feature-icon-box {
-            width: 58px;
-            height: 58px;
-            border-radius: 14px;
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
             background: rgba(0, 58, 67, 0.08);
             color: var(--mc-dark-green);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.75rem;
-            margin-bottom: 1.25rem;
+            font-size: 1.9rem;
+            margin-bottom: 1.5rem;
         }
 
         /* Pricing Cards */
         .pricing-card .card {
-            border-radius: 20px;
+            border-radius: 24px;
             transition: all 0.25s ease;
+            padding: 2.75rem 2.25rem !important;
+            border: 1px solid var(--mc-gray-200);
         }
 
         .pricing-card .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.1) !important;
         }
 
         /* Mockup Glass Card */
         .hero-mockup-card {
             background: #ffffff;
             border: 1px solid var(--mc-gray-200);
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0, 58, 67, 0.12);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(0, 58, 67, 0.12);
             overflow: hidden;
+            padding: 2.25rem !important;
+        }
+
+        /* Step Card */
+        .step-card-box {
+            background: var(--mc-gray-100);
+            border: 1px solid var(--mc-gray-200);
+            border-radius: 24px;
+            padding: 3rem 2.25rem;
+            height: 100%;
+            transition: all 0.25s ease;
+        }
+
+        .step-card-box:hover {
+            background: #ffffff;
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(0, 58, 67, 0.08);
+            border-color: var(--mc-orange);
         }
 
         /* Ticket Tabs */
         .nav-pills-mc .nav-link {
             border-radius: 50px;
-            padding: 8px 24px;
+            padding: 10px 28px;
             font-weight: 600;
             color: var(--mc-dark-green);
             background: var(--mc-gray-100);
             border: 1px solid var(--mc-gray-200);
-            margin: 0 4px;
+            margin: 0 6px;
+            font-size: 0.95rem;
         }
 
         .nav-pills-mc .nav-link.active {
             background: var(--mc-dark-green);
             color: #ffffff;
             border-color: var(--mc-dark-green);
+            box-shadow: 0 6px 18px rgba(0, 58, 67, 0.25);
+        }
+
+        /* FAQ Accordion Styling */
+        .faq-item-box {
+            border: 1px solid var(--mc-gray-200);
+            border-radius: 20px !important;
+            padding: 1.5rem 1.85rem !important;
+            background: #ffffff;
+            margin-bottom: 1.25rem !important;
+            box-shadow: 0 4px 14px rgba(0, 58, 67, 0.03);
+            transition: all 0.25s ease;
+        }
+
+        .faq-item-box:hover {
+            border-color: var(--mc-orange);
+            box-shadow: 0 8px 24px rgba(0, 58, 67, 0.06);
         }
     </style>
 </head>
@@ -351,48 +519,52 @@
 
                 <!-- Right Hero Mockup Card -->
                 <div class="col-lg-6 hero-right">
-                    <div class="hero-mockup-card p-4">
-                        <div class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-3">
+                    <div class="hero-mockup-card">
+                        <div class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-4">
                             <div class="d-flex align-items-center gap-2">
-                                <span class="badge bg-success-lt"><i class="fas fa-circle text-success me-1"></i> Router Utama Online</span>
-                                <span class="badge bg-secondary-lt">RB4011 / CCR</span>
+                                <span class="badge" style="background: rgba(0, 110, 47, 0.12); color: #006E2F; font-size: 0.82rem; font-weight: 600; padding: 7px 14px; border-radius: 50px;">
+                                    <i class="fas fa-circle text-success me-1.5" style="font-size: 0.55rem;"></i> Router Utama Online
+                                </span>
+                                <span class="badge" style="background: #eef2f5; color: #475569; font-size: 0.82rem; font-weight: 600; padding: 7px 14px; border-radius: 50px;">
+                                    RB4011 / CCR
+                                </span>
                             </div>
-                            <span class="small text-muted font-monospace">Latency: 3ms</span>
+                            <span class="small text-muted font-monospace"><i class="fas fa-bolt text-warning me-1"></i> Latency: 3ms</span>
                         </div>
 
                         <!-- Mini Dashboard Highlights -->
-                        <div class="row g-2 mb-3">
+                        <div class="row g-3 mb-4">
                             <div class="col-6">
-                                <div class="p-3 bg-light rounded-3">
-                                    <div class="small text-muted">Invoice Bulan Ini</div>
-                                    <div class="fs-4 fw-bold text-dark">485 Tagihan</div>
-                                    <div class="small text-success mt-1"><i class="fas fa-check-double me-1"></i> 442 Terbayar Otomatis</div>
+                                <div class="p-3 bg-light rounded-4 border">
+                                    <div class="small text-muted fw-semibold mb-1">Invoice Bulan Ini</div>
+                                    <div class="fs-4 fw-bold text-dark mb-1">485 Tagihan</div>
+                                    <div class="small text-success fw-medium"><i class="fas fa-check-double me-1"></i> 442 Terbayar Otomatis</div>
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="p-3 bg-light rounded-3">
-                                    <div class="small text-muted">Auto-Cut Isolir</div>
-                                    <div class="fs-4 fw-bold text-danger">43 Terisolir</div>
-                                    <div class="small text-muted mt-1"><i class="fas fa-sync-alt me-1"></i> Auto Restore Aktif</div>
+                                <div class="p-3 bg-light rounded-4 border">
+                                    <div class="small text-muted fw-semibold mb-1">Auto-Cut Isolir</div>
+                                    <div class="fs-4 fw-bold text-danger mb-1">43 Terisolir</div>
+                                    <div class="small text-muted fw-medium"><i class="fas fa-sync-alt me-1"></i> Auto Restore Aktif</div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Payment & Notification Simulation Bar -->
-                        <div class="border rounded-3 p-3 bg-white mb-3">
+                        <div class="border rounded-4 p-3 bg-white mb-4 shadow-xs">
                             <div class="d-flex align-items-center justify-content-between mb-2">
-                                <span class="small fw-bold text-dark"><i class="fab fa-whatsapp text-success me-1"></i> WhatsApp Billing Engine</span>
-                                <span class="badge bg-success text-white">TERKIRIM OTOMATIS</span>
+                                <span class="small fw-bold text-dark d-flex align-items-center gap-1"><i class="fab fa-whatsapp text-success fs-6"></i> WhatsApp Billing Engine</span>
+                                <span class="badge bg-success text-white px-2.5 py-1" style="font-size: 0.72rem; letter-spacing: 0.03em;">TERKIRIM OTOMATIS</span>
                             </div>
-                            <p class="small text-muted mb-0">"Halo Bpk. Budi, tagihan internet 20 Mbps Anda Rp150.000 sudah terbayar. Router MikroTik telah diaktifkan kembali secara otomatis. Terima kasih!"</p>
+                            <p class="small text-muted mb-0 lh-base">"Halo Bpk. Budi, tagihan internet 20 Mbps Anda Rp150.000 sudah terbayar. Router MikroTik telah diaktifkan kembali secara otomatis. Terima kasih!"</p>
                         </div>
 
                         <!-- Gateway Integration Badges -->
-                        <div class="d-flex flex-wrap gap-2 pt-2 border-top">
-                            <span class="badge bg-light text-dark border px-2 py-1"><i class="fas fa-shield-alt text-primary me-1"></i> Duitku</span>
-                            <span class="badge bg-light text-dark border px-2 py-1"><i class="fas fa-bolt text-info me-1"></i> Midtrans</span>
-                            <span class="badge bg-light text-dark border px-2 py-1"><i class="fas fa-credit-card text-success me-1"></i> Xendit</span>
-                            <span class="badge bg-light text-dark border px-2 py-1"><i class="fas fa-qrcode text-warning me-1"></i> Tripay QRIS</span>
+                        <div class="d-flex flex-wrap gap-2 pt-3 border-top align-items-center">
+                            <span class="badge bg-light text-dark border px-3 py-2 fw-medium"><i class="fas fa-shield-alt text-primary me-1"></i> Duitku</span>
+                            <span class="badge bg-light text-dark border px-3 py-2 fw-medium"><i class="fas fa-bolt text-info me-1"></i> Midtrans</span>
+                            <span class="badge bg-light text-dark border px-3 py-2 fw-medium"><i class="fas fa-credit-card text-success me-1"></i> Xendit</span>
+                            <span class="badge bg-light text-dark border px-3 py-2 fw-medium"><i class="fas fa-qrcode text-warning me-1"></i> Tripay QRIS</span>
                         </div>
                     </div>
                 </div>
@@ -403,11 +575,11 @@
     <!-- ============================================================
          TECH STACK LOGOS & ECOSYSTEM
     ============================================================ -->
-    <section class="bg-light py-4 border-top border-bottom">
+    <section class="bg-light clients-tech-section border-top border-bottom">
         <div class="container">
-            <div class="row align-items-center gy-3">
+            <div class="row align-items-center gy-4">
                 <div class="col-xl-4">
-                    <h5 class="mb-1 text-dark">Ekosistem Teknologi Terintegrasi</h5>
+                    <h5 class="mb-1 text-dark fw-bold">Ekosistem Teknologi Terintegrasi</h5>
                     <p class="mb-0 small text-muted">Mendukung koneksi langsung IP Publik DDNS &amp; Auto-VPN Tunnel untuk ISP di balik CGNAT.</p>
                 </div>
                 <div class="col-xl-8">
@@ -426,9 +598,9 @@
     <!-- ============================================================
          STATS STRIP
     ============================================================ -->
-    <section class="py-5 bg-white">
+    <section class="stats-section bg-white">
         <div class="container">
-            <div class="row g-4">
+            <div class="row g-4 g-lg-5">
                 <div class="col-md-3 col-6">
                     <div class="stat-card-mc">
                         <div class="stat-num-mc">{{ number_format($stats['tenants']) }}+</div>
@@ -460,16 +632,16 @@
     <!-- ============================================================
          FEATURES (6-CARD GRID)
     ============================================================ -->
-    <section class="py-lg-10 py-7 bg-light" id="features">
+    <section class="features-section bg-light" id="features">
         <div class="container">
-            <div class="row justify-content-center text-center mb-5">
+            <div class="row justify-content-center text-center section-heading-wrap">
                 <div class="col-xl-7">
                     <h2 class="display-6 mb-3">Fitur Lengkap untuk Pengusaha RT/RW Net &amp; ISP</h2>
                     <p class="text-muted">Semua yang Anda butuhkan untuk mengelola pelanggan, jaringan router, keuangan, dan otomasi tagihan dalam satu aplikasi.</p>
                 </div>
             </div>
 
-            <div class="row g-4">
+            <div class="row g-4 g-lg-5">
                 <!-- Feature 1 -->
                 <div class="col-lg-4 col-md-6 feature-card">
                     <div class="card bg-white border-0 h-100 p-4 shadow-sm">
@@ -542,32 +714,32 @@
     <!-- ============================================================
          HOW IT WORKS
     ============================================================ -->
-    <section class="py-lg-10 py-7 bg-white" id="howItWork">
+    <section class="how-section bg-white" id="howItWork">
         <div class="container">
-            <div class="row justify-content-center text-center mb-5">
+            <div class="row justify-content-center text-center section-heading-wrap">
                 <div class="col-xl-6">
                     <h2 class="display-6 mb-3">Cara Kerja MooWiFi dalam 3 Langkah</h2>
                     <p class="text-muted">Sangat mudah diintegrasikan dengan jaringan MikroTik yang sudah berjalan tanpa perlu merombak topologi.</p>
                 </div>
             </div>
 
-            <div class="row g-4">
+            <div class="row g-4 g-lg-5">
                 <div class="col-md-4 text-center">
-                    <div class="p-4 rounded-4 bg-light h-100 border">
+                    <div class="step-card-box">
                         <div class="display-5 text-primary fw-bold mb-3">01</div>
                         <h3 class="h4 mb-2">Daftar Akun &amp; Verifikasi Email</h3>
                         <p class="text-muted small mb-0">Buat akun tenant RT/RW Net baru secara gratis. Verifikasi alamat email aktif Anda untuk mengaktifkan akses penuh dasbor trial 14 hari.</p>
                     </div>
                 </div>
                 <div class="col-md-4 text-center">
-                    <div class="p-4 rounded-4 bg-light h-100 border">
+                    <div class="step-card-box">
                         <div class="display-5 text-primary fw-bold mb-3">02</div>
                         <h3 class="h4 mb-2">Hubungkan MikroTik &amp; Gateway</h3>
                         <p class="text-muted small mb-0">Masukkan IP Publik atau gunakan script Auto-VPN kami. Atur kredensial payment gateway dan nomor WhatsApp penagihan Anda.</p>
                     </div>
                 </div>
                 <div class="col-md-4 text-center">
-                    <div class="p-4 rounded-4 bg-light h-100 border">
+                    <div class="step-card-box">
                         <div class="display-5 text-primary fw-bold mb-3">03</div>
                         <h3 class="h4 mb-2">Sistem Bekerja Otomatis</h3>
                         <p class="text-muted small mb-0">Invoice terbit sendiri setiap tanggal 1, pengingat WhatsApp terkirim tepat waktu, uang masuk ke rekening, dan isolir berjalan otomatis!</p>
@@ -580,16 +752,16 @@
     <!-- ============================================================
          PRICING SECTION (DYNAMIC FROM SAAS PLANS)
     ============================================================ -->
-    <section class="py-lg-10 py-7 bg-light pricing-section overflow-hidden" id="pricing">
+    <section class="pricing-section bg-light overflow-hidden" id="pricing">
         <div class="container">
-            <div class="row justify-content-center text-center mb-5">
+            <div class="row justify-content-center text-center section-heading-wrap">
                 <div class="col-xl-7">
                     <h2 class="display-6 mb-3">Pilihan Paket Langganan Platform</h2>
                     <p class="text-muted">Biaya terjangkau dengan fitur tanpa kompromi. Seluruh pendaftaran baru otomatis mendapatkan masa <strong>Uji Coba Gratis 14 Hari</strong>.</p>
                 </div>
             </div>
 
-            <div class="row justify-content-center g-4">
+            <div class="row justify-content-center g-4 g-lg-5">
                 @foreach($plans as $plan)
                     <div class="col-lg-4 col-md-6 pricing-card">
                         <div class="card bg-white border-0 h-100 shadow-sm p-4 d-flex flex-column {{ $plan->code === 'PRO' ? 'border border-2 border-primary position-relative' : '' }}">
@@ -652,9 +824,9 @@
     <!-- ============================================================
          KOLOM TIKET BANTUAN & CEK STATUS TIKET (SUPPORT DESK)
     ============================================================ -->
-    <section class="py-lg-10 py-7 bg-white" id="support-ticket">
+    <section class="ticket-section bg-white" id="support-ticket">
         <div class="container">
-            <div class="row justify-content-center text-center mb-4">
+            <div class="row justify-content-center text-center section-heading-wrap">
                 <div class="col-xl-7">
                     <span class="badge text-bg-secondary rounded-pill py-2 px-3 mb-2">Pusat Bantuan &amp; Helpdesk</span>
                     <h2 class="display-6 mb-3">Kolom Tiket Bantuan &amp; Layanan Dukungan</h2>
@@ -768,7 +940,7 @@
                     <div class="tab-content" id="ticketTabContent">
                         <!-- Tab 1: Create Ticket -->
                         <div class="tab-pane fade show active" id="tab-create" role="tabpanel">
-                            <div class="card border rounded-4 p-4 shadow-sm">
+                            <div class="card border rounded-4 p-4 p-lg-5 shadow-sm">
                                 <h3 class="h4 mb-3 text-dark">Formulir Tiket Dukungan Teknis</h3>
                                 <form action="{{ route('landing.ticket.store') }}" method="POST">
                                     @csrf
@@ -805,7 +977,7 @@
                                         <label class="form-label required small fw-bold">Rincian Kendala / Pertanyaan</label>
                                         <textarea name="message" rows="4" class="form-control" placeholder="Jelaskan detail kendala, tipe router MikroTik, atau pertanyaan Anda..." required>{{ old('message') }}</textarea>
                                     </div>
-                                    <button type="submit" class="btn btn-primary w-100 py-2">
+                                    <button type="submit" class="btn btn-primary w-100 py-3 fw-semibold">
                                         <i class="ti ti-send me-1"></i> Kirimkan Tiket Bantuan
                                     </button>
                                 </form>
@@ -814,7 +986,7 @@
 
                         <!-- Tab 2: Check Ticket -->
                         <div class="tab-pane fade" id="tab-check" role="tabpanel">
-                            <div class="card border rounded-4 p-4 shadow-sm">
+                            <div class="card border rounded-4 p-4 p-lg-5 shadow-sm">
                                 <h3 class="h4 mb-2 text-dark">Pengecekan Status Tiket</h3>
                                 <p class="text-muted small mb-4">Masukkan Nomor Tiket yang Anda peroleh saat pengajuan tiket beserta alamat email terdaftar.</p>
 
@@ -828,7 +1000,7 @@
                                         <label class="form-label required small fw-bold">Alamat Email Pelapor</label>
                                         <input type="email" name="email" class="form-control" placeholder="nama@email.com" required>
                                     </div>
-                                    <button type="submit" class="btn btn-outline-secondary w-100 py-2">
+                                    <button type="submit" class="btn btn-outline-secondary w-100 py-3 fw-semibold">
                                         <i class="ti ti-search me-1"></i> Lacak Status Tiket Saya
                                     </button>
                                 </form>
@@ -843,9 +1015,9 @@
     <!-- ============================================================
          FAQ SECTION
     ============================================================ -->
-    <section class="py-lg-10 py-7 bg-light" id="faq">
+    <section class="faq-section bg-light" id="faq">
         <div class="container">
-            <div class="row justify-content-center text-center mb-5">
+            <div class="row justify-content-center text-center section-heading-wrap">
                 <div class="col-xl-6">
                     <h2 class="display-6 mb-3">Pertanyaan yang Sering Diajukan</h2>
                     <p class="text-muted">Informasi teknis dan praktis seputar implementasi MooWiFi di jaringan RT/RW Net Anda.</p>
@@ -856,7 +1028,7 @@
                 <div class="col-xl-8">
                     <div class="accordion" id="accordionMooWiFi">
                         <!-- FAQ 1 -->
-                        <div class="border mb-3 rounded-4 p-4 bg-white shadow-sm">
+                        <div class="faq-item-box">
                             <h3 class="h5 mb-0">
                                 <a href="#" class="text-reset d-flex justify-content-between align-items-center text-decoration-none" data-bs-toggle="collapse" data-bs-target="#faq1">
                                     <span>Apakah bisa dipakai jika router MikroTik tidak punya IP Publik Statis?</span>
@@ -864,14 +1036,14 @@
                                 </a>
                             </h3>
                             <div id="faq1" class="collapse show" data-bs-parent="#accordionMooWiFi">
-                                <div class="mt-3 text-muted small pt-2 border-top">
+                                <div class="mt-3 text-muted small pt-3 border-top lh-lg">
                                     Bisa 100%! MooWiFi menyediakan fitur <strong>Auto VPN Tunneling (SSTP &amp; WireGuard)</strong>. Anda cukup meng-copy 1 baris script yang di-generate dari dasbor MooWiFi ke Terminal Winbox MikroTik Anda, dan router langsung terhubung ke sistem tanpa perlu sewa IP publik.
                                 </div>
                             </div>
                         </div>
 
                         <!-- FAQ 2 -->
-                        <div class="border mb-3 rounded-4 p-4 bg-white shadow-sm">
+                        <div class="faq-item-box">
                             <h3 class="h5 mb-0">
                                 <a href="#" class="text-reset d-flex justify-content-between align-items-center text-decoration-none collapsed" data-bs-toggle="collapse" data-bs-target="#faq2">
                                     <span>Kemana uang pembayaran tagihan internet pelanggan masuk?</span>
@@ -879,14 +1051,14 @@
                                 </a>
                             </h3>
                             <div id="faq2" class="collapse" data-bs-parent="#accordionMooWiFi">
-                                <div class="mt-3 text-muted small pt-2 border-top">
+                                <div class="mt-3 text-muted small pt-3 border-top lh-lg">
                                     Uang pembayaran tagihan <strong>100% langsung masuk ke rekening atau akun merchant payment gateway milik Anda sendiri</strong> (Duitku, Midtrans, Xendit, Tripay, atau rekening bank manual). MooWiFi tidak menampung uang pembayaran warga.
                                 </div>
                             </div>
                         </div>
 
                         <!-- FAQ 3 -->
-                        <div class="border mb-3 rounded-4 p-4 bg-white shadow-sm">
+                        <div class="faq-item-box">
                             <h3 class="h5 mb-0">
                                 <a href="#" class="text-reset d-flex justify-content-between align-items-center text-decoration-none collapsed" data-bs-toggle="collapse" data-bs-target="#faq3">
                                     <span>Apakah pendaftaran membutuhkan verifikasi email?</span>
@@ -894,14 +1066,14 @@
                                 </a>
                             </h3>
                             <div id="faq3" class="collapse" data-bs-parent="#accordionMooWiFi">
-                                <div class="mt-3 text-muted small pt-2 border-top">
+                                <div class="mt-3 text-muted small pt-3 border-top lh-lg">
                                     Ya. Demi keamanan akun dan mencegah penyalahgunaan platform, setiap pendaftar baru wajib memverifikasi kepemilikan email melalui link verifikasi resmi yang dikirimkan oleh server platform kami.
                                 </div>
                             </div>
                         </div>
 
                         <!-- FAQ 4 -->
-                        <div class="border mb-3 rounded-4 p-4 bg-white shadow-sm">
+                        <div class="faq-item-box">
                             <h3 class="h5 mb-0">
                                 <a href="#" class="text-reset d-flex justify-content-between align-items-center text-decoration-none collapsed" data-bs-toggle="collapse" data-bs-target="#faq4">
                                     <span>Bagaimana cara kerja Auto-Cut dan Auto-Restore MikroTik?</span>
@@ -909,7 +1081,7 @@
                                 </a>
                             </h3>
                             <div id="faq4" class="collapse" data-bs-parent="#accordionMooWiFi">
-                                <div class="mt-3 text-muted small pt-2 border-top">
+                                <div class="mt-3 text-muted small pt-3 border-top lh-lg">
                                     Jika pelanggan melewati batas jatuh tempo dan masa tenggang (grace period), sistem scheduler otomatis mengubah profil PPP Secret / Simple Queue pelanggan menjadi profil isolir (kecepatan dibatasi atau dialihkan ke halaman peringatan isolir). Begitu tagihan dibayar lunas, webhook gateway memicu sistem untuk langsung me-restore profil normal secara realtime.
                                 </div>
                             </div>
@@ -923,7 +1095,7 @@
     <!-- ============================================================
          FOOTER
     ============================================================ -->
-    <footer class="bg-secondary pt-lg-10 pt-7 text-white-50">
+    <footer class="bg-secondary footer-section text-white-50">
         <div class="container">
             <div class="row g-5">
                 <!-- Col 1: Brand -->
