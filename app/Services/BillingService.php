@@ -141,7 +141,8 @@ class BillingService
 
         $router = $customer->router;
         if ($router) {
-            $this->mikrotikService->isolateCustomer($router, $customer);
+            $isolationProfile = $customer->tenant->settings['billing']['isolation_profile'] ?? 'ISOLIR';
+            $this->mikrotikService->isolateCustomer($router, $customer, $isolationProfile);
         }
 
         $customer->update([

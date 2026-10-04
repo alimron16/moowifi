@@ -117,8 +117,9 @@ class PaymentWebhookController extends Controller
         $webhookResult = $driver->handleWebhook($request, $paymentMethod);
 
         if (!$webhookResult->isValid) {
-            $webhookLog->update(['status' => 'FAILED', 'error_message' => $webhookResult->errorMessage ?? 'Invalid signature']);
-            return $errorResponse('02', $webhookResult->errorMessage ?? 'Bad signature');
+            $errorMsg = $webhookResult->message ?? $webhookResult->errorMessage ?? 'Invalid signature';
+            $webhookLog->update(['status' => 'FAILED', 'error_message' => $errorMsg]);
+            return $errorResponse('02', $errorMsg);
         }
 
         // 5. Idempotency Check: if invoice is already PAID, return success immediately

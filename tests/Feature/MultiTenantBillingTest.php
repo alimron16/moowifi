@@ -24,7 +24,7 @@ class MultiTenantBillingTest extends TestCase
     {
         $response = $this->get('/login');
         $response->assertStatus(200);
-        $response->assertSee('MWIFI');
+        $response->assertSee('MooWiFi');
         $response->assertSee('Masuk ke Dasbor');
     }
 

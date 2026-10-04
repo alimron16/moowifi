@@ -36,7 +36,7 @@ class TripayGateway implements PaymentGatewayInterface
             'amount' => $amount,
             'customer_name' => $customer->name,
             'customer_email' => $customer->email ?? 'customer@mwifi.id',
-            'customer_phone' => $customer->phone,
+            'customer_phone' => $customer->phone ?: '081234567890',
             'order_items' => [
                 [
                     'name' => 'Paket Internet ' . ($customer->package?->name ?? 'Bulanan'),
@@ -103,30 +103,35 @@ class TripayGateway implements PaymentGatewayInterface
         if (!$isValid) {
             return new WebhookResult(
                 isValid: false,
-                status: 'FAILED',
-                orderId: $request->input('merchant_ref', ''),
-                amount: (float) $request->input('total_amount', 0),
+                provider: 'TRIPAY',
+                merchantOrderId: $request->input('merchant_ref', ''),
                 providerReference: $request->input('reference', ''),
-                errorMessage: 'Tripay X-Callback-Signature verification failed'
+                amount: (float) $request->input('total_amount', 0),
+                status: 'FAILED',
+                message: 'Tripay X-Callback-Signature verification failed',
+                errorMessage: 'Tripay X-Callback-Signature verification failed',
+                rawPayload: $request->all()
             );
         }
 
         $rawStatus = strtoupper($request->input('status', ''));
         $status = match ($rawStatus) {
-            'PAID' => 'PAID',
+            'PAID' => 'SUCCESS',
             'EXPIRED', 'FAILED' => 'FAILED',
             default => 'PENDING',
         };
 
         return new WebhookResult(
             isValid: true,
-            status: $status,
-            orderId: $request->input('merchant_ref'),
-            amount: (float) $request->input('total_amount'),
+            provider: 'TRIPAY',
+            merchantOrderId: $request->input('merchant_ref'),
             providerReference: $request->input('reference'),
+            amount: (float) $request->input('total_amount'),
+            status: $status,
+            message: 'Webhook processed successfully',
             channel: $request->input('payment_method', 'TRIPAY'),
-            rawPayload: $request->all(),
-            paidAt: $status === 'PAID' ? now() : null
+            paidAt: $status === 'SUCCESS' ? now() : null,
+            rawPayload: $request->all()
         );
     }
 }

@@ -32,7 +32,7 @@ class XenditGateway implements PaymentGatewayInterface
             'customer' => [
                 'given_names' => $customer->name,
                 'email' => $customer->email ?? 'customer@mwifi.id',
-                'mobile_number' => $customer->phone,
+                'mobile_number' => $customer->phone ?: '081234567890',
             ],
             'success_redirect_url' => url('/pay/' . $invoice->payment_token),
             'failure_redirect_url' => url('/pay/' . $invoice->payment_token),
@@ -90,30 +90,35 @@ class XenditGateway implements PaymentGatewayInterface
         if (!$isValid) {
             return new WebhookResult(
                 isValid: false,
-                status: 'FAILED',
-                orderId: $request->input('external_id', ''),
-                amount: (float) $request->input('amount', 0),
+                provider: 'XENDIT',
+                merchantOrderId: $request->input('external_id', ''),
                 providerReference: $request->input('id', ''),
-                errorMessage: 'Xendit x-callback-token verification failed'
+                amount: (float) $request->input('amount', 0),
+                status: 'FAILED',
+                message: 'Xendit x-callback-token verification failed',
+                errorMessage: 'Xendit x-callback-token verification failed',
+                rawPayload: $request->all()
             );
         }
 
         $rawStatus = strtoupper($request->input('status', ''));
         $status = match ($rawStatus) {
-            'PAID', 'SETTLED' => 'PAID',
+            'PAID', 'SETTLED' => 'SUCCESS',
             'EXPIRED' => 'FAILED',
             default => 'PENDING',
         };
 
         return new WebhookResult(
             isValid: true,
-            status: $status,
-            orderId: $request->input('external_id'),
-            amount: (float) $request->input('amount'),
+            provider: 'XENDIT',
+            merchantOrderId: $request->input('external_id'),
             providerReference: $request->input('id'),
+            amount: (float) $request->input('amount'),
+            status: $status,
+            message: 'Webhook processed successfully',
             channel: $request->input('payment_method', 'XENDIT'),
-            rawPayload: $request->all(),
-            paidAt: $status === 'PAID' ? now() : null
+            paidAt: $status === 'SUCCESS' ? now() : null,
+            rawPayload: $request->all()
         );
     }
 }

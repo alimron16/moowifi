@@ -104,4 +104,138 @@ class MultiGatewayAndWhatsAppQrTest extends TestCase
         $statusResponse = $this->actingAs($this->user)->getJson(route('tenant.notifications.qr.status'));
         $statusResponse->assertJson(['status' => 'DISCONNECTED']);
     }
+
+    public function test_midtrans_webhook_successfully_marks_invoice_paid(): void
+    {
+        $serverKey = 'SB-Mid-server-TESTKEY999';
+        PaymentMethod::updateOrCreate(
+            ['tenant_id' => $this->tenant->id, 'provider' => 'MIDTRANS'],
+            [
+                'type' => 'GATEWAY',
+                'name' => 'Midtrans Gateway',
+                'credentials' => ['server_key' => $serverKey, 'environment' => 'sandbox'],
+                'is_active' => true,
+            ]
+        );
+
+        $invoice = Invoice::withoutGlobalScopes()->where('tenant_id', $this->tenant->id)->where('status', 'UNPAID')->first();
+        $this->assertNotNull($invoice);
+
+        $orderId = $invoice->invoice_number;
+        $statusCode = '200';
+        $grossAmount = number_format($invoice->total_amount, 2, '.', '');
+        $signature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+
+        $payload = [
+            'order_id' => $orderId,
+            'status_code' => $statusCode,
+            'gross_amount' => $grossAmount,
+            'signature_key' => $signature,
+            'transaction_status' => 'settlement',
+            'transaction_id' => 'TRX-MID-12345',
+            'payment_type' => 'qris',
+        ];
+
+        $response = $this->postJson('/api/webhooks/midtrans', $payload);
+        $response->assertStatus(200);
+        $response->assertJson(['status' => 'OK']);
+
+        $this->assertEquals('PAID', $invoice->fresh()->status);
+        $this->assertNotNull($invoice->fresh()->paid_at);
+        $this->assertEquals('ACTIVE', $invoice->customer->fresh()->status);
+    }
+
+    public function test_xendit_webhook_successfully_marks_invoice_paid(): void
+    {
+        $webhookToken = 'xendit_test_token_secret_123';
+        PaymentMethod::updateOrCreate(
+            ['tenant_id' => $this->tenant->id, 'provider' => 'XENDIT'],
+            [
+                'type' => 'GATEWAY',
+                'name' => 'Xendit Gateway',
+                'credentials' => [
+                    'secret_key' => 'xnd_development_test',
+                    'webhook_token' => $webhookToken,
+                    'environment' => 'sandbox',
+                ],
+                'is_active' => true,
+            ]
+        );
+
+        $invoice = Invoice::withoutGlobalScopes()->where('tenant_id', $this->tenant->id)->where('status', 'UNPAID')->first();
+        $this->assertNotNull($invoice);
+
+        $payload = [
+            'id' => 'xendit_invoice_ref_123',
+            'external_id' => $invoice->invoice_number,
+            'status' => 'PAID',
+            'amount' => (int) round($invoice->total_amount),
+            'paid_amount' => (int) round($invoice->total_amount),
+            'payment_method' => 'BANK_TRANSFER',
+        ];
+
+        $response = $this->postJson('/api/webhooks/xendit', $payload, [
+            'x-callback-token' => $webhookToken,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson(['status' => 'SUCCESS']);
+
+        $this->assertEquals('PAID', $invoice->fresh()->status);
+        $this->assertNotNull($invoice->fresh()->paid_at);
+        $this->assertEquals('ACTIVE', $invoice->customer->fresh()->status);
+    }
+
+    public function test_tripay_webhook_successfully_marks_invoice_paid(): void
+    {
+        $privateKey = 'tripay_private_secret_key_123';
+        PaymentMethod::updateOrCreate(
+            ['tenant_id' => $this->tenant->id, 'provider' => 'TRIPAY'],
+            [
+                'type' => 'GATEWAY',
+                'name' => 'Tripay Gateway',
+                'credentials' => [
+                    'merchant_code' => 'T12345',
+                    'api_key' => 'DEV-KEY',
+                    'private_key' => $privateKey,
+                    'environment' => 'sandbox',
+                ],
+                'is_active' => true,
+            ]
+        );
+
+        $invoice = Invoice::withoutGlobalScopes()->where('tenant_id', $this->tenant->id)->where('status', 'UNPAID')->first();
+        $this->assertNotNull($invoice);
+
+        $payload = [
+            'reference' => 'DEV-T12345678',
+            'merchant_ref' => $invoice->invoice_number,
+            'payment_method' => 'QRIS2',
+            'status' => 'PAID',
+            'total_amount' => (int) round($invoice->total_amount),
+        ];
+
+        $rawJson = json_encode($payload);
+        $signature = hash_hmac('sha256', $rawJson, $privateKey);
+
+        $response = $this->call(
+            'POST',
+            '/api/webhooks/tripay',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_X-Callback-Signature' => $signature,
+            ],
+            $rawJson
+        );
+
+        $response->assertStatus(200);
+        $response->assertJson(['success' => true]);
+
+        $this->assertEquals('PAID', $invoice->fresh()->status);
+        $this->assertNotNull($invoice->fresh()->paid_at);
+        $this->assertEquals('ACTIVE', $invoice->customer->fresh()->status);
+    }
 }

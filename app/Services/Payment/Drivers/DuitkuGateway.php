@@ -37,7 +37,7 @@ class DuitkuGateway implements PaymentGatewayInterface
             'merchantOrderId' => $merchantOrderId,
             'productDetails' => 'Pembayaran Tagihan Internet ' . $invoice->invoice_number,
             'email' => $customer->email ?? 'billing@domain.com',
-            'phoneNumber' => $customer->phone,
+            'phoneNumber' => $customer->phone ?: '081234567890',
             'customerVaName' => substr($customer->name, 0, 30),
             'callbackUrl' => url('/api/webhooks/duitku'),
             'returnUrl' => url('/pay/' . $invoice->payment_token),
@@ -121,6 +121,8 @@ class DuitkuGateway implements PaymentGatewayInterface
             amount: (float) $request->input('amount'),
             status: $status,
             message: $request->input('statusMessage', 'OK'),
+            channel: $request->input('paymentCode', 'DUITKU'),
+            paidAt: $status === 'SUCCESS' ? now() : null,
             rawPayload: $request->all()
         );
     }

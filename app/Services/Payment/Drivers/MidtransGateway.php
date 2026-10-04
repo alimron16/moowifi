@@ -106,11 +106,14 @@ class MidtransGateway implements PaymentGatewayInterface
         if (!$isValid) {
             return new WebhookResult(
                 isValid: false,
-                status: 'FAILED',
-                orderId: $request->input('order_id', ''),
-                amount: (float) $request->input('gross_amount', 0),
+                provider: 'MIDTRANS',
+                merchantOrderId: $request->input('order_id', ''),
                 providerReference: $request->input('transaction_id', ''),
-                errorMessage: 'Midtrans signature verification failed'
+                amount: (float) $request->input('gross_amount', 0),
+                status: 'FAILED',
+                message: 'Midtrans signature verification failed',
+                errorMessage: 'Midtrans signature verification failed',
+                rawPayload: $request->all()
             );
         }
 
@@ -119,22 +122,24 @@ class MidtransGateway implements PaymentGatewayInterface
 
         $status = 'PENDING';
         if ($transactionStatus === 'capture') {
-            $status = ($fraudStatus === 'challenge') ? 'PENDING' : 'PAID';
+            $status = ($fraudStatus === 'challenge') ? 'PENDING' : 'SUCCESS';
         } elseif ($transactionStatus === 'settlement') {
-            $status = 'PAID';
+            $status = 'SUCCESS';
         } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
             $status = 'FAILED';
         }
 
         return new WebhookResult(
             isValid: true,
-            status: $status,
-            orderId: $request->input('order_id'),
-            amount: (float) $request->input('gross_amount'),
+            provider: 'MIDTRANS',
+            merchantOrderId: $request->input('order_id'),
             providerReference: $request->input('transaction_id'),
+            amount: (float) $request->input('gross_amount'),
+            status: $status,
+            message: 'Webhook processed successfully',
             channel: $request->input('payment_type', 'MIDTRANS'),
-            rawPayload: $request->all(),
-            paidAt: $status === 'PAID' ? now() : null
+            paidAt: $status === 'SUCCESS' ? now() : null,
+            rawPayload: $request->all()
         );
     }
 }
