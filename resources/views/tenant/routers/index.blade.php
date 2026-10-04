@@ -78,6 +78,11 @@
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2">
+                                        @if($r->connection_type === 'VPN_TUNNEL')
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modal-script-{{ $r->id }}" title="Lihat Script Winbox">
+                                                <i class="ti ti-terminal me-1"></i> Script
+                                            </button>
+                                        @endif
                                         <form action="{{ route('tenant.routers.test', $r->id) }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-outline-primary" title="Uji Koneksi Socket API">
@@ -92,6 +97,47 @@
                                             </button>
                                         </form>
                                     </div>
+
+                                    @if($r->connection_type === 'VPN_TUNNEL')
+                                        <!-- Modal Script Winbox -->
+                                        @php
+                                            $modalScript = "/interface sstp-client add name=\"mwifi-tunnel\" connect-to=\"" . request()->getHost() . "\" user=\"" . $r->vpn_user . "\" password=\"" . $r->decrypted_vpn_password . "\" profile=default-encryption disabled=no\n"
+                                                         . "/user group add name=saas-grp policy=read,write,api,test\n"
+                                                         . "/user add name=mwifi_api group=saas-grp password=\"" . $r->decrypted_vpn_password . "\"\n"
+                                                         . "/ip service set api port=8728 disabled=no";
+                                        @endphp
+                                        <div class="modal modal-blur fade" id="modal-script-{{ $r->id }}" tabindex="-1" role="dialog" aria-hidden="true" x-data="{ copied: false }">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">
+                                                            <i class="ti ti-terminal me-1 text-primary"></i> Script MikroTik: {{ $r->name }}
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body text-start">
+                                                        <p class="text-secondary small mb-2">
+                                                            Salin baris script berikut ke <strong>New Terminal</strong> di Winbox router Anda:
+                                                        </p>
+                                                        <div class="position-relative mb-3">
+                                                            <pre class="bg-dark text-white p-3 rounded font-monospace small user-select-all mb-0" style="font-size: 0.78rem; max-height: 200px; overflow-y: auto;">{{ $modalScript }}</pre>
+                                                        </div>
+                                                        <div class="alert alert-info py-2 small mb-0">
+                                                            <i class="ti ti-info-circle me-1"></i>
+                                                            Virtual Tunnel IP: <code>{{ $r->tunnel_ip }}</code> | User API: <code>{{ $r->username ?? 'mwifi_api' }}</code>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                        <button type="button" class="btn btn-primary" @click="navigator.clipboard.writeText(@js($modalScript)); copied = true; setTimeout(() => copied = false, 2500)">
+                                                            <i class="ti" :class="copied ? 'ti-check text-success' : 'ti-copy'"></i>
+                                                            <span x-text="copied ? 'Tersalin ke Clipboard!' : 'Salin Script'"></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
