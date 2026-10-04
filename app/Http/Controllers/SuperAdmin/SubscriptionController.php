@@ -55,6 +55,45 @@ class SubscriptionController extends Controller
         return back()->with('success', 'Paket langganan tenant berhasil diaktifkan/diperpanjang.');
     }
 
+    public function update(Request $request, Subscription $subscription)
+    {
+        $validated = $request->validate([
+            'saas_plan_id' => ['required', 'exists:saas_plans,id'],
+            'status' => ['required', 'in:ACTIVE,TRIAL,EXPIRED,CANCELLED'],
+            'starts_at' => ['required', 'date'],
+            'ends_at' => ['required', 'date', 'after_or_equal:starts_at'],
+        ]);
+
+        $subscription->update($validated);
+
+        // Sync tenant status
+        if ($validated['status'] === 'ACTIVE') {
+            $subscription->tenant?->update(['status' => 'ACTIVE']);
+        } elseif ($validated['status'] === 'EXPIRED') {
+            $subscription->tenant?->update(['status' => 'EXPIRED']);
+        }
+
+        AuditLog::create([
+            'event' => 'SUBSCRIPTION_UPDATED',
+            'description' => "Super Admin memperbarui langganan #{$subscription->id} tenant {$subscription->tenant?->name} menjadi status {$validated['status']}.",
+        ]);
+
+        return back()->with('success', "Langganan tenant {$subscription->tenant?->name} berhasil diperbarui.");
+    }
+
+    public function destroy(Subscription $subscription)
+    {
+        $tenantName = $subscription->tenant?->name ?? 'Tenant';
+        $subscription->delete();
+
+        AuditLog::create([
+            'event' => 'SUBSCRIPTION_DELETED',
+            'description' => "Super Admin menghapus langganan #{$subscription->id} tenant {$tenantName}.",
+        ]);
+
+        return back()->with('success', "Data langganan berhasil dihapus.");
+    }
+
     public function payments(Request $request)
     {
         // SaaS platform subscription payments

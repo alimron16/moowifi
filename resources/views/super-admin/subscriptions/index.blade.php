@@ -32,6 +32,7 @@
                             <th>Mulai Berlaku</th>
                             <th>Berakhir Pada</th>
                             <th>Status</th>
+                            <th class="w-1 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -56,10 +57,75 @@
                                 <td>
                                     <x-badge :status="$sub->status" :dot="true" />
                                 </td>
+                                <td>
+                                    <div class="btn-list flex-nowrap">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-edit-sub-{{ $sub->id }}">
+                                            <i class="ti ti-edit me-1"></i> Edit
+                                        </button>
+                                        <form action="{{ route('super-admin.subscriptions.destroy', $sub->id) }}" method="POST" onsubmit="return confirm('Hapus data langganan ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-icon btn-ghost-danger" title="Hapus">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Modal Edit Subscription -->
+                                    <div class="modal modal-blur fade" id="modal-edit-sub-{{ $sub->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <form action="{{ route('super-admin.subscriptions.update', $sub->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Edit Langganan: {{ $sub->tenant->name ?? 'Tenant' }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label class="form-label required">Paket SaaS</label>
+                                                            <select name="saas_plan_id" class="form-select" required>
+                                                                @foreach($plans as $p)
+                                                                    <option value="{{ $p->id }}" {{ $sub->saas_plan_id == $p->id ? 'selected' : '' }}>
+                                                                        {{ $p->name }} - Rp {{ number_format($p->price, 0, ',', '.') }}/bln
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label required">Status Langganan</label>
+                                                            <select name="status" class="form-select" required>
+                                                                <option value="ACTIVE" {{ $sub->status === 'ACTIVE' ? 'selected' : '' }}>ACTIVE (Aktif)</option>
+                                                                <option value="TRIAL" {{ $sub->status === 'TRIAL' ? 'selected' : '' }}>TRIAL (Masa Percobaan)</option>
+                                                                <option value="EXPIRED" {{ $sub->status === 'EXPIRED' ? 'selected' : '' }}>EXPIRED (Kadaluarsa)</option>
+                                                                <option value="CANCELLED" {{ $sub->status === 'CANCELLED' ? 'selected' : '' }}>CANCELLED (Dibatalkan)</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="row g-2 mb-3">
+                                                            <div class="col-6">
+                                                                <label class="form-label required">Mulai Berlaku</label>
+                                                                <input type="date" name="starts_at" class="form-control" value="{{ $sub->starts_at ? $sub->starts_at->format('Y-m-d') : date('Y-m-d') }}" required>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <label class="form-label required">Berakhir Pada</label>
+                                                                <input type="date" name="ends_at" class="form-control" value="{{ $sub->ends_at ? $sub->ends_at->format('Y-m-d') : date('Y-m-d', strtotime('+1 month')) }}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6">
+                                <td colspan="7">
                                     <x-empty-state 
                                         title="Belum Ada Langganan" 
                                         subtitle="Terbitkan paket langganan bagi tenant untuk mengaktifkan akses platform."

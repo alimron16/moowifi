@@ -183,22 +183,32 @@
     </div>
 </aside>
 
-<header class="navbar navbar-light d-none d-lg-flex d-print-none border-bottom">
-    <div class="container-xl">
-        <div class="navbar-nav flex-row order-md-last align-items-center gap-3">
-            <span class="badge bg-danger-lt">SUPER ADMIN MODE</span>
+<header class="navbar navbar-light d-none d-lg-flex d-print-none border-bottom bg-white">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-danger-lt fw-bold">SUPER ADMIN MODE</span>
+            <span class="text-secondary small d-none d-md-inline">MooWiFi Master Control Console</span>
+        </div>
+
+        <div class="navbar-nav flex-row ms-auto align-items-center gap-3">
             <div class="nav-item dropdown">
-                <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown">
-                    <span class="avatar avatar-sm bg-danger text-white">SA</span>
+                <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Buka profil Super Admin">
+                    <span class="avatar avatar-sm bg-danger text-white font-weight-bold">SA</span>
                     <div class="d-none d-xl-block ps-2 text-start">
                         <div class="fw-medium">{{ Auth::user()->name }}</div>
-                        <div class="mt-1 small text-secondary">Platform Owner</div>
+                        <div class="small text-secondary">Platform Owner</div>
                     </div>
                 </a>
-                <div class="dropdown-menu dropdown-menu-end">
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <a href="{{ route('super-admin.settings.index') }}" class="dropdown-item">
+                        <i class="ti ti-settings me-2"></i> Pengaturan Platform
+                    </a>
+                    <div class="dropdown-divider"></div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="dropdown-item text-danger">Keluar</button>
+                        <button type="submit" class="dropdown-item text-danger">
+                            <i class="ti ti-logout me-2"></i> Keluar
+                        </button>
                     </form>
                 </div>
             </div>

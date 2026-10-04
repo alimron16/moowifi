@@ -55,10 +55,14 @@ Route::middleware(['auth', 'super_admin'])->prefix('super-admin')->name('super-a
     // SaaS Plans
     Route::get('/plans', [SaasPlanController::class, 'index'])->name('plans.index');
     Route::post('/plans', [SaasPlanController::class, 'store'])->name('plans.store');
+    Route::put('/plans/{plan}', [SaasPlanController::class, 'update'])->name('plans.update');
+    Route::delete('/plans/{plan}', [SaasPlanController::class, 'destroy'])->name('plans.destroy');
 
     // Subscriptions & SaaS Payments
     Route::get('/subscriptions', [\App\Http\Controllers\SuperAdmin\SubscriptionController::class, 'index'])->name('subscriptions.index');
     Route::post('/subscriptions', [\App\Http\Controllers\SuperAdmin\SubscriptionController::class, 'store'])->name('subscriptions.store');
+    Route::put('/subscriptions/{subscription}', [\App\Http\Controllers\SuperAdmin\SubscriptionController::class, 'update'])->name('subscriptions.update');
+    Route::delete('/subscriptions/{subscription}', [\App\Http\Controllers\SuperAdmin\SubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
     Route::get('/payments', [\App\Http\Controllers\SuperAdmin\SubscriptionController::class, 'payments'])->name('payments.index');
 
     // System Monitoring (Section 7: Routers, Queue, Scheduler, Webhook, System Health)
@@ -66,12 +70,17 @@ Route::middleware(['auth', 'super_admin'])->prefix('super-admin')->name('super-a
 
     // Platform Level Settings & Services
     Route::get('/payment-providers', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'paymentProviders'])->name('payment-providers.index');
+    Route::post('/payment-providers', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'updatePaymentProviders'])->name('payment-providers.update');
     Route::get('/whatsapp', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'whatsapp'])->name('whatsapp.index');
+    Route::post('/whatsapp', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'updateWhatsapp'])->name('whatsapp.update');
     Route::get('/email', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'email'])->name('email.index');
+    Route::post('/email', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'updateEmail'])->name('email.update');
     Route::get('/logs', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'logs'])->name('logs.index');
     Route::get('/announcements', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'announcements'])->name('announcements.index');
+    Route::post('/announcements', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'storeAnnouncement'])->name('announcements.store');
     Route::get('/support', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'support'])->name('support.index');
     Route::get('/settings', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'settings'])->name('settings.index');
+    Route::post('/settings', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'updateSettings'])->name('settings.update');
 });
 
 // -------------------------------------------------------------
