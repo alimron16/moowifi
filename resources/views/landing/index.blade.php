@@ -489,11 +489,6 @@
             <div class="row align-items-center gy-5">
                 <!-- Left Content -->
                 <div class="col-lg-6 hero-left">
-                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill mb-3" style="background: rgba(0, 58, 67, 0.06); border: 1px solid rgba(0, 58, 67, 0.14); color: #003A43; font-size: 0.85rem; font-weight: 600;">
-                        <span class="rounded-circle bg-success" style="width: 8px; height: 8px; display: inline-block;"></span>
-                        <span>Platform Billing &amp; Otomasi MikroTik RT/RW Net</span>
-                    </div>
-
                     <h1 class="display-3 mb-4">
                         Otomatisasi Jaringan RT/RW Net, <span style="color: #FF8D6D;">Maksimalkan Cuan</span> Tanpa Pusing
                     </h1>
@@ -521,19 +516,6 @@
                 <!-- Right Hero Mockup Card -->
                 <div class="col-lg-6 hero-right">
                     <div class="hero-mockup-card">
-                        <!-- Control Panel Header -->
-                        <div class="d-flex justify-content-between align-items-center pb-3 border-bottom mb-4">
-                            <div class="d-flex align-items-center gap-2 flex-wrap">
-                                <span class="badge" style="background: rgba(5, 150, 105, 0.12); color: #059669; font-size: 0.8rem; font-weight: 600; padding: 6px 12px; border-radius: 50px; border: 1px solid rgba(5, 150, 105, 0.2);">
-                                    <i class="fas fa-circle text-success me-1.5" style="font-size: 0.5rem;"></i> MikroTik NOC: Terhubung
-                                </span>
-                                <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 0.8rem; font-weight: 600; padding: 6px 12px; border-radius: 50px; border: 1px solid #e2e8f0;">
-                                    RouterOS v7 (RB4011 / CCR)
-                                </span>
-                            </div>
-                            <span class="small text-muted font-monospace"><i class="fas fa-bolt text-success me-1"></i> Latency: 2ms</span>
-                        </div>
-
                         <!-- Mini Dashboard Highlights -->
                         <div class="row g-3 mb-4">
                             <div class="col-6">
