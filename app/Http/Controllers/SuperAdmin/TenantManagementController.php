@@ -68,7 +68,7 @@ class TenantManagementController extends Controller
                 'phone' => $request->owner_phone,
                 'email' => $request->owner_email,
                 'status' => 'TRIAL',
-                'trial_ends_at' => now()->addDays(14),
+                'trial_ends_at' => now()->addDays(30),
             ]);
 
             User::create([

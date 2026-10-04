@@ -56,9 +56,9 @@
 <div class="card register-card">
     <div class="card-body">
         <div class="text-center mb-4 pb-2 border-bottom">
-            <h2 class="h2 mb-2 fw-bold text-dark">Mulai Coba Gratis 14 Hari</h2>
+            <h2 class="h2 mb-2 fw-bold text-dark">Mulai Coba Gratis 30 Hari</h2>
             <p class="text-secondary small mb-3">
-                Daftarkan RT/RW Net atau ISP Anda sekarang dan nikmati kemudahan automasi billing &amp; MikroTik tanpa ribet.
+                Daftarkan RT/RW Net atau ISP Anda sekarang dan nikmati 1 siklus penagihan &amp; otomasi MikroTik gratis tanpa komitmen.
             </p>
         </div>
 
@@ -121,7 +121,7 @@
                         </option>
                     @endforeach
                 </select>
-                <small class="form-hint text-muted">Semua pendaftaran baru otomatis mendapatkan <strong>Trial Uji Coba Gratis 14 Hari</strong> tanpa biaya awal.</small>
+                <small class="form-hint text-muted">Semua pendaftaran baru otomatis mendapatkan <strong>Trial Uji Coba Gratis 30 Hari (1 Siklus Billing Penuh)</strong> tanpa biaya awal.</small>
             </div>
 
             <!-- Password & Konfirmasi -->

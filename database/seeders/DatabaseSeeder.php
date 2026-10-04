@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
                 'Server RADIUS Ready',
                 'Billing & Isolir Otomatis',
             ],
-            'is_active' => true,
+            'is_active' => false,
         ]);
 
         $planStandar = SaasPlan::updateOrCreate(['code' => 'STANDAR'], [

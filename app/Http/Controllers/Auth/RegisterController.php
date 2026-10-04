@@ -73,7 +73,7 @@ class RegisterController extends Controller
                 'email' => $validated['email'],
                 'phone' => $validated['phone'],
                 'status' => 'ACTIVE',
-                'trial_ends_at' => now()->addDays(14),
+                'trial_ends_at' => now()->addDays(30),
             ]);
 
             $user = User::create([
@@ -93,7 +93,7 @@ class RegisterController extends Controller
                     'saas_plan_id' => $planId,
                     'status' => 'TRIAL',
                     'starts_at' => now(),
-                    'ends_at' => now()->addDays(14),
+                    'ends_at' => now()->addDays(30),
                 ]);
             }
 
