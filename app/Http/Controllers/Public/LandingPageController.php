@@ -10,6 +10,7 @@ use App\Models\SaasPlan;
 use App\Models\SupportTicket;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
 class LandingPageController extends Controller
@@ -30,6 +31,14 @@ class LandingPageController extends Controller
 
     public function storeTicket(Request $request)
     {
+        $throttleKey = 'support-ticket-store:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return redirect(url()->previous() . '#support-ticket')
+                ->with('ticket_error', "Terlalu banyak permintaan pengiriman tiket dari perangkat Anda. Silakan coba lagi dalam {$seconds} detik.");
+        }
+        RateLimiter::hit($throttleKey, 300); // 5 tickets per 5 minutes max
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:150'],
@@ -70,6 +79,14 @@ class LandingPageController extends Controller
 
     public function checkTicket(Request $request)
     {
+        $throttleKey = 'support-ticket-check:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 10)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return redirect(url()->previous() . '#support-ticket')
+                ->with('ticket_error', "Terlalu banyak permintaan pengecekan tiket. Silakan coba lagi dalam {$seconds} detik.");
+        }
+        RateLimiter::hit($throttleKey, 60); // 10 attempts per minute max
+
         $validated = $request->validate([
             'ticket_number' => ['required', 'string'],
             'email' => ['required', 'email'],

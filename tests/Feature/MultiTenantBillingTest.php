@@ -20,6 +20,9 @@ class MultiTenantBillingTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('MooWiFi');
         $response->assertSee('SoftwareApplication');
+        $response->assertHeader('X-Frame-Options', 'SAMEORIGIN');
+        $response->assertHeader('X-Content-Type-Options', 'nosniff');
+        $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     }
 
     public function test_sitemap_xml_renders_cleanly(): void

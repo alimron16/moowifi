@@ -10,6 +10,7 @@ use App\Models\PaymentMethod;
 use App\Services\Payment\PaymentGatewayManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
 class PaymentPageController extends Controller
@@ -44,6 +45,13 @@ class PaymentPageController extends Controller
 
     public function payGateway(Request $request, string $token)
     {
+        $throttleKey = 'pay-gateway:' . $request->ip() . '|' . $token;
+        if (RateLimiter::tooManyAttempts($throttleKey, 10)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->with('error', "Terlalu banyak permintaan pembayaran. Silakan tunggu {$seconds} detik.");
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $invoice = Invoice::withoutGlobalScopes()
             ->with(['customer', 'items', 'tenant'])
             ->where('payment_token', $token)
@@ -55,7 +63,7 @@ class PaymentPageController extends Controller
 
         $request->validate([
             'payment_method_id' => ['required', 'exists:payment_methods,id'],
-            'payment_channel' => ['nullable', 'string'],
+            'payment_channel' => ['nullable', 'string', 'max:50'],
         ]);
 
         $method = PaymentMethod::withoutGlobalScopes()->findOrFail($request->payment_method_id);
@@ -78,6 +86,13 @@ class PaymentPageController extends Controller
 
     public function submitManualTransfer(Request $request, string $token)
     {
+        $throttleKey = 'submit-manual-transfer:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->with('error', "Terlalu banyak unggahan bukti transfer dari perangkat Anda. Silakan coba lagi dalam {$seconds} detik.");
+        }
+        RateLimiter::hit($throttleKey, 300);
+
         $invoice = Invoice::withoutGlobalScopes()
             ->with('customer')
             ->where('payment_token', $token)
@@ -93,7 +108,7 @@ class PaymentPageController extends Controller
             'bank_name' => ['required', 'string', 'max:50'],
             'transfer_amount' => ['required', 'numeric', 'min:1'],
             'transfer_date' => ['required', 'date'],
-            'proof_image' => ['required', 'image', 'max:5120'], // Max 5MB
+            'proof_image' => ['required', 'file', 'mimes:jpeg,jpg,png,webp', 'max:5120'], // Max 5MB strictly image
         ]);
 
         $path = $request->file('proof_image')->store('payment-proofs', 'public');

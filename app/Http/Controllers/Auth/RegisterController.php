@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
 class RegisterController extends Controller
@@ -34,6 +35,15 @@ class RegisterController extends Controller
 
     public function register(Request $request)
     {
+        $throttleKey = 'register-attempt:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->withErrors([
+                'email' => "Terlalu banyak permintaan pendaftaran dari jaringan Anda. Silakan coba lagi dalam {$seconds} detik.",
+            ])->withInput();
+        }
+        RateLimiter::hit($throttleKey, 3600); // Max 5 registrations per hour per IP
+
         $validated = $request->validate([
             'tenant_name' => ['required', 'string', 'max:100'],
             'name' => ['required', 'string', 'max:100'],

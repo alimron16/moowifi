@@ -156,8 +156,9 @@ class InvoiceController extends Controller
         $invoice->load(['customer', 'items']);
         $tenant = Auth::user()->tenant;
 
+        $safeNumber = preg_replace('/[^a-zA-Z0-9_\-]/', '', $invoice->invoice_number);
         $pdf = Pdf::loadView('tenant.invoices.pdf', compact('invoice', 'tenant'));
-        return $pdf->download("Invoice-{$invoice->invoice_number}.pdf");
+        return $pdf->download("Invoice-{$safeNumber}.pdf");
     }
 
     public function sendEmail(Invoice $invoice, \App\Services\EmailService $emailService)

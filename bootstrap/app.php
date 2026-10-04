@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             TenantContext::class,
+            \App\Http\Middleware\SecurityHeadersMiddleware::class,
         ]);
 
         $middleware->alias([
