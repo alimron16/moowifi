@@ -293,16 +293,16 @@
                     @auth
                         @if(Auth::user()->isSuperAdmin())
                             <a href="{{ route('super-admin.dashboard') }}" class="btn btn-outline-secondary">
-                                <i class="ti ti-dashboard me-1"></i> Panel Super Admin
+                                <i class="ti ti-login me-1"></i> Login
                             </a>
                         @else
                             <a href="{{ route('tenant.dashboard') }}" class="btn btn-outline-secondary">
-                                <i class="ti ti-dashboard me-1"></i> Dasbor Tenant
+                                <i class="ti ti-dashboard me-1"></i> Dasbor
                             </a>
                         @endif
                     @else
                         <a href="{{ route('login') }}" class="btn btn-outline-secondary">
-                            <i class="ti ti-login me-1"></i> Masuk
+                            <i class="ti ti-login me-1"></i> Login
                         </a>
                         <a href="{{ route('register') }}" class="btn btn-primary d-inline-flex align-items-center gap-1">
                             <span>Coba Gratis 14 Hari</span> <i class="ti ti-arrow-right fs-6"></i>
@@ -978,14 +978,8 @@
                 </div>
             </div>
 
-            <div class="row border-top py-4 mt-5 g-md-0 gy-2 small border-opacity-10 border-white text-white-50">
-                <div class="col-md-6">
-                    <p class="mb-0">&copy; {{ date('Y') }} MooWiFi Platform. Hak Cipta Dilindungi.</p>
-                </div>
-                <div class="col-md-6 d-flex flex-column flex-md-row justify-content-md-end gap-3 align-items-md-center">
-                    <div><span>System Status:</span> <span class="text-white fw-semibold">100% Operational</span></div>
-                    <div><a href="{{ route('login') }}" class="text-white text-decoration-none"><i class="fas fa-lock me-1"></i> Portal Masuk Dasbor</a></div>
-                </div>
+            <div class="border-top py-4 mt-5 small border-opacity-10 border-white text-white-50 text-center text-md-start">
+                <p class="mb-0">&copy; {{ date('Y') }} MooWiFi Platform. Hak Cipta Dilindungi.</p>
             </div>
         </div>
     </footer>
