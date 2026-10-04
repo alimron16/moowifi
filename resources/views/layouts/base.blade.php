@@ -17,7 +17,7 @@
     @stack('styles')
 </head>
 <body class="@yield('body-class', 'layout-fluid')">
-    <div class="page">
+    <div class="page @yield('page-class')">
         @yield('content')
     </div>
     @stack('scripts')
