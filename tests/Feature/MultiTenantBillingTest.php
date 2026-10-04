@@ -19,6 +19,15 @@ class MultiTenantBillingTest extends TestCase
         $response = $this->get('/');
         $response->assertStatus(200);
         $response->assertSee('MooWiFi');
+        $response->assertSee('SoftwareApplication');
+    }
+
+    public function test_sitemap_xml_renders_cleanly(): void
+    {
+        $response = $this->get('/sitemap.xml');
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'application/xml; charset=utf-8');
+        $response->assertSee('<urlset', false);
     }
 
     public function test_login_page_renders_cleanly(): void

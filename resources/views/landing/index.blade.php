@@ -3,11 +3,49 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>MooWiFi | Platform SaaS Billing &amp; Manajemen RT/RW Net Terintegrasi MikroTik</title>
-    <meta name="description" content="Aplikasi billing dan manajemen RT/RW Net &amp; ISP modern. Otomasi MikroTik Auto-Cut &amp; Auto-Restore, invoice bulanan otomatis via WhatsApp, serta integrasi multi payment gateway QRIS &amp; Virtual Account.">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     
+    <!-- Primary SEO Meta Tags -->
+    <title>MooWiFi - Aplikasi SaaS Billing &amp; Manajemen RT/RW Net | Otomasi MikroTik &amp; Payment Gateway</title>
+    <meta name="title" content="MooWiFi - Aplikasi SaaS Billing &amp; Manajemen RT/RW Net | Otomasi MikroTik &amp; Payment Gateway">
+    <meta name="description" content="MooWiFi adalah aplikasi SaaS Billing &amp; Manajemen RT/RW Net / ISP modern No. 1 di Indonesia. Dilengkapi otomasi MikroTik Auto-Cut &amp; Auto-Restore, invoice WhatsApp otomatis, dan integrasi multi payment gateway (Duitku, Midtrans, Xendit, Tripay, QRIS, Virtual Account). Coba gratis 14 hari!">
+    <meta name="keywords" content="billing rtrw net, aplikasi rtrw net, software rtrw net, billing isp, billing mikrotik, auto cut mikrotik, auto restore mikrotik, payment gateway rtrw net, invoice whatsapp otomatis, aplikasi kasir wifi rtrw net, vpn cgnat mikrotik, duitku rtrw net, tripay rtrw net, midtrans rtrw net, xendit rtrw net, manajemen hotspot pppoe, moowifi">
+    <meta name="author" content="MooWiFi Platform">
+    <meta name="language" content="Indonesian">
+    <meta name="geo.region" content="ID">
+    <meta name="geo.placename" content="Indonesia">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- Search Engine Crawlers & Indexing Directives -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+    <!-- Open Graph / Facebook / WhatsApp / Telegram Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:url" content="{{ url('/') }}">
+    <meta property="og:site_name" content="MooWiFi">
+    <meta property="og:title" content="MooWiFi - Aplikasi SaaS Billing &amp; Manajemen RT/RW Net Terintegrasi MikroTik">
+    <meta property="og:description" content="Kelola ratusan pelanggan internet RT/RW Net &amp; ISP tanpa ribet. Auto Cut &amp; Restore MikroTik 24 jam nonstop, invoice WhatsApp otomatis, dan terima pembayaran QRIS/VA langsung ke rekening Anda.">
+    <meta property="og:image" content="{{ asset('logo.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="MooWiFi Platform Billing RT/RW Net &amp; Otomasi MikroTik">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url('/') }}">
+    <meta name="twitter:title" content="MooWiFi - Aplikasi SaaS Billing &amp; Manajemen RT/RW Net Terintegrasi MikroTik">
+    <meta name="twitter:description" content="Software billing dan manajemen RT/RW Net modern di Indonesia. Otomasi MikroTik, Invoice WhatsApp, dan Multi Payment Gateway.">
+    <meta name="twitter:image" content="{{ asset('logo.png') }}">
+
+    <!-- Favicon & Touch Icons -->
     <link rel="shortcut icon" href="{{ asset('logo.png') }}" type="image/png">
-    
+    <link rel="apple-touch-icon" href="{{ asset('logo.png') }}">
+
     <!-- Google Fonts: IBM Plex Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +57,109 @@
     <!-- Tabler Icons Webfont & Font Awesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.36.0/dist/tabler-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Structured Data: JSON-LD Schema.org for Google Search Rich Snippets & Sitelinks -->
+    @php
+        $schemaOrgData = [
+            '@context' => 'https://schema.org',
+            '@graph' => [
+                [
+                    '@type' => 'SoftwareApplication',
+                    '@id' => url('/') . '#software',
+                    'name' => 'MooWiFi',
+                    'alternateName' => 'MooWiFi Billing RT/RW Net',
+                    'applicationCategory' => 'BusinessApplication',
+                    'operatingSystem' => 'All, Cloud Web-Based',
+                    'url' => url('/'),
+                    'description' => 'Platform SaaS Billing & Manajemen RT/RW Net / ISP modern di Indonesia dengan otomasi MikroTik Auto-Cut & Auto-Restore, WhatsApp billing notification, dan multi payment gateway.',
+                    'offers' => [
+                        '@type' => 'Offer',
+                        'price' => '100000',
+                        'priceCurrency' => 'IDR',
+                        'availability' => 'https://schema.org/InStock',
+                        'priceValidUntil' => date('Y-12-31'),
+                    ],
+                    'featureList' => [
+                        'Billing & Invoice Otomatis Bulanan',
+                        'Auto-Cut & Auto-Restore MikroTik RouterOS',
+                        'Auto-VPN Tunneling Solusi CGNAT / IndiHome',
+                        'Notifikasi Pengingat Tagihan WhatsApp Otomatis',
+                        'Multi Payment Gateway Duitku, Midtrans, Xendit, Tripay, QRIS & VA',
+                        'Laporan Arus Kas Pendapatan & Piutang Realtime',
+                        'Ticketing Helpdesk Bantuan Teknis',
+                    ],
+                ],
+                [
+                    '@type' => 'Organization',
+                    '@id' => url('/') . '#organization',
+                    'name' => 'MooWiFi',
+                    'url' => url('/'),
+                    'logo' => asset('logo.png'),
+                    'sameAs' => [
+                        'https://wa.me/6281234567890',
+                    ],
+                    'contactPoint' => [
+                        '@type' => 'ContactPoint',
+                        'telephone' => '+62-812-3456-7890',
+                        'contactType' => 'customer service',
+                        'areaServed' => 'ID',
+                        'availableLanguage' => ['Indonesian', 'English'],
+                    ],
+                ],
+                [
+                    '@type' => 'WebSite',
+                    '@id' => url('/') . '#website',
+                    'url' => url('/'),
+                    'name' => 'MooWiFi Platform',
+                    'publisher' => [
+                        '@id' => url('/') . '#organization',
+                    ],
+                    'inLanguage' => 'id',
+                ],
+                [
+                    '@type' => 'FAQPage',
+                    '@id' => url('/') . '#faq',
+                    'mainEntity' => [
+                        [
+                            '@type' => 'Question',
+                            'name' => 'Apakah bisa dipakai jika router MikroTik tidak punya IP Publik Statis?',
+                            'acceptedAnswer' => [
+                                '@type' => 'Answer',
+                                'text' => 'Bisa 100%! MooWiFi menyediakan fitur Auto VPN Tunneling (SSTP & WireGuard). Anda cukup meng-copy 1 baris script yang di-generate dari dasbor MooWiFi ke Terminal Winbox MikroTik Anda, dan router langsung terhubung ke sistem tanpa perlu sewa IP publik.',
+                            ],
+                        ],
+                        [
+                            '@type' => 'Question',
+                            'name' => 'Kemana uang pembayaran tagihan internet pelanggan masuk?',
+                            'acceptedAnswer' => [
+                                '@type' => 'Answer',
+                                'text' => 'Uang pembayaran tagihan 100% langsung masuk ke rekening atau akun merchant payment gateway milik Anda sendiri (Duitku, Midtrans, Xendit, Tripay, atau rekening bank manual). MooWiFi tidak menampung uang pembayaran warga.',
+                            ],
+                        ],
+                        [
+                            '@type' => 'Question',
+                            'name' => 'Apakah pendaftaran membutuhkan verifikasi email?',
+                            'acceptedAnswer' => [
+                                '@type' => 'Answer',
+                                'text' => 'Ya. Demi keamanan akun dan mencegah penyalahgunaan platform, setiap pendaftar baru wajib memverifikasi kepemilikan email melalui link verifikasi resmi yang dikirimkan oleh server platform kami.',
+                            ],
+                        ],
+                        [
+                            '@type' => 'Question',
+                            'name' => 'Bagaimana cara kerja Auto-Cut dan Auto-Restore MikroTik?',
+                            'acceptedAnswer' => [
+                                '@type' => 'Answer',
+                                'text' => 'Jika pelanggan melewati batas jatuh tempo dan masa tenggang (grace period), sistem scheduler otomatis mengubah profil PPP Secret / Simple Queue pelanggan menjadi profil isolir. Begitu tagihan dibayar lunas, webhook gateway memicu sistem untuk langsung me-restore profil normal secara realtime.',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json">
+    {!! json_encode($schemaOrgData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) !!}
+    </script>
 
     <style>
         /* ============================================================

@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public Landing Page (Moonbyte inspired design)
 Route::get('/', [LandingPageController::class, 'index'])->name('landing.index');
+Route::get('/sitemap.xml', [LandingPageController::class, 'sitemap'])->name('landing.sitemap');
 Route::post('/tickets', [LandingPageController::class, 'storeTicket'])->name('landing.ticket.store');
 Route::post('/tickets/check', [LandingPageController::class, 'checkTicket'])->name('landing.ticket.check');
 

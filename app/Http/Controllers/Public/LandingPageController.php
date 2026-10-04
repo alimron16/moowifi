@@ -90,4 +90,34 @@ class LandingPageController extends Controller
         return redirect(url()->previous() . '#support-ticket')
             ->with('ticket_found', $ticket);
     }
+
+    public function sitemap()
+    {
+        $urls = [
+            [
+                'loc' => url('/'),
+                'lastmod' => now()->startOfDay()->toAtomString(),
+                'changefreq' => 'daily',
+                'priority' => '1.0',
+            ],
+            [
+                'loc' => url('/register'),
+                'lastmod' => now()->startOfMonth()->toAtomString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.8',
+            ],
+            [
+                'loc' => url('/login'),
+                'lastmod' => now()->startOfMonth()->toAtomString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.6',
+            ],
+        ];
+
+        $xml = view('landing.sitemap', compact('urls'))->render();
+
+        return response($xml, 200, [
+            'Content-Type' => 'application/xml; charset=utf-8',
+        ]);
+    }
 }

@@ -1,2 +1,14 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /super-admin/
+Disallow: /customers/
+Disallow: /billing/
+Disallow: /routers/
+Disallow: /payments/
+Disallow: /notifications/
+Disallow: /reports/
+Disallow: /settings/
+Disallow: /api/
+Disallow: /email/
+
+Sitemap: https://app.domain.com/sitemap.xml
