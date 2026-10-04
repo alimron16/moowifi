@@ -82,4 +82,44 @@ class Tenant extends Model
     {
         return data_get($this->settings, $key, $default);
     }
+
+    public function activePlan(): ?SaasPlan
+    {
+        return $this->currentSubscription?->saasPlan;
+    }
+
+    public function getMaxCustomers(): int
+    {
+        $plan = $this->activePlan();
+        return $plan ? (int) $plan->max_customers : 150;
+    }
+
+    public function getMaxRouters(): int
+    {
+        $plan = $this->activePlan();
+        return $plan ? (int) $plan->max_routers : 1;
+    }
+
+    public function canAddCustomer(): bool
+    {
+        $max = $this->getMaxCustomers();
+        if ($max === 0) {
+            return true; // 0 = unlimited
+        }
+        return $this->customers()->count() < $max;
+    }
+
+    public function canAddRouter(): bool
+    {
+        $max = $this->getMaxRouters();
+        if ($max === 0) {
+            return true;
+        }
+        return $this->routers()->count() < $max;
+    }
+
+    public function getRadiusSecret(): string
+    {
+        return $this->getSetting('radius.secret', 'mwifi_rad_' . strtolower($this->code) . '_' . substr(md5((string) $this->id . 'radius_moowifi_salt'), 0, 8));
+    }
 }

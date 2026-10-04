@@ -69,6 +69,57 @@
             </div>
         </div>
 
+        <!-- SaaS Plan & Quota Usage Banner -->
+        <div class="card mb-4 border-primary-subtle bg-primary-lt">
+            <div class="card-body p-3">
+                <div class="row align-items-center g-3">
+                    <div class="col-12 col-lg-4">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge bg-primary text-white text-uppercase px-2 py-1 fs-6">
+                                <i class="ti ti-crown me-1"></i> Paket {{ $planName }}
+                            </span>
+                            @if($isTrial)
+                                <span class="badge bg-yellow text-dark px-2 py-1">
+                                    <i class="ti ti-clock me-1"></i> Uji Coba Gratis (Sisa {{ $trialDaysLeft }} Hari)
+                                </span>
+                            @else
+                                <span class="badge bg-green text-white px-2 py-1">
+                                    <i class="ti ti-check me-1"></i> Langganan Aktif
+                                </span>
+                            @endif
+                        </div>
+                        <div class="text-secondary small">
+                            Akses seluruh fitur SaaS billing RT/RW Net, Server RADIUS Cloud, dan isolir otomatis.
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-secondary">Kuota Pelanggan:</span>
+                            <span class="fw-bold {{ $customerUsagePercent >= 90 ? 'text-danger' : 'text-dark' }}">
+                                {{ $totalCustomers }} / {{ $maxCustomers }} ({{ $customerUsagePercent }}%)
+                            </span>
+                        </div>
+                        <div class="progress progress-sm">
+                            <div class="progress-bar {{ $customerUsagePercent >= 90 ? 'bg-danger' : ($customerUsagePercent >= 75 ? 'bg-warning' : 'bg-primary') }}" 
+                                 style="width: {{ $customerUsagePercent }}%" role="progressbar"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-secondary">Akses Router MikroTik:</span>
+                            <span class="fw-bold {{ $routerUsagePercent >= 100 ? 'text-danger' : 'text-dark' }}">
+                                {{ $totalRouters }} / {{ $maxRouters }} Router ({{ $routerUsagePercent }}%)
+                            </span>
+                        </div>
+                        <div class="progress progress-sm">
+                            <div class="progress-bar {{ $routerUsagePercent >= 100 ? 'bg-danger' : ($routerUsagePercent >= 75 ? 'bg-warning' : 'bg-azure') }}" 
+                                 style="width: {{ $routerUsagePercent }}%" role="progressbar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Primary Metric Cards (Soft & Cohesive - 2x2 Grid on Mobile) -->
         <div class="row row-deck row-cards mb-4">
             <div class="col-6 col-lg-3">

@@ -1077,9 +1077,6 @@
         <div class="container-xxl py-4">
             <div class="row justify-content-center text-center section-heading-wrap mb-4">
                 <div class="col-xl-8">
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 fw-semibold text-uppercase ls-md mb-2">
-                        Transparent Pricing
-                    </span>
                     <h2 class="display-6 fw-bold mb-3 text-dark">Investasi Untuk Pertumbuhan Bisnis</h2>
                     <p class="text-secondary fs-6 mb-4">Semua paket dilengkapi <strong>Uji Coba Gratis 30 Hari (1 Siklus Billing Penuh)</strong> tanpa biaya awal. Pantau dan rasakan kemudahan otomasi jaringan hingga penagihan pertama Anda berjalan mandiri.</p>
 

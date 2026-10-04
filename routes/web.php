@@ -125,6 +125,7 @@ Route::middleware(['auth', 'tenant_user'])->name('tenant.')->group(function () {
     Route::post('billing/manual-payments/{confirmation}/reject', [ManualPaymentController::class, 'reject'])->name('manual-payments.reject');
 
     // Routers & MikroTik Subviews
+    Route::get('routers/radius', [RouterController::class, 'radius'])->name('routers.radius');
     Route::get('routers/online-users', [RouterController::class, 'onlineUsers'])->name('routers.online-users');
     Route::get('routers/profiles', [RouterController::class, 'profiles'])->name('routers.profiles');
     Route::get('routers/logs', [RouterController::class, 'logs'])->name('routers.logs');

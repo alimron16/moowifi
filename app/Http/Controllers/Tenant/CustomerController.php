@@ -58,6 +58,11 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
+        $tenant = Auth::user()->tenant;
+        if ($tenant && !$tenant->canAddCustomer()) {
+            return back()->withInput()->with('error', 'Batas kuota pelanggan untuk paket SaaS Anda telah tercapai (' . $tenant->getMaxCustomers() . ' Pelanggan). Silakan upgrade paket langganan Anda untuk menambah pelanggan baru.');
+        }
+
         $validated = $request->validate([
             'customer_code' => ['required', 'string', 'max:30'],
             'name' => ['required', 'string', 'max:150'],

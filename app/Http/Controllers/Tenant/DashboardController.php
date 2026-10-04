@@ -71,8 +71,30 @@ class DashboardController extends Controller
             'isolation_time' => $tenant ? $tenant->getSetting('autocut.time', '00:00') : '00:00',
         ];
 
+        // SaaS Plan & Quota Management
+        $activePlan = $tenant?->activePlan();
+        $planName = $activePlan ? $activePlan->name : ($tenant?->plan ?? 'Standar');
+        $maxCustomers = $tenant ? $tenant->getMaxCustomers() : 150;
+        $maxRouters = $tenant ? $tenant->getMaxRouters() : 1;
+        $totalRouters = Router::count();
+        $customerUsagePercent = min(100, round(($totalCustomers / max(1, $maxCustomers)) * 100));
+        $routerUsagePercent = min(100, round(($totalRouters / max(1, $maxRouters)) * 100));
+        $isTrial = $tenant && ($tenant->subscription_status === 'TRIAL' || ($tenant->trial_ends_at && $tenant->trial_ends_at->isFuture()));
+        $trialDaysLeft = ($tenant && $tenant->trial_ends_at) ? max(0, (int) now()->diffInDays($tenant->trial_ends_at, false)) : 0;
+        $subscriptionEndsAt = $tenant?->subscription_ends_at ?? $tenant?->trial_ends_at;
+
         return view('tenant.dashboard', compact(
             'tenant',
+            'activePlan',
+            'planName',
+            'maxCustomers',
+            'maxRouters',
+            'totalRouters',
+            'customerUsagePercent',
+            'routerUsagePercent',
+            'isTrial',
+            'trialDaysLeft',
+            'subscriptionEndsAt',
             'totalCustomers',
             'activeCustomers',
             'unpaidCustomers',

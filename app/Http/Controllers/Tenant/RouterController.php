@@ -37,6 +37,11 @@ class RouterController extends Controller
 
     public function store(Request $request)
     {
+        $tenant = Auth::user()->tenant;
+        if ($tenant && !$tenant->canAddRouter()) {
+            return back()->withInput()->with('error', 'Batas kuota akses router untuk paket SaaS Anda telah tercapai (' . $tenant->getMaxRouters() . ' Router). Silakan upgrade paket langganan Anda untuk menghubungkan router tambahan.');
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'connection_type' => ['required', 'in:DIRECT,VPN_TUNNEL'],
@@ -130,5 +135,24 @@ class RouterController extends Controller
         $router->delete();
 
         return back()->with('success', "Router {$name} berhasil dihapus.");
+    }
+
+    public function radius()
+    {
+        $tenant = Auth::user()->tenant;
+        $routers = Router::latest()->get();
+        $radiusSecret = $tenant ? $tenant->getRadiusSecret() : 'radius_moowifi_secret';
+        $serverHost = config('app.radius_host', request()->getHost());
+        $authPort = 1812;
+        $acctPort = 1813;
+
+        return view('tenant.routers.radius', compact(
+            'tenant',
+            'routers',
+            'radiusSecret',
+            'serverHost',
+            'authPort',
+            'acctPort'
+        ));
     }
 }

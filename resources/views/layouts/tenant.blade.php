@@ -150,6 +150,9 @@
                         <a class="dropdown-item {{ request()->routeIs('tenant.routers.index') ? 'active' : '' }}" href="{{ route('tenant.routers.index') }}">
                             Daftar Router
                         </a>
+                        <a class="dropdown-item {{ request()->routeIs('tenant.routers.radius') ? 'active' : '' }}" href="{{ route('tenant.routers.radius') }}">
+                            Server RADIUS Cloud
+                        </a>
                         <a class="dropdown-item {{ request()->routeIs('tenant.routers.profiles') ? 'active' : '' }}" href="{{ route('tenant.routers.profiles') }}">
                             Profil Bandwidth (Profiles)
                         </a>
