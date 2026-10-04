@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="page page-center">
-    <div class="container container-tight py-4">
+    <div class="container @yield('container-class', 'container-tight') py-4 py-md-5">
         <div class="text-center mb-4">
             <a href="/" class="navbar-brand navbar-brand-autodark mb-1">
                 <img src="{{ asset('logo.png') }}" alt="MooWiFi Logo" style="height: 58px; max-width: 220px; object-fit: contain;">
