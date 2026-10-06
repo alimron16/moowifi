@@ -20,21 +20,25 @@
             <span class="fw-bold">{{ Auth::user()->email }}</span>
         </div>
 
-        <p class="small text-muted mb-4">
-            Silakan periksa kotak masuk (Inbox) atau folder Spam pada email Anda, kemudian klik tautan verifikasi yang kami kirimkan.
-        </p>
+        <div class="alert alert-warning text-start mb-4 p-3 border-warning-subtle bg-warning-lt">
+            <div class="d-flex align-items-start gap-2">
+                <i class="ti ti-alert-triangle fs-2 text-warning flex-shrink-0 mt-1"></i>
+                <div class="small">
+                    <strong class="d-block mb-1 text-dark">Email Belum Masuk? Silakan Cek Folder Spam</strong>
+                    <p class="mb-1 text-secondary">
+                        Sistem kami telah mengirimkan tautan verifikasi. Jika belum muncul di kotak masuk utama, silakan periksa folder <strong>Spam / Junk</strong> atau tab <strong>Promosi (Promotions)</strong> di email Anda.
+                    </p>
+                    <p class="mb-0 text-secondary">
+                        Jika email masuk ke folder Spam, tandai sebagai <strong>"Bukan Spam" (Not Spam)</strong> agar tautan verifikasi dapat dibuka dengan normal.
+                    </p>
+                </div>
+            </div>
+        </div>
 
         <form action="{{ route('verification.send') }}" method="POST" class="mb-3">
             @csrf
             <button type="submit" class="btn btn-primary w-100">
                 <i class="ti ti-send me-1"></i> Kirim Ulang Tautan Verifikasi
-            </button>
-        </form>
-
-        <form action="{{ route('verification.simulate') }}" method="POST" class="mb-3">
-            @csrf
-            <button type="submit" class="btn btn-outline-secondary btn-sm w-100">
-                <i class="ti ti-bolt me-1"></i> Verifikasi Akun Sekarang (Mode Uji Coba Instan)
             </button>
         </form>
 

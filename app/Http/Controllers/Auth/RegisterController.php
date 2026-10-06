@@ -103,10 +103,17 @@ class RegisterController extends Controller
         Auth::login($user);
 
         // Send Email Verification
+        $emailWarning = null;
         try {
             event(new Registered($user));
         } catch (\Throwable $e) {
             Log::warning("Gagal mengirim email verifikasi saat registrasi: " . $e->getMessage());
+            $emailWarning = $e->getMessage();
+        }
+
+        if ($emailWarning) {
+            return redirect()->route('verification.notice')
+                ->with('error', 'Pendaftaran akun berhasil, namun email verifikasi gagal dikirim: ' . $emailWarning . '. Silakan periksa pengaturan SMTP Gmail di menu Super Admin atau klik "Kirim Ulang Tautan Verifikasi".');
         }
 
         return redirect()->route('verification.notice')->with('success', 'Pendaftaran berhasil! Tautan verifikasi telah dikirim ke email Anda. Silakan verifikasi untuk mulai mengelola RT/RW Net.');

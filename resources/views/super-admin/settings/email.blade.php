@@ -65,6 +65,31 @@
                 </div>
             </div>
         </form>
+
+        <!-- Uji Coba Pengiriman Email -->
+        <div class="card mt-4 border-azure-subtle bg-azure-lt">
+            <div class="card-body">
+                <div class="row align-items-center g-3">
+                    <div class="col-12 col-md-6">
+                        <h4 class="card-title text-dark mb-1">
+                            <i class="ti ti-mail-check me-1 text-azure"></i> Uji Coba Koneksi SMTP (Test Send)
+                        </h4>
+                        <p class="text-secondary small mb-0">
+                            Kirimkan email uji coba ke alamat Anda untuk memverifikasi apakah kredensial SMTP Google dan port sudah terhubung dengan sempurna.
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <form action="{{ route('super-admin.email.test') }}" method="POST" class="d-flex gap-2">
+                            @csrf
+                            <input type="email" name="test_email" class="form-control" placeholder="Masukkan email penerima tes..." value="{{ Auth::user()->email ?? '' }}" required>
+                            <button type="submit" class="btn btn-azure text-nowrap">
+                                <i class="ti ti-send me-1"></i> Kirim Email Tes
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

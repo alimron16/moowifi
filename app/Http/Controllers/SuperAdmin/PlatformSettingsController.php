@@ -238,6 +238,26 @@ class PlatformSettingsController extends Controller
         return back()->with('success', 'Konfigurasi SMTP Email Platform berhasil disimpan.');
     }
 
+    public function testEmail(Request $request)
+    {
+        $request->validate([
+            'test_email' => ['required', 'email'],
+        ]);
+
+        $recipient = $request->test_email;
+
+        try {
+            \Illuminate\Support\Facades\Mail::raw("Halo!\n\nIni adalah email uji coba dari MooWiFi SaaS Platform.\nKonfigurasi SMTP Email Anda telah BERHASIL terhubung dan bekerja dengan sempurna.\n\nWaktu kirim: " . now()->format('d M Y H:i:s'), function ($message) use ($recipient) {
+                $message->to($recipient)
+                    ->subject('[MooWiFi] Uji Coba Konfigurasi SMTP Berhasil');
+            });
+
+            return back()->with('success', "Email uji coba berhasil dikirim ke {$recipient}! Silakan periksa Inbox atau folder Spam Anda.");
+        } catch (\Throwable $e) {
+            return back()->with('error', "Gagal mengirim email uji coba: " . $e->getMessage());
+        }
+    }
+
     public function logs()
     {
         $logs = AuditLog::with('user')->latest()->paginate(25);

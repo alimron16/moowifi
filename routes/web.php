@@ -88,6 +88,7 @@ Route::middleware(['auth', 'super_admin'])->prefix('super-admin')->name('super-a
     Route::post('/whatsapp', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'updateWhatsapp'])->name('whatsapp.update');
     Route::get('/email', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'email'])->name('email.index');
     Route::post('/email', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'updateEmail'])->name('email.update');
+    Route::post('/email/test', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'testEmail'])->name('email.test');
     Route::get('/logs', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'logs'])->name('logs.index');
     Route::get('/announcements', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'announcements'])->name('announcements.index');
     Route::post('/announcements', [\App\Http\Controllers\SuperAdmin\PlatformSettingsController::class, 'storeAnnouncement'])->name('announcements.store');
