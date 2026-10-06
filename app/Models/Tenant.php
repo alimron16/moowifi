@@ -88,6 +88,36 @@ class Tenant extends Model
         return $this->currentSubscription?->saasPlan;
     }
 
+    public function isExpired(): bool
+    {
+        $currentSub = $this->currentSubscription;
+
+        // If tenant has an ACTIVE paid subscription
+        if ($currentSub && $currentSub->status === 'ACTIVE') {
+            if ($currentSub->ends_at && $currentSub->ends_at->isPast()) {
+                return true;
+            }
+            return false;
+        }
+
+        // If tenant is on trial
+        if ($this->trial_ends_at) {
+            return $this->trial_ends_at->isPast();
+        }
+
+        return false;
+    }
+
+    public function isTrial(): bool
+    {
+        $currentSub = $this->currentSubscription;
+        if ($currentSub && $currentSub->status === 'ACTIVE' && (!$currentSub->ends_at || $currentSub->ends_at->isFuture())) {
+            return false;
+        }
+
+        return $this->trial_ends_at && $this->trial_ends_at->isFuture();
+    }
+
     public function getMaxCustomers(): int
     {
         $plan = $this->activePlan();
@@ -100,8 +130,26 @@ class Tenant extends Model
         return $plan ? (int) $plan->max_routers : 1;
     }
 
+    public function getMaxWhatsappGateways(): int
+    {
+        $plan = $this->activePlan();
+        if ($plan && (str_contains(strtoupper($plan->code ?? ''), 'ENTERPRISE') || str_contains(strtoupper($plan->name ?? ''), 'ENTERPRISE'))) {
+            return 2;
+        }
+        return 1;
+    }
+
+    public function canAccessRadius(): bool
+    {
+        return !$this->isExpired();
+    }
+
     public function canAddCustomer(): bool
     {
+        if ($this->isExpired()) {
+            return false;
+        }
+
         $max = $this->getMaxCustomers();
         if ($max === 0) {
             return true; // 0 = unlimited
@@ -111,6 +159,10 @@ class Tenant extends Model
 
     public function canAddRouter(): bool
     {
+        if ($this->isExpired()) {
+            return false;
+        }
+
         $max = $this->getMaxRouters();
         if ($max === 0) {
             return true;

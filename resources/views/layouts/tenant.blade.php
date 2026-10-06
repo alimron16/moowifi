@@ -250,6 +250,18 @@
                 </li>
                 @endif
 
+                <!-- Subscription & Upgrade (Owner Only) -->
+                @if(Auth::user()->isOwner())
+                <li class="nav-item {{ request()->routeIs('tenant.subscription.*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('tenant.subscription.index') }}">
+                        <span class="nav-link-icon d-md-none d-lg-inline-block">
+                            <i class="ti ti-crown fs-2 text-warning"></i>
+                        </span>
+                        <span class="nav-link-title">Paket & Langganan</span>
+                    </a>
+                </li>
+                @endif
+
                 <!-- Settings (Section 8: Business Profile, Billing, Auto Cut, Payment, WhatsApp, Email, Users & Roles) -->
                 @if(Auth::user()->isOwner())
                 <li class="nav-item dropdown {{ request()->is('settings*') ? 'active' : '' }}">

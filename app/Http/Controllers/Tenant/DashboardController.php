@@ -79,9 +79,10 @@ class DashboardController extends Controller
         $totalRouters = Router::count();
         $customerUsagePercent = min(100, round(($totalCustomers / max(1, $maxCustomers)) * 100));
         $routerUsagePercent = min(100, round(($totalRouters / max(1, $maxRouters)) * 100));
-        $isTrial = $tenant && ($tenant->subscription_status === 'TRIAL' || ($tenant->trial_ends_at && $tenant->trial_ends_at->isFuture()));
+        $isExpired = $tenant ? $tenant->isExpired() : false;
+        $isTrial = $tenant ? $tenant->isTrial() : false;
         $trialDaysLeft = ($tenant && $tenant->trial_ends_at) ? max(0, (int) now()->diffInDays($tenant->trial_ends_at, false)) : 0;
-        $subscriptionEndsAt = $tenant?->subscription_ends_at ?? $tenant?->trial_ends_at;
+        $subscriptionEndsAt = $tenant?->currentSubscription?->ends_at ?? $tenant?->trial_ends_at;
 
         return view('tenant.dashboard', compact(
             'tenant',
@@ -92,6 +93,7 @@ class DashboardController extends Controller
             'totalRouters',
             'customerUsagePercent',
             'routerUsagePercent',
+            'isExpired',
             'isTrial',
             'trialDaysLeft',
             'subscriptionEndsAt',

@@ -60,6 +60,9 @@ class CustomerController extends Controller
     {
         $tenant = Auth::user()->tenant;
         if ($tenant && !$tenant->canAddCustomer()) {
+            if ($tenant->isExpired()) {
+                return back()->withInput()->with('error', 'Masa uji coba / langganan SaaS Anda telah berakhir. Silakan aktifkan paket langganan Anda terlebih dahulu untuk menambah pelanggan baru.');
+            }
             return back()->withInput()->with('error', 'Batas kuota pelanggan untuk paket SaaS Anda telah tercapai (' . $tenant->getMaxCustomers() . ' Pelanggan). Silakan upgrade paket langganan Anda untuk menambah pelanggan baru.');
         }
 

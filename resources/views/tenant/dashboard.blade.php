@@ -69,16 +69,43 @@
             </div>
         </div>
 
+        @if($isExpired)
+            <div class="alert alert-danger mb-4 p-3 border-danger shadow-sm" role="alert">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="avatar bg-danger text-white rounded">
+                            <i class="ti ti-alert-octagon fs-2"></i>
+                        </span>
+                        <div>
+                            <h4 class="alert-title text-danger mb-1">Masa Uji Coba Gratis 30 Hari Telah Berakhir!</h4>
+                            <div class="text-secondary small">
+                                Fitur penambahan pelanggan, router baru, dan otomatisasi tagihan dibatasi sementara. Silakan aktifkan paket langganan untuk memulihkan seluruh fitur operasional Anda.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-nowrap">
+                        <a href="{{ route('tenant.subscription.index') }}" class="btn btn-danger">
+                            <i class="ti ti-crown me-1"></i> Aktifkan Paket Sekarang
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <!-- SaaS Plan & Quota Usage Banner -->
-        <div class="card mb-4 border-primary-subtle bg-primary-lt">
+        <div class="card mb-4 {{ $isExpired ? 'border-danger-subtle bg-danger-lt' : 'border-primary-subtle bg-primary-lt' }}">
             <div class="card-body p-3">
                 <div class="row align-items-center g-3">
                     <div class="col-12 col-lg-4">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <span class="badge bg-primary text-white text-uppercase px-2 py-1 fs-6">
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                            <span class="badge {{ $isExpired ? 'bg-danger' : 'bg-primary' }} text-white text-uppercase px-2 py-1 fs-6">
                                 <i class="ti ti-crown me-1"></i> Paket {{ $planName }}
                             </span>
-                            @if($isTrial)
+                            @if($isExpired)
+                                <span class="badge bg-danger text-white px-2 py-1">
+                                    <i class="ti ti-clock-off me-1"></i> Kedaluwarsa
+                                </span>
+                            @elseif($isTrial)
                                 <span class="badge bg-yellow text-dark px-2 py-1">
                                     <i class="ti ti-clock me-1"></i> Uji Coba Gratis (Sisa {{ $trialDaysLeft }} Hari)
                                 </span>
@@ -88,8 +115,13 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="text-secondary small">
-                            Akses seluruh fitur SaaS billing RT/RW Net, Server RADIUS Cloud, dan isolir otomatis.
+                        <div class="text-secondary small mb-2">
+                            Akses fitur SaaS billing, Server RADIUS Cloud, dan isolir otomatis.
+                        </div>
+                        <div>
+                            <a href="{{ route('tenant.subscription.index') }}" class="btn btn-sm {{ $isExpired ? 'btn-danger' : 'btn-outline-primary' }}">
+                                <i class="ti ti-crown me-1"></i> {{ $isExpired ? 'Aktifkan Paket Langganan' : 'Kelola / Upgrade Paket' }}
+                            </a>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-lg-4">

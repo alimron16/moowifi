@@ -104,6 +104,10 @@ Route::middleware(['auth', 'super_admin'])->prefix('super-admin')->name('super-a
 Route::middleware(['auth', 'tenant_user'])->name('tenant.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // SaaS Subscription & Self-Service Upgrade
+    Route::get('subscription', [\App\Http\Controllers\Tenant\TenantSubscriptionController::class, 'index'])->name('subscription.index');
+    Route::post('subscription/upgrade', [\App\Http\Controllers\Tenant\TenantSubscriptionController::class, 'upgrade'])->name('subscription.upgrade');
+
     // Customers
     Route::resource('customers', CustomerController::class);
     Route::post('customers/{customer}/force-isolate', [CustomerController::class, 'forceIsolate'])->name('customers.force-isolate');

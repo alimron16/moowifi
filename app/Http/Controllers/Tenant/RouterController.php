@@ -39,6 +39,9 @@ class RouterController extends Controller
     {
         $tenant = Auth::user()->tenant;
         if ($tenant && !$tenant->canAddRouter()) {
+            if ($tenant->isExpired()) {
+                return back()->withInput()->with('error', 'Masa uji coba / langganan SaaS Anda telah berakhir. Silakan aktifkan paket langganan Anda terlebih dahulu untuk menghubungkan router MikroTik baru.');
+            }
             return back()->withInput()->with('error', 'Batas kuota akses router untuk paket SaaS Anda telah tercapai (' . $tenant->getMaxRouters() . ' Router). Silakan upgrade paket langganan Anda untuk menghubungkan router tambahan.');
         }
 
