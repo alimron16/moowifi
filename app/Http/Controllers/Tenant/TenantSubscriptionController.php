@@ -9,6 +9,8 @@ use App\Models\SaasPlan;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class TenantSubscriptionController extends Controller
 {
@@ -148,30 +150,44 @@ class TenantSubscriptionController extends Controller
         }
 
         $request->validate([
-            'payment_method' => ['required', 'string', 'max:50'],
-            'proof' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:3072'],
+            'payment_method' => ['required', 'string', 'max:150'],
+            'proof' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
         ], [
             'payment_method.required' => 'Pilih bank tujuan transfer yang Anda gunakan.',
             'proof.required' => 'Unggah foto struk atau tangkapan layar bukti transfer.',
             'proof.mimes' => 'Format file bukti transfer harus berupa JPG, PNG, atau PDF.',
-            'proof.max' => 'Ukuran file bukti transfer maksimal 3 MB.',
+            'proof.max' => 'Ukuran file bukti transfer maksimal 5 MB.',
         ]);
 
-        $proofPath = $request->file('proof')->store('subscription_proofs', 'public');
+        try {
+            // Pastikan folder penyimpanan bukti transfer tersedia
+            if (!Storage::disk('public')->exists('subscription_proofs')) {
+                Storage::disk('public')->makeDirectory('subscription_proofs');
+            }
 
-        $subscription->update([
-            'payment_method' => $request->payment_method,
-            'proof_path' => $proofPath,
-            'status' => 'WAITING_VERIFICATION',
-        ]);
+            $proofPath = $request->file('proof')->store('subscription_proofs', 'public');
 
-        AuditLog::create([
-            'tenant_id' => $tenant->id,
-            'user_id' => Auth::id(),
-            'event' => 'SUBSCRIPTION_PAYMENT_SUBMITTED',
-            'description' => "Tenant mengunggah bukti transfer untuk order {$subscription->order_number} via {$request->payment_method}.",
-        ]);
+            $subscription->update([
+                'payment_method' => $request->payment_method,
+                'proof_path' => $proofPath,
+                'status' => 'WAITING_VERIFICATION',
+            ]);
 
-        return back()->with('success', 'Bukti pembayaran transfer berhasil diunggah! Tim Super Admin akan segera memverifikasi pembayaran Anda dalam 5-15 menit untuk mengaktifkan paket secara penuh.');
+            AuditLog::create([
+                'tenant_id' => $tenant->id,
+                'user_id' => Auth::id(),
+                'event' => 'SUBSCRIPTION_PAYMENT_SUBMITTED',
+                'description' => "Tenant mengunggah bukti transfer untuk order {$subscription->order_number} via {$request->payment_method}.",
+            ]);
+
+            return back()->with('success', 'Bukti pembayaran transfer berhasil diunggah! Tim Super Admin akan segera memverifikasi pembayaran Anda dalam 5-15 menit untuk mengaktifkan paket secara penuh.');
+        } catch (\Throwable $e) {
+            Log::error("Gagal verifikasi pembayaran langganan SaaS: {$e->getMessage()}", [
+                'subscription_id' => $subscription->id,
+                'exception' => $e,
+            ]);
+
+            return back()->with('error', 'Gagal memproses unggahan bukti transfer: ' . $e->getMessage() . '. Pastikan izin folder storage di server telah diatur.');
+        }
     }
 }

@@ -12,12 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->string('order_number', 40)->nullable()->after('saas_plan_id');
-            $table->decimal('amount', 12, 2)->default(0)->after('order_number');
-            $table->string('billing_cycle', 20)->default('monthly')->after('amount');
-            $table->string('payment_method', 50)->nullable()->after('billing_cycle');
-            $table->string('proof_path', 255)->nullable()->after('payment_method');
-            $table->timestamp('paid_at')->nullable()->after('ends_at');
+            if (!Schema::hasColumn('subscriptions', 'order_number')) {
+                $table->string('order_number', 40)->nullable()->after('saas_plan_id');
+            }
+            if (!Schema::hasColumn('subscriptions', 'amount')) {
+                $table->decimal('amount', 12, 2)->default(0);
+            }
+            if (!Schema::hasColumn('subscriptions', 'billing_cycle')) {
+                $table->string('billing_cycle', 20)->default('monthly');
+            }
+            if (!Schema::hasColumn('subscriptions', 'payment_method')) {
+                $table->string('payment_method', 150)->nullable();
+            }
+            if (!Schema::hasColumn('subscriptions', 'proof_path')) {
+                $table->string('proof_path', 255)->nullable();
+            }
+            if (!Schema::hasColumn('subscriptions', 'paid_at')) {
+                $table->timestamp('paid_at')->nullable();
+            }
         });
     }
 

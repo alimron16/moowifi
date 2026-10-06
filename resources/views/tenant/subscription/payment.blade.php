@@ -21,6 +21,32 @@
 
 <div class="page-body">
     <div class="container-xl">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                <i class="ti ti-check me-2"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                <i class="ti ti-alert-triangle me-2"></i> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                <i class="ti ti-alert-circle me-2"></i> <strong>Mohon periksa formulir konfirmasi:</strong>
+                <ul class="mb-0 mt-1 small">
+                    @foreach($errors->all() as $err)
+                        <li>{{ $err }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
         <div class="row row-cards justify-content-center">
             <!-- Kolom Rincian Tagihan & Rekening Pembayaran -->
             <div class="col-12 col-lg-7">
