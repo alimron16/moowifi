@@ -115,6 +115,8 @@
                                                             <label class="form-label required">Status Langganan</label>
                                                             <select name="status" class="form-select" required>
                                                                 <option value="ACTIVE" {{ $sub->status === 'ACTIVE' ? 'selected' : '' }}>ACTIVE (Aktif)</option>
+                                                                <option value="WAITING_VERIFICATION" {{ $sub->status === 'WAITING_VERIFICATION' ? 'selected' : '' }}>WAITING_VERIFICATION (Menunggu Verifikasi)</option>
+                                                                <option value="PENDING" {{ $sub->status === 'PENDING' ? 'selected' : '' }}>PENDING (Menunggu Pembayaran)</option>
                                                                 <option value="TRIAL" {{ $sub->status === 'TRIAL' ? 'selected' : '' }}>TRIAL (Masa Percobaan)</option>
                                                                 <option value="EXPIRED" {{ $sub->status === 'EXPIRED' ? 'selected' : '' }}>EXPIRED (Kadaluarsa)</option>
                                                                 <option value="CANCELLED" {{ $sub->status === 'CANCELLED' ? 'selected' : '' }}>CANCELLED (Dibatalkan)</option>
