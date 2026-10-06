@@ -94,6 +94,50 @@ class SubscriptionController extends Controller
         return back()->with('success', "Data langganan berhasil dihapus.");
     }
 
+    public function approve(Subscription $subscription)
+    {
+        $durationMonths = $subscription->billing_cycle === 'yearly' ? 12 : 1;
+        $startsAt = now();
+        $endsAt = now()->addMonths($durationMonths);
+
+        $subscription->update([
+            'status' => 'ACTIVE',
+            'starts_at' => $startsAt,
+            'ends_at' => $endsAt,
+            'paid_at' => now(),
+        ]);
+
+        if ($subscription->tenant) {
+            $subscription->tenant->update([
+                'status' => 'ACTIVE',
+                'plan' => $subscription->saasPlan?->name ?? 'Standard',
+            ]);
+        }
+
+        AuditLog::create([
+            'event' => 'SUBSCRIPTION_PAYMENT_APPROVED',
+            'description' => "Super Admin memverifikasi pembayaran transfer langganan #{$subscription->order_number} tenant {$subscription->tenant?->name} ({$durationMonths} bulan).",
+        ]);
+
+        return back()->with('success', "Pembayaran langganan #{$subscription->order_number} berhasil disetujui! Paket tenant kini aktif penuh.");
+    }
+
+    public function reject(Request $request, Subscription $subscription)
+    {
+        $reason = $request->input('reason', 'Bukti pembayaran tidak valid atau nominal tidak sesuai.');
+
+        $subscription->update([
+            'status' => 'CANCELLED',
+        ]);
+
+        AuditLog::create([
+            'event' => 'SUBSCRIPTION_PAYMENT_REJECTED',
+            'description' => "Super Admin menolak pembayaran langganan #{$subscription->order_number} tenant {$subscription->tenant?->name}. Alasan: {$reason}",
+        ]);
+
+        return back()->with('warning', "Pembayaran langganan #{$subscription->order_number} telah ditolak.");
+    }
+
     public function payments(Request $request)
     {
         // SaaS platform subscription payments

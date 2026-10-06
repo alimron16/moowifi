@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
+use App\Models\PlatformSetting;
 use App\Models\SaasPlan;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
@@ -31,6 +32,12 @@ class TenantSubscriptionController extends Controller
 
         $currentPrice = $activePlan ? (float) $activePlan->price : 0;
 
+        // Cek jika ada pesanan pending / menunggu verifikasi
+        $pendingOrder = Subscription::where('tenant_id', $tenant->id)
+            ->whereIn('status', ['PENDING', 'WAITING_VERIFICATION'])
+            ->latest()
+            ->first();
+
         return view('tenant.subscription.index', compact(
             'tenant',
             'activePlan',
@@ -40,7 +47,8 @@ class TenantSubscriptionController extends Controller
             'isTrial',
             'trialDaysLeft',
             'subscriptionDaysLeft',
-            'currentPrice'
+            'currentPrice',
+            'pendingOrder'
         ));
     }
 
@@ -67,33 +75,103 @@ class TenantSubscriptionController extends Controller
             return back()->with('error', 'Penurunan paket (downgrade) ke kuota yang lebih rendah tidak dapat dilakukan secara mandiri untuk mencegah terputusnya data pelanggan Anda yang telah melebihi batas kuota. Silakan hubungi Super Admin untuk penyesuaian paket khusus.');
         }
 
-        $durationMonths = $validated['billing_cycle'] === 'yearly' ? 12 : 1;
-        $startsAt = now();
-        $endsAt = now()->addMonths($durationMonths);
+        $isYearly = $validated['billing_cycle'] === 'yearly';
+        $amount = $isYearly ? $targetPlan->getYearlyPriceAttribute() : (float) $targetPlan->price;
+        $orderNumber = 'ORD-SUB-' . date('Ym') . '-' . rand(1000, 9999);
 
-        // Buat subscription aktif baru
+        // Buat order subscription berstatus PENDING (Menunggu Pembayaran Transfer)
         $subscription = Subscription::create([
             'tenant_id' => $tenant->id,
             'saas_plan_id' => $targetPlan->id,
-            'status' => 'ACTIVE',
-            'starts_at' => $startsAt,
-            'ends_at' => $endsAt,
-        ]);
-
-        $tenant->update([
-            'status' => 'ACTIVE',
-            'plan' => $targetPlan->name,
+            'order_number' => $orderNumber,
+            'amount' => $amount,
+            'billing_cycle' => $validated['billing_cycle'],
+            'status' => 'PENDING',
         ]);
 
         AuditLog::create([
             'tenant_id' => $tenant->id,
             'user_id' => Auth::id(),
-            'event' => 'SUBSCRIPTION_UPGRADED',
-            'description' => "Tenant mengupgrade paket SaaS ke {$targetPlan->name} ({$durationMonths} Bulan) hingga {$endsAt->format('d/m/Y')}.",
+            'event' => 'SUBSCRIPTION_ORDER_CREATED',
+            'description' => "Tenant membuat pesanan langganan {$targetPlan->name} ({$orderNumber}) sebesar Rp " . number_format($amount, 0, ',', '.'),
         ]);
 
-        $message = "Selamat! Paket Anda berhasil diperbarui ke {$targetPlan->name}. Kuota maksimal {$targetPlan->max_customers} pelanggan dan {$targetPlan->max_routers} router kini aktif hingga {$endsAt->format('d M Y')}.";
+        return redirect()->route('tenant.subscription.payment', $subscription->id)
+            ->with('success', 'Pesanan paket langganan berhasil dibuat. Silakan lakukan pembayaran transfer sesuai rincian rekening di bawah.');
+    }
 
-        return redirect()->route('tenant.dashboard')->with('success', $message);
+    public function payment(Subscription $subscription)
+    {
+        $tenant = Auth::user()->tenant;
+
+        if ($subscription->tenant_id !== $tenant->id) {
+            abort(403, 'Akses pesanan langganan ditolak.');
+        }
+
+        // Ambil rekening bank & instruksi pembayaran yang telah diatur oleh Super Admin di platform
+        $manualBanks = PlatformSetting::get('platform_manual_banks', [
+            [
+                'bank_name' => 'BCA',
+                'account_number' => '1234567890',
+                'account_name' => 'PT MooWiFi Digital Indonesia',
+                'instructions' => 'Transfer tepat sesuai nominal tagihan dan simpan bukti transfer.',
+                'is_active' => true,
+            ],
+            [
+                'bank_name' => 'Mandiri',
+                'account_number' => '1370012345678',
+                'account_name' => 'PT MooWiFi Digital Indonesia',
+                'instructions' => 'Transfer via ATM / m-Banking / Internet Banking Mandiri.',
+                'is_active' => true,
+            ]
+        ]);
+
+        $platformProfile = PlatformSetting::get('platform_profile', [
+            'contact_phone' => '081122334455',
+            'contact_email' => 'support@moowifi.id',
+        ]);
+
+        return view('tenant.subscription.payment', compact(
+            'tenant',
+            'subscription',
+            'manualBanks',
+            'platformProfile'
+        ));
+    }
+
+    public function confirmPayment(Request $request, Subscription $subscription)
+    {
+        $tenant = Auth::user()->tenant;
+
+        if ($subscription->tenant_id !== $tenant->id) {
+            abort(403, 'Akses pesanan langganan ditolak.');
+        }
+
+        $request->validate([
+            'payment_method' => ['required', 'string', 'max:50'],
+            'proof' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:3072'],
+        ], [
+            'payment_method.required' => 'Pilih bank tujuan transfer yang Anda gunakan.',
+            'proof.required' => 'Unggah foto struk atau tangkapan layar bukti transfer.',
+            'proof.mimes' => 'Format file bukti transfer harus berupa JPG, PNG, atau PDF.',
+            'proof.max' => 'Ukuran file bukti transfer maksimal 3 MB.',
+        ]);
+
+        $proofPath = $request->file('proof')->store('subscription_proofs', 'public');
+
+        $subscription->update([
+            'payment_method' => $request->payment_method,
+            'proof_path' => $proofPath,
+            'status' => 'WAITING_VERIFICATION',
+        ]);
+
+        AuditLog::create([
+            'tenant_id' => $tenant->id,
+            'user_id' => Auth::id(),
+            'event' => 'SUBSCRIPTION_PAYMENT_SUBMITTED',
+            'description' => "Tenant mengunggah bukti transfer untuk order {$subscription->order_number} via {$request->payment_method}.",
+        ]);
+
+        return back()->with('success', 'Bukti pembayaran transfer berhasil diunggah! Tim Super Admin akan segera memverifikasi pembayaran Anda dalam 5-15 menit untuk mengaktifkan paket secara penuh.');
     }
 }

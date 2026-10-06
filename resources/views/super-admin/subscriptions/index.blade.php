@@ -56,9 +56,27 @@
                                 </td>
                                 <td>
                                     <x-badge :status="$sub->status" :dot="true" />
-                                </td>
                                 <td>
-                                    <div class="btn-list flex-nowrap">
+                                    <div class="btn-list flex-nowrap justify-content-center">
+                                        @if($sub->status === 'WAITING_VERIFICATION')
+                                            @if($sub->proof_path)
+                                                <a href="{{ asset('storage/' . $sub->proof_path) }}" target="_blank" class="btn btn-sm btn-outline-info" title="Lihat Bukti Transfer">
+                                                    <i class="ti ti-file-text me-1"></i> Bukti
+                                                </a>
+                                            @endif
+                                            <form action="{{ route('super-admin.subscriptions.approve', $sub->id) }}" method="POST" onsubmit="return confirm('Setujui pembayaran transfer dan aktifkan paket ini?');">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-success" title="Verifikasi & Aktifkan Paket">
+                                                    <i class="ti ti-check me-1"></i> Setujui
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('super-admin.subscriptions.reject', $sub->id) }}" method="POST" onsubmit="return confirm('Tolak pembayaran pesanan ini?');">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-ghost-danger" title="Tolak Pesanan">
+                                                    <i class="ti ti-x"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                         <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-edit-sub-{{ $sub->id }}">
                                             <i class="ti ti-edit me-1"></i> Edit
                                         </button>

@@ -37,6 +37,33 @@
             </div>
         @endif
 
+        @if($pendingOrder)
+            <div class="card mb-4 border-warning-subtle bg-warning-lt shadow-sm">
+                <div class="card-body p-3">
+                    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="avatar bg-warning text-dark rounded">
+                                <i class="ti ti-receipt-2 fs-2"></i>
+                            </span>
+                            <div>
+                                <h4 class="mb-1 text-dark">
+                                    Pesanan Langganan {{ $pendingOrder->saasPlan?->name ?? 'Paket' }} Menunggu {{ $pendingOrder->status === 'WAITING_VERIFICATION' ? 'Verifikasi Admin' : 'Pembayaran Transfer' }}
+                                </h4>
+                                <div class="text-secondary small">
+                                    Nomor Tagihan: <strong class="font-monospace text-dark">{{ $pendingOrder->order_number }}</strong> &bull; Total: <strong class="text-dark">Rp {{ number_format($pendingOrder->amount, 0, ',', '.') }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <a href="{{ route('tenant.subscription.payment', $pendingOrder->id) }}" class="btn btn-warning text-dark">
+                                <i class="ti ti-wallet me-1"></i> Buka Instruksi Pembayaran Transfer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <!-- Card Status Langganan Saat Ini -->
         <div class="card mb-4 border-primary-subtle bg-primary-lt">
             <div class="card-body p-3 p-md-4">
@@ -220,13 +247,13 @@
                                     </div>
 
                                     <div class="alert alert-info py-2 small mb-0">
-                                        <i class="ti ti-info-circle me-1"></i> Setelah konfirmasi, kuota <strong>{{ number_format($plan->max_customers) }} pelanggan</strong> dan <strong>{{ $plan->max_routers }} router</strong> akan langsung aktif di akun RT/RW Net Anda.
+                                        <i class="ti ti-info-circle me-1"></i> Setelah memilih durasi, Anda akan diarahkan ke halaman <strong>Instruksi Transfer Rekening Resmi Platform</strong> untuk menyelesaikan pembayaran dan mengirimkan bukti transfer.
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">Batal</button>
                                     <button type="submit" class="btn btn-primary ms-auto">
-                                        <i class="ti ti-check me-1"></i> Konfirmasi & Aktifkan Paket
+                                        <i class="ti ti-arrow-right me-1"></i> Lanjut ke Pembayaran Transfer
                                     </button>
                                 </div>
                             </form>

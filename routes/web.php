@@ -76,6 +76,8 @@ Route::middleware(['auth', 'super_admin'])->prefix('super-admin')->name('super-a
     Route::post('/subscriptions', [\App\Http\Controllers\SuperAdmin\SubscriptionController::class, 'store'])->name('subscriptions.store');
     Route::put('/subscriptions/{subscription}', [\App\Http\Controllers\SuperAdmin\SubscriptionController::class, 'update'])->name('subscriptions.update');
     Route::delete('/subscriptions/{subscription}', [\App\Http\Controllers\SuperAdmin\SubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
+    Route::post('/subscriptions/{subscription}/approve', [\App\Http\Controllers\SuperAdmin\SubscriptionController::class, 'approve'])->name('subscriptions.approve');
+    Route::post('/subscriptions/{subscription}/reject', [\App\Http\Controllers\SuperAdmin\SubscriptionController::class, 'reject'])->name('subscriptions.reject');
     Route::get('/payments', [\App\Http\Controllers\SuperAdmin\SubscriptionController::class, 'payments'])->name('payments.index');
 
     // System Monitoring (Section 7: Routers, Queue, Scheduler, Webhook, System Health)
@@ -107,6 +109,8 @@ Route::middleware(['auth', 'tenant_user'])->name('tenant.')->group(function () {
     // SaaS Subscription & Self-Service Upgrade
     Route::get('subscription', [\App\Http\Controllers\Tenant\TenantSubscriptionController::class, 'index'])->name('subscription.index');
     Route::post('subscription/upgrade', [\App\Http\Controllers\Tenant\TenantSubscriptionController::class, 'upgrade'])->name('subscription.upgrade');
+    Route::get('subscription/{subscription}/payment', [\App\Http\Controllers\Tenant\TenantSubscriptionController::class, 'payment'])->name('subscription.payment');
+    Route::post('subscription/{subscription}/confirm-payment', [\App\Http\Controllers\Tenant\TenantSubscriptionController::class, 'confirmPayment'])->name('subscription.confirm-payment');
 
     // Customers
     Route::resource('customers', CustomerController::class);
