@@ -33,7 +33,7 @@ class DuitkuGateway implements PaymentGatewayInterface
         $payload = [
             'merchantCode' => $merchantCode,
             'paymentAmount' => $amount,
-            'paymentMethod' => $options['payment_channel'] ?? 'VC', // Default or specific channel
+            'paymentMethod' => $options['payment_channel'] ?? '', // Kosongkan agar Duitku menampilkan seluruh channel jika tidak dispesifikasikan khusus
             'merchantOrderId' => $merchantOrderId,
             'productDetails' => 'Pembayaran Tagihan Internet ' . $invoice->invoice_number,
             'email' => $customer->email ?? 'billing@domain.com',

@@ -185,7 +185,7 @@ class TenantSubscriptionController extends Controller
         $payload = [
             'merchantCode' => $merchantCode,
             'paymentAmount' => $amount,
-            'paymentMethod' => 'VC', // Duitku Checkout Pop-up / All channels (QRIS, VA, E-Wallet)
+            'paymentMethod' => '', // Kosongkan agar Duitku menampilkan seluruh pilihan channel (QRIS, VA Bank, E-Wallet)
             'merchantOrderId' => $merchantOrderId,
             'productDetails' => 'Langganan MooWiFi Paket ' . ($subscription->saasPlan?->name ?? 'Pro') . ' (' . $merchantOrderId . ')',
             'email' => Auth::user()->email,
