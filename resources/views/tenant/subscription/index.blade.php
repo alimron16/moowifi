@@ -182,11 +182,11 @@
                                         <i class="ti ti-arrow-up-right me-1"></i> {{ $isExpired ? 'Aktifkan Paket' : 'Upgrade ke ' . $plan->name }}
                                     </button>
                                 @elseif($isDowngrade)
-                                    <button type="button" class="btn btn-secondary disabled w-100" title="Downgrade hanya dapat diproses oleh Super Admin" disabled>
+                                    <button type="button" class="btn btn-secondary disabled w-100" title="Downgrade hanya dapat diproses oleh Admin" disabled>
                                         <i class="ti ti-lock me-1"></i> Downgrade Terkunci
                                     </button>
                                     <div class="text-center mt-2">
-                                        <small class="text-muted" style="font-size: 0.72rem;">Hubungi Super Admin jika ingin downgrade paket</small>
+                                        <small class="text-muted" style="font-size: 0.72rem;">Hubungi Admin jika ingin downgrade paket</small>
                                     </div>
                                 @endif
                             </div>
@@ -273,7 +273,7 @@
                     <div class="col">
                         <strong class="text-dark">Butuh Downgrade ke Paket yang Lebih Kecil?</strong>
                         <div>
-                            Untuk melindungi jaringan Anda dari risiko terputusnya pelanggan aktif yang melebihi batas kuota paket lebih kecil, proses downgrade dilakukan secara terverifikasi melalui Super Admin SaaS. Silakan hubungi tim dukungan kami melalui menu Tiket Bantuan.
+                            Untuk melindungi jaringan Anda dari risiko terputusnya pelanggan aktif yang melebihi batas kuota paket lebih kecil, proses downgrade dilakukan secara terverifikasi melalui Admin. Silakan hubungi tim dukungan kami melalui menu Tiket Bantuan atau kontak WhatsApp resmi.
                         </div>
                     </div>
                 </div>
