@@ -29,6 +29,16 @@ class LandingPageController extends Controller
         return view('landing.index', compact('plans', 'stats'));
     }
 
+    public function about()
+    {
+        return view('landing.about');
+    }
+
+    public function terms()
+    {
+        return view('landing.terms');
+    }
+
     public function storeTicket(Request $request)
     {
         $throttleKey = 'support-ticket-store:' . $request->ip();
@@ -116,6 +126,18 @@ class LandingPageController extends Controller
                 'lastmod' => now()->startOfDay()->toAtomString(),
                 'changefreq' => 'daily',
                 'priority' => '1.0',
+            ],
+            [
+                'loc' => url('/tentang-kami'),
+                'lastmod' => now()->startOfMonth()->toAtomString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.7',
+            ],
+            [
+                'loc' => url('/syarat-dan-ketentuan'),
+                'lastmod' => now()->startOfMonth()->toAtomString(),
+                'changefreq' => 'monthly',
+                'priority' => '0.7',
             ],
             [
                 'loc' => url('/register'),

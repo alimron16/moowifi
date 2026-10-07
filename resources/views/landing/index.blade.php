@@ -98,6 +98,14 @@
                     'sameAs' => [
                         'https://wa.me/6281234567890',
                     ],
+                    'address' => [
+                        '@type' => 'PostalAddress',
+                        'streetAddress' => 'Gang Mahi Salam, RT 001/021, No. 25, Parigi',
+                        'addressLocality' => 'Pondok Aren',
+                        'addressRegion' => 'Kota Tangerang Selatan',
+                        'postalCode' => '15228',
+                        'addressCountry' => 'ID',
+                    ],
                     'contactPoint' => [
                         '@type' => 'ContactPoint',
                         'telephone' => '+62-812-3456-7890',
@@ -687,11 +695,12 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a href="#features" class="nav-link fw-semibold text-dark px-3">Fitur</a></li>
-                    <li class="nav-item"><a href="#howItWork" class="nav-link fw-semibold text-dark px-3">Cara Kerja</a></li>
-                    <li class="nav-item"><a href="#pricing" class="nav-link fw-semibold text-dark px-3">Paket Harga</a></li>
-                    <li class="nav-item"><a href="#support-ticket" class="nav-link fw-semibold text-dark px-3">Tiket Bantuan</a></li>
-                    <li class="nav-item"><a href="#faq" class="nav-link fw-semibold text-dark px-3">FAQ</a></li>
+                    <li class="nav-item"><a href="{{ url('/') }}#features" class="nav-link fw-semibold text-dark px-3">Fitur</a></li>
+                    <li class="nav-item"><a href="{{ url('/') }}#howItWork" class="nav-link fw-semibold text-dark px-3">Cara Kerja</a></li>
+                    <li class="nav-item"><a href="{{ url('/') }}#pricing" class="nav-link fw-semibold text-dark px-3">Paket Harga</a></li>
+                    <li class="nav-item"><a href="{{ route('landing.about') }}" class="nav-link fw-semibold text-dark px-3">Tentang Kami</a></li>
+                    <li class="nav-item"><a href="{{ url('/') }}#support-ticket" class="nav-link fw-semibold text-dark px-3">Tiket Bantuan</a></li>
+                    <li class="nav-item"><a href="{{ url('/') }}#faq" class="nav-link fw-semibold text-dark px-3">FAQ</a></li>
                 </ul>
                 <div class="d-flex gap-2 align-items-center">
                     @auth
@@ -1515,20 +1524,30 @@
                 <div class="col-lg-2 col-6">
                     <h4 class="text-white h5 mb-3">Navigasi</h4>
                     <ul class="list-unstyled lh-lg small">
-                        <li><a href="#features" class="text-reset text-decoration-none">Fitur</a></li>
-                        <li><a href="#pricing" class="text-reset text-decoration-none">Paket Harga</a></li>
-                        <li><a href="#support-ticket" class="text-reset text-decoration-none">Tiket Bantuan</a></li>
-                        <li><a href="#faq" class="text-reset text-decoration-none">FAQ</a></li>
+                        <li><a href="{{ url('/') }}#features" class="text-reset text-decoration-none">Fitur</a></li>
+                        <li><a href="{{ url('/') }}#pricing" class="text-reset text-decoration-none">Paket Harga</a></li>
+                        <li><a href="{{ route('landing.about') }}" class="text-reset text-decoration-none">Tentang Kami</a></li>
+                        <li><a href="{{ route('landing.terms') }}" class="text-reset text-decoration-none">Syarat &amp; Ketentuan</a></li>
+                        <li><a href="{{ url('/') }}#support-ticket" class="text-reset text-decoration-none">Tiket Bantuan</a></li>
+                        <li><a href="{{ url('/') }}#faq" class="text-reset text-decoration-none">FAQ</a></li>
                         <li><a href="{{ route('register') }}" class="text-reset text-decoration-none">Daftar Akun Baru</a></li>
                     </ul>
                 </div>
 
-                <!-- Col 4: Layanan Kontak -->
+                <!-- Col 4: Layanan Kontak & Alamat Usaha -->
                 <div class="col-lg-3 col-12">
-                    <h4 class="text-white h5 mb-3">Layanan Dukungan</h4>
+                    <h4 class="text-white h5 mb-3">Kantor &amp; Kontak</h4>
                     <ul class="list-unstyled lh-lg small">
-                        <li class="d-flex align-items-center gap-2 mb-2">
-                            <i class="ti ti-ticket text-primary"></i> <a href="#support-ticket" class="text-reset text-decoration-none">Helpdesk &amp; Tiket Bantuan</a>
+                        <li class="d-flex align-items-start gap-2 mb-3">
+                            <i class="ti ti-map-pin text-primary mt-1 fs-5"></i>
+                            <div>
+                                <span class="text-white fw-bold d-block">Alamat Usaha:</span>
+                                <span class="text-white-50">
+                                    Gang Mahi Salam, RT 001/021, No. 25,<br>
+                                    Parigi, Pondok Aren,<br>
+                                    Kota Tangerang Selatan
+                                </span>
+                            </div>
                         </li>
                         <li class="d-flex align-items-center gap-2 mb-2">
                             <i class="ti ti-brand-whatsapp text-primary"></i> <a href="https://wa.me/6281234567890" target="_blank" rel="noopener" class="text-reset text-decoration-none">Hotline WhatsApp</a>
@@ -1536,12 +1555,20 @@
                         <li class="d-flex align-items-center gap-2 mb-2">
                             <i class="ti ti-mail text-primary"></i> <a href="mailto:support@moowifi.id" class="text-reset text-decoration-none">support@moowifi.id</a>
                         </li>
+                        <li class="d-flex align-items-center gap-2 mb-2">
+                            <i class="ti ti-ticket text-primary"></i> <a href="{{ url('/') }}#support-ticket" class="text-reset text-decoration-none">Helpdesk &amp; Tiket Bantuan</a>
+                        </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="border-top py-4 mt-5 small border-opacity-10 border-white text-white-50 text-center text-md-start">
+            <div class="border-top py-4 mt-5 small border-opacity-10 border-white text-white-50 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
                 <p class="mb-0">&copy; {{ date('Y') }} MooWiFi Platform. Hak Cipta Dilindungi.</p>
+                <div class="d-flex gap-3">
+                    <a href="{{ route('landing.about') }}" class="text-white-50 text-decoration-none hover-white">Tentang Kami</a>
+                    <span>&bull;</span>
+                    <a href="{{ route('landing.terms') }}" class="text-white-50 text-decoration-none hover-white">Syarat dan Ketentuan Pengguna</a>
+                </div>
             </div>
         </div>
     </footer>
