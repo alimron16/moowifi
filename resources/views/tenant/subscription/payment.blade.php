@@ -139,7 +139,7 @@
                         <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <a href="#tab-otomatis" class="nav-link active fw-bold py-2 px-3" data-bs-toggle="tab" aria-selected="true" role="tab">
-                                    <i class="ti ti-bolt text-primary me-2 fs-2"></i>
+                                    <i class="ti ti-credit-card text-primary me-2 fs-2"></i>
                                     <span>Bayar Otomatis</span>
                                     <span class="badge bg-success-lt ms-2 text-success">Instan</span>
                                 </a>
@@ -207,8 +207,8 @@
                                         </div>
 
                                         <button type="submit" class="btn btn-primary w-100 py-3 fs-3 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm">
-                                            <i class="ti ti-bolt fs-2"></i>
-                                            <span>Bayar Otomatis (Rp {{ number_format($subscription->amount, 0, ',', '.') }})</span>
+                                            <i class="ti ti-credit-card fs-2"></i>
+                                            <span>Bayar (Rp {{ number_format($subscription->amount, 0, ',', '.') }})</span>
                                         </button>
                                     </form>
                                 @else
