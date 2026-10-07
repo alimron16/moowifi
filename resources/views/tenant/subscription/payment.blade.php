@@ -160,7 +160,7 @@
                                  TAB 1: BAYAR OTOMATIS (QRIS & VIRTUAL ACCOUNT)
                             ============================================================ -->
                             <div class="tab-pane active show" id="tab-otomatis" role="tabpanel">
-                                @if(!empty($duitkuActive) && $subscription->status === 'PENDING')
+                                @if(!empty($onlinePaymentActive) && $subscription->status === 'PENDING')
                                     <div class="alert alert-info-lt mb-4 border-0">
                                         <div class="d-flex align-items-center gap-2">
                                             <i class="ti ti-shield-check fs-2 text-info"></i>
@@ -175,36 +175,43 @@
 
                                     <form action="{{ route('tenant.subscription.pay-duitku', $subscription->id) }}" method="POST">
                                         @csrf
-                                        <div class="mb-4">
-                                            <label class="form-label fw-bold text-dark">Pilih Saluran Pembayaran:</label>
-                                            <select name="payment_channel" class="form-select form-select-lg">
-                                                <option value="" selected>Semua Saluran (Pilih di Halaman Checkout: QRIS / Virtual Account)</option>
-                                                <optgroup label="QRIS (Semua E-Wallet &amp; m-Banking)">
-                                                    <option value="NQ">QRIS (BCA, Mandiri, GoPay, OVO, ShopeePay, DANA)</option>
-                                                    <option value="SP">QRIS ShopeePay</option>
-                                                </optgroup>
-                                                <optgroup label="Virtual Account Bank">
-                                                    <option value="BC">BCA Virtual Account</option>
-                                                    <option value="M2">Mandiri Virtual Account</option>
-                                                    <option value="BR">BRI Virtual Account (BRIVA)</option>
-                                                    <option value="I1">BNI Virtual Account</option>
-                                                    <option value="BT">Permata Bank Virtual Account</option>
-                                                    <option value="B1">CIMB Niaga Virtual Account</option>
-                                                    <option value="BV">BSI Virtual Account</option>
-                                                </optgroup>
-                                                <optgroup label="E-Wallet">
-                                                    <option value="DA">DANA</option>
-                                                    <option value="OV">OVO</option>
-                                                    <option value="SA">ShopeePay Apps</option>
-                                                </optgroup>
-                                                <optgroup label="Kartu Kredit">
-                                                    <option value="VC">Kartu Kredit (Visa / MasterCard / JCB)</option>
-                                                </optgroup>
-                                            </select>
-                                            <small class="form-hint text-muted mt-1">
-                                                Pilih saluran spesifik untuk langsung membuka barcode / nomor VA, atau biarkan pilihan pertama untuk memilih di layar checkout.
-                                            </small>
-                                        </div>
+                                        @if(($activeGateway ?? '') === 'DUITKU')
+                                            <div class="mb-4">
+                                                <label class="form-label fw-bold text-dark">Pilih Saluran Pembayaran:</label>
+                                                <select name="payment_channel" class="form-select form-select-lg">
+                                                    <option value="" selected>Semua Saluran (Pilih di Halaman Checkout: QRIS / Virtual Account)</option>
+                                                    <optgroup label="QRIS (Semua E-Wallet &amp; m-Banking)">
+                                                        <option value="NQ">QRIS (BCA, Mandiri, GoPay, OVO, ShopeePay, DANA)</option>
+                                                        <option value="SP">QRIS ShopeePay</option>
+                                                    </optgroup>
+                                                    <optgroup label="Virtual Account Bank">
+                                                        <option value="BC">BCA Virtual Account</option>
+                                                        <option value="M2">Mandiri Virtual Account</option>
+                                                        <option value="BR">BRI Virtual Account (BRIVA)</option>
+                                                        <option value="I1">BNI Virtual Account</option>
+                                                        <option value="BT">Permata Bank Virtual Account</option>
+                                                        <option value="B1">CIMB Niaga Virtual Account</option>
+                                                        <option value="BV">BSI Virtual Account</option>
+                                                    </optgroup>
+                                                    <optgroup label="E-Wallet">
+                                                        <option value="DA">DANA</option>
+                                                        <option value="OV">OVO</option>
+                                                        <option value="SA">ShopeePay Apps</option>
+                                                    </optgroup>
+                                                    <optgroup label="Kartu Kredit">
+                                                        <option value="VC">Kartu Kredit (Visa / MasterCard / JCB)</option>
+                                                    </optgroup>
+                                                </select>
+                                                <small class="form-hint text-muted mt-1">
+                                                    Pilih saluran spesifik untuk langsung membuka barcode / nomor VA, atau biarkan pilihan pertama untuk memilih di layar checkout.
+                                                </small>
+                                            </div>
+                                        @else
+                                            <div class="p-3 border rounded-3 mb-4 bg-light text-center">
+                                                <div class="text-secondary small mb-1">Metode Pembayaran Tersedia:</div>
+                                                <div class="fw-bold text-dark fs-3">QRIS, Virtual Account Semua Bank, &amp; E-Wallet</div>
+                                            </div>
+                                        @endif
 
                                         <button type="submit" class="btn btn-primary w-100 py-3 fs-3 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm">
                                             <i class="ti ti-credit-card fs-2"></i>

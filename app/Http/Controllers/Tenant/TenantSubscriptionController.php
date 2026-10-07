@@ -135,10 +135,29 @@ class TenantSubscriptionController extends Controller
         ]);
 
         $platformGateways = PlatformSetting::get('platform_gateways', []);
-        $duitku = $platformGateways['DUITKU'] ?? [];
-        $duitkuActive = !empty($duitku['is_active'])
-            && !empty($duitku['merchant_code'])
-            && !empty($duitku['api_key']);
+
+        $activeGateway = null;
+        $activeGatewayConfig = [];
+        foreach (['DUITKU', 'MIDTRANS', 'XENDIT', 'TRIPAY'] as $gw) {
+            $cfg = $platformGateways[$gw] ?? [];
+            if (!empty($cfg['is_active'])) {
+                $isConfigured = match ($gw) {
+                    'DUITKU' => !empty($cfg['merchant_code']) && !empty($cfg['api_key']),
+                    'MIDTRANS' => !empty($cfg['server_key']),
+                    'XENDIT' => !empty($cfg['secret_key']),
+                    'TRIPAY' => !empty($cfg['private_key']) && !empty($cfg['api_key']),
+                    default => false,
+                };
+                if ($isConfigured) {
+                    $activeGateway = $gw;
+                    $activeGatewayConfig = $cfg;
+                    break;
+                }
+            }
+        }
+
+        $duitkuActive = !is_null($activeGateway);
+        $onlinePaymentActive = !is_null($activeGateway);
 
         return view('tenant.subscription.payment', compact(
             'tenant',
@@ -146,7 +165,9 @@ class TenantSubscriptionController extends Controller
             'manualBanks',
             'platformProfile',
             'duitkuActive',
-            'duitku'
+            'onlinePaymentActive',
+            'activeGateway',
+            'activeGatewayConfig'
         ));
     }
 
@@ -164,21 +185,177 @@ class TenantSubscriptionController extends Controller
         }
 
         $platformGateways = PlatformSetting::get('platform_gateways', []);
-        $duitku = $platformGateways['DUITKU'] ?? [];
 
-        if (empty($duitku['is_active']) || empty($duitku['merchant_code']) || empty($duitku['api_key'])) {
-            return back()->with('error', 'Pembayaran online Duitku untuk platform SaaS belum diaktifkan atau belum diisi oleh Admin di menu Pengaturan Platform.');
+        $activeGateway = null;
+        $cfg = [];
+        foreach (['DUITKU', 'MIDTRANS', 'XENDIT', 'TRIPAY'] as $gw) {
+            $c = $platformGateways[$gw] ?? [];
+            if (!empty($c['is_active'])) {
+                $isConfigured = match ($gw) {
+                    'DUITKU' => !empty($c['merchant_code']) && !empty($c['api_key']),
+                    'MIDTRANS' => !empty($c['server_key']),
+                    'XENDIT' => !empty($c['secret_key']),
+                    'TRIPAY' => !empty($c['private_key']) && !empty($c['api_key']),
+                    default => false,
+                };
+                if ($isConfigured) {
+                    $activeGateway = $gw;
+                    $cfg = $c;
+                    break;
+                }
+            }
         }
 
-        $merchantCode = trim($duitku['merchant_code']);
-        $apiKey = trim($duitku['api_key']);
-        $isSandbox = ($duitku['environment'] ?? 'sandbox') === 'sandbox';
+        if (!$activeGateway) {
+            return back()->with('error', 'Pembayaran online untuk platform SaaS belum diaktifkan oleh Admin di menu Pengaturan Platform.');
+        }
 
-        $merchantOrderId = $subscription->order_number;
         $amount = (int) round($subscription->amount);
+        $merchantOrderId = $subscription->order_number;
+        $isSandbox = ($cfg['environment'] ?? 'sandbox') === 'sandbox';
+
+        // 1. MIDTRANS SNAP
+        if ($activeGateway === 'MIDTRANS') {
+            $endpoint = $isSandbox
+                ? 'https://app.sandbox.midtrans.com/snap/v1/transactions'
+                : 'https://app.midtrans.com/snap/v1/transactions';
+
+            $payload = [
+                'transaction_details' => [
+                    'order_id' => $merchantOrderId,
+                    'gross_amount' => $amount,
+                ],
+                'customer_details' => [
+                    'first_name' => substr(Auth::user()->name ?: $tenant->name, 0, 40),
+                    'email' => Auth::user()->email,
+                    'phone' => Auth::user()->phone ?? '088976291662',
+                ],
+                'item_details' => [
+                    [
+                        'id' => 'SUB-' . $subscription->id,
+                        'price' => $amount,
+                        'quantity' => 1,
+                        'name' => 'Langganan ' . ($subscription->saasPlan?->name ?? 'Pro'),
+                    ],
+                ],
+                'callbacks' => [
+                    'finish' => route('tenant.subscription.payment', $subscription->id),
+                ],
+            ];
+
+            try {
+                $response = Http::withHeaders([
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Basic ' . base64_encode(trim($cfg['server_key']) . ':'),
+                ])->timeout(15)->post($endpoint, $payload);
+
+                $data = $response->json();
+                if ($response->successful() && !empty($data['redirect_url'])) {
+                    $subscription->update(['payment_method' => 'MIDTRANS']);
+                    return redirect()->away($data['redirect_url']);
+                }
+
+                $msg = $data['error_messages'][0] ?? ($response->body() ?: 'Gagal membuat tagihan Midtrans.');
+                return back()->with('error', 'Midtrans Response: ' . $msg);
+            } catch (\Throwable $e) {
+                return back()->with('error', 'Koneksi Midtrans gagal: ' . $e->getMessage());
+            }
+        }
+
+        // 2. XENDIT INVOICE
+        if ($activeGateway === 'XENDIT') {
+            $endpoint = 'https://api.xendit.co/v2/invoices';
+            $payload = [
+                'external_id' => $merchantOrderId,
+                'amount' => $amount,
+                'payer_email' => Auth::user()->email,
+                'description' => 'Langganan MooWiFi Paket ' . ($subscription->saasPlan?->name ?? 'Pro') . ' (' . $merchantOrderId . ')',
+                'invoice_duration' => 86400,
+                'customer' => [
+                    'given_names' => substr(Auth::user()->name ?: $tenant->name, 0, 40),
+                    'email' => Auth::user()->email,
+                    'mobile_number' => Auth::user()->phone ?? '088976291662',
+                ],
+                'success_redirect_url' => route('tenant.subscription.payment', $subscription->id),
+                'failure_redirect_url' => route('tenant.subscription.payment', $subscription->id),
+            ];
+
+            try {
+                $response = Http::withHeaders([
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Basic ' . base64_encode(trim($cfg['secret_key']) . ':'),
+                ])->timeout(15)->post($endpoint, $payload);
+
+                $data = $response->json();
+                if ($response->successful() && !empty($data['invoice_url'])) {
+                    $subscription->update(['payment_method' => 'XENDIT']);
+                    return redirect()->away($data['invoice_url']);
+                }
+
+                $msg = $data['message'] ?? ($response->body() ?: 'Gagal membuat invoice Xendit.');
+                return back()->with('error', 'Xendit Response: ' . $msg);
+            } catch (\Throwable $e) {
+                return back()->with('error', 'Koneksi Xendit gagal: ' . $e->getMessage());
+            }
+        }
+
+        // 3. TRIPAY TRANSACTION
+        if ($activeGateway === 'TRIPAY') {
+            $endpoint = $isSandbox
+                ? 'https://tripay.co.id/api-sandbox/transaction/create'
+                : 'https://tripay.co.id/api/transaction/create';
+
+            $merchantCode = trim($cfg['merchant_code']);
+            $privateKey = trim($cfg['private_key']);
+            $apiKey = trim($cfg['api_key']);
+            $signature = hash_hmac('sha256', $merchantCode . $merchantOrderId . $amount, $privateKey);
+
+            $payload = [
+                'method' => 'QRIS2',
+                'merchant_ref' => $merchantOrderId,
+                'amount' => $amount,
+                'customer_name' => substr(Auth::user()->name ?: $tenant->name, 0, 40),
+                'customer_email' => Auth::user()->email,
+                'customer_phone' => Auth::user()->phone ?? '088976291662',
+                'order_items' => [
+                    [
+                        'name' => 'Langganan ' . ($subscription->saasPlan?->name ?? 'Pro'),
+                        'price' => $amount,
+                        'quantity' => 1,
+                    ],
+                ],
+                'callback_url' => url('/api/webhooks/tripay'),
+                'return_url' => route('tenant.subscription.payment', $subscription->id),
+                'expired_time' => time() + 86400,
+                'signature' => $signature,
+            ];
+
+            try {
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $apiKey,
+                ])->timeout(15)->post($endpoint, $payload);
+
+                $data = $response->json();
+                if ($response->successful() && !empty($data['data']['checkout_url'])) {
+                    $subscription->update(['payment_method' => 'TRIPAY']);
+                    return redirect()->away($data['data']['checkout_url']);
+                }
+
+                $msg = $data['message'] ?? ($response->body() ?: 'Gagal membuat tagihan Tripay.');
+                return back()->with('error', 'Tripay Response: ' . $msg);
+            } catch (\Throwable $e) {
+                return back()->with('error', 'Koneksi Tripay gagal: ' . $e->getMessage());
+            }
+        }
+
+        // 4. DUITKU (Default / Fallback)
+        $merchantCode = trim($cfg['merchant_code']);
+        $apiKey = trim($cfg['api_key']);
         $channel = trim((string) $request->input('payment_channel', ''));
 
-        // 1. Jika channel kosong ("Semua Channel"), coba terlebih dahulu Duitku POP createInvoice
+        // Coba Duitku POP jika channel kosong
         if (empty($channel)) {
             $timestamp = (string) round(microtime(true) * 1000);
             $signaturePop = hash_hmac('sha256', $merchantCode . $timestamp, $apiKey);
@@ -210,28 +387,18 @@ class TenantSubscriptionController extends Controller
                 $popData = $popResponse->json();
 
                 if ($popResponse->successful() && !empty($popData['paymentUrl'])) {
-                    $subscription->update([
-                        'payment_method' => 'DUITKU',
-                    ]);
-
-                    AuditLog::create([
-                        'tenant_id' => $tenant->id,
-                        'user_id' => Auth::id(),
-                        'event' => 'SUBSCRIPTION_PAYMENT_REDIRECTED',
-                        'description' => "Tenant menginisiasi pembayaran online via Duitku POP untuk order {$subscription->order_number}.",
-                    ]);
-
+                    $subscription->update(['payment_method' => 'DUITKU']);
                     return redirect()->away($popData['paymentUrl']);
                 }
             } catch (\Throwable $e) {
                 Log::warning('Duitku POP createInvoice warning: ' . $e->getMessage());
             }
 
-            // Fallback default ke QRIS jika akun merchant menggunakan Direct API
+            // Fallback default ke QRIS jika direct API
             $channel = 'NQ';
         }
 
-        // 2. Direct API Inquiry (v2) dengan channel spesifik (NQ untuk QRIS, BC untuk BCA VA, dsb)
+        // Direct API Inquiry (v2)
         $endpoint = $isSandbox
             ? 'https://sandbox.duitku.com/webapi/api/merchant/v2/inquiry'
             : 'https://passport.duitku.com/webapi/api/merchant/v2/inquiry';
@@ -258,17 +425,7 @@ class TenantSubscriptionController extends Controller
             $data = $response->json();
 
             if ($response->successful() && isset($data['statusCode']) && $data['statusCode'] === '00' && !empty($data['paymentUrl'])) {
-                $subscription->update([
-                    'payment_method' => 'DUITKU',
-                ]);
-
-                AuditLog::create([
-                    'tenant_id' => $tenant->id,
-                    'user_id' => Auth::id(),
-                    'event' => 'SUBSCRIPTION_PAYMENT_REDIRECTED',
-                    'description' => "Tenant menginisiasi pembayaran online via Duitku ({$channel}) untuk order {$subscription->order_number}.",
-                ]);
-
+                $subscription->update(['payment_method' => 'DUITKU']);
                 return redirect()->away($data['paymentUrl']);
             }
 
@@ -277,19 +434,8 @@ class TenantSubscriptionController extends Controller
                 ?? $data['message'] 
                 ?? ($response->body() ?: 'Gagal membuat tagihan di Duitku. Pastikan Merchant Code dan API Key Duitku Platform sudah sesuai.');
 
-            Log::error('Duitku subscription payment failed', [
-                'status' => $response->status(),
-                'body' => $response->body(),
-                'payload' => $payload,
-            ]);
-
             return back()->with('error', 'Duitku Response: ' . $errorMessage);
         } catch (\Throwable $e) {
-            Log::error('Duitku subscription payment error: ' . $e->getMessage(), [
-                'subscription_id' => $subscription->id,
-                'exception' => $e,
-            ]);
-
             return back()->with('error', 'Gagal menghubungi server Duitku: ' . $e->getMessage());
         }
     }

@@ -33,20 +33,41 @@ class PaymentMethodController extends Controller
 
     public function storeManual(Request $request)
     {
-        $validated = $request->validate([
+        $provider = strtoupper($request->input('provider', 'BCA'));
+
+        $rules = [
             'provider' => ['required', 'string', 'max:30'],
             'name' => ['required', 'string', 'max:100'],
-            'account_number' => ['required', 'string', 'max:60'],
-            'account_name' => ['required', 'string', 'max:100'],
             'instructions' => ['nullable', 'string'],
-        ]);
+            'qr_code_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
+        ];
 
+        if ($provider === 'QRIS') {
+            $rules['account_number'] = ['nullable', 'string', 'max:60'];
+            $rules['account_name'] = ['nullable', 'string', 'max:100'];
+        } else {
+            $rules['account_number'] = ['required', 'string', 'max:60'];
+            $rules['account_name'] = ['required', 'string', 'max:100'];
+        }
+
+        $validated = $request->validate($rules);
+        $validated['provider'] = $provider;
         $validated['type'] = 'MANUAL';
         $validated['is_active'] = true;
 
+        if ($provider === 'QRIS') {
+            $validated['account_number'] = $validated['account_number'] ?: 'QRIS Statis';
+            $validated['account_name'] = $validated['account_name'] ?: (Auth::user()->tenant?->name ?? 'Pemilik RT/RW Net');
+        }
+
+        if ($request->hasFile('qr_code_image')) {
+            $path = $request->file('qr_code_image')->store('payment-methods/qris', 'public');
+            $validated['qr_code_image'] = $path;
+        }
+
         PaymentMethod::create($validated);
 
-        return back()->with('success', 'Rekening transfer manual baru berhasil ditambahkan.');
+        return back()->with('success', 'Metode pembayaran manual baru berhasil ditambahkan.');
     }
 
     public function updateGateway(Request $request)
@@ -123,6 +144,9 @@ class PaymentMethodController extends Controller
 
     public function destroy(PaymentMethod $paymentMethod)
     {
+        if ($paymentMethod->qr_code_image) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($paymentMethod->qr_code_image);
+        }
         $paymentMethod->delete();
         return back()->with('success', 'Metode pembayaran berhasil dihapus.');
     }

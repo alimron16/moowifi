@@ -238,4 +238,86 @@ class MultiGatewayAndWhatsAppQrTest extends TestCase
         $this->assertNotNull($invoice->fresh()->paid_at);
         $this->assertEquals('ACTIVE', $invoice->customer->fresh()->status);
     }
+
+    public function test_can_upload_qris_manual_payment_method_and_display_on_public_payment_page(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $file = \Illuminate\Http\UploadedFile::fake()->image('my-qris-barcode.png', 400, 400);
+
+        $response = $this->actingAs($this->user)->post(route('tenant.payment-methods.store-manual'), [
+            'provider' => 'QRIS',
+            'name' => 'QRIS All Payment BudiNet',
+            'account_number' => 'NMID1234567890',
+            'account_name' => 'BudiNet Store',
+            'instructions' => 'Scan QRIS lalu kirim bukti transfer.',
+            'qr_code_image' => $file,
+        ]);
+
+        $response->assertSessionHasNoErrors();
+
+        $method = PaymentMethod::where('tenant_id', $this->tenant->id)
+            ->where('provider', 'QRIS')
+            ->first();
+
+        $this->assertNotNull($method);
+        $this->assertNotNull($method->qr_code_image);
+        \Illuminate\Support\Facades\Storage::disk('public')->assertExists($method->qr_code_image);
+
+        // Verify public invoice payment page renders QRIS image
+        $invoice = Invoice::withoutGlobalScopes()->where('tenant_id', $this->tenant->id)->first();
+        $this->assertNotNull($invoice);
+
+        $payPageResponse = $this->get(route('payment.show', $invoice->payment_token));
+        $payPageResponse->assertOk();
+        $payPageResponse->assertSee('QRIS Pembayaran');
+        $payPageResponse->assertSee($method->name);
+        $payPageResponse->assertSee(asset('storage/' . $method->qr_code_image));
+        $payPageResponse->assertSee('Simpan Gambar QRIS');
+    }
+
+    public function test_platform_subscription_supports_all_gateways_webhook(): void
+    {
+        $subscription = \App\Models\Subscription::create([
+            'tenant_id' => $this->tenant->id,
+            'saas_plan_id' => \App\Models\SaasPlan::first()->id,
+            'order_number' => 'ORD-SUB-' . date('Ym') . '-9999',
+            'amount' => 149000,
+            'billing_cycle' => 'monthly',
+            'status' => 'PENDING',
+        ]);
+
+        // Configure Midtrans Platform
+        \App\Models\PlatformSetting::set('platform_gateways', [
+            'MIDTRANS' => [
+                'server_key' => 'SB-Mid-server-PLATFORM-SECRET',
+                'client_key' => 'SB-Mid-client-PLATFORM',
+                'environment' => 'sandbox',
+                'is_active' => true,
+            ],
+        ]);
+
+        $serverKey = 'SB-Mid-server-PLATFORM-SECRET';
+        $orderId = $subscription->order_number;
+        $statusCode = '200';
+        $grossAmount = '149000.00';
+        $signature = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+
+        $payload = [
+            'order_id' => $orderId,
+            'status_code' => $statusCode,
+            'gross_amount' => $grossAmount,
+            'signature_key' => $signature,
+            'transaction_status' => 'settlement',
+            'transaction_id' => 'TRX-SUB-MID-9999',
+            'payment_type' => 'qris',
+        ];
+
+        $response = $this->postJson('/api/webhooks/midtrans', $payload);
+        $response->assertStatus(200);
+        $response->assertJson(['status' => 'OK']);
+
+        $this->assertEquals('ACTIVE', $subscription->fresh()->status);
+        $this->assertEquals('ACTIVE', $this->tenant->fresh()->status);
+    }
 }

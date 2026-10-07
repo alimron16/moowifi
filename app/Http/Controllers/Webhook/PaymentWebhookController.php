@@ -185,12 +185,20 @@ class PaymentWebhookController extends Controller
         $platformGateways = PlatformSetting::get('platform_gateways', []);
         $cfg = $platformGateways[$provider] ?? [];
 
-        if (empty($cfg['merchant_code']) || empty($cfg['api_key'])) {
+        $isConfigured = match ($provider) {
+            'DUITKU' => !empty($cfg['merchant_code']) && !empty($cfg['api_key']),
+            'MIDTRANS' => !empty($cfg['server_key']),
+            'XENDIT' => !empty($cfg['secret_key']),
+            'TRIPAY' => !empty($cfg['private_key']),
+            default => false,
+        };
+
+        if (!$isConfigured) {
             $webhookLog->update(['status' => 'FAILED', 'error_message' => "Platform gateway {$provider} belum dikonfigurasi di Pengaturan Super Admin."]);
             return $errorResponse('01', 'Platform gateway unconfigured');
         }
 
-        // Signature Verification for Platform Duitku
+        // Signature & Status Verification per Provider
         if ($provider === 'DUITKU') {
             $merchantCode = $cfg['merchant_code'];
             $apiKey = $cfg['api_key'];
@@ -207,6 +215,55 @@ class PaymentWebhookController extends Controller
 
             if ($resultCode !== '00') {
                 $webhookLog->update(['status' => 'FAILED', 'error_message' => "Pembayaran Duitku gagal dengan resultCode {$resultCode}."]);
+                return $successResponse(null);
+            }
+        } elseif ($provider === 'MIDTRANS') {
+            $serverKey = $cfg['server_key'];
+            $orderId = $request->input('order_id');
+            $statusCode = $request->input('status_code');
+            $grossAmount = $request->input('gross_amount');
+            $signatureKey = $request->input('signature_key');
+            $transactionStatus = $request->input('transaction_status');
+            $fraudStatus = $request->input('fraud_status');
+
+            $expectedSig = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+            if (!hash_equals($expectedSig, (string) $signatureKey)) {
+                $webhookLog->update(['status' => 'FAILED', 'error_message' => 'Signature Midtrans platform tidak valid.']);
+                return $errorResponse('02', 'Bad signature');
+            }
+
+            if (!in_array($transactionStatus, ['capture', 'settlement']) || $fraudStatus === 'deny') {
+                $webhookLog->update(['status' => 'FAILED', 'error_message' => "Pembayaran Midtrans berstatus {$transactionStatus}."]);
+                return $successResponse(null);
+            }
+        } elseif ($provider === 'XENDIT') {
+            $webhookToken = $cfg['webhook_token'] ?? '';
+            $callbackToken = $request->header('x-callback-token');
+
+            if (!empty($webhookToken) && !hash_equals($webhookToken, (string) $callbackToken)) {
+                $webhookLog->update(['status' => 'FAILED', 'error_message' => 'Token callback Xendit platform tidak valid.']);
+                return $errorResponse('02', 'Bad callback token');
+            }
+
+            $status = strtoupper((string) $request->input('status', ''));
+            if (!in_array($status, ['PAID', 'SETTLED'])) {
+                $webhookLog->update(['status' => 'FAILED', 'error_message' => "Pembayaran Xendit berstatus {$status}."]);
+                return $successResponse(null);
+            }
+        } elseif ($provider === 'TRIPAY') {
+            $privateKey = $cfg['private_key'];
+            $callbackSignature = $request->header('X-Callback-Signature');
+            $rawContent = $request->getContent();
+
+            $expectedSig = hash_hmac('sha256', $rawContent, $privateKey);
+            if (!hash_equals($expectedSig, (string) $callbackSignature)) {
+                $webhookLog->update(['status' => 'FAILED', 'error_message' => 'Signature Tripay platform tidak valid.']);
+                return $errorResponse('02', 'Bad signature');
+            }
+
+            $status = strtoupper((string) $request->input('status', ''));
+            if ($status !== 'PAID') {
+                $webhookLog->update(['status' => 'FAILED', 'error_message' => "Pembayaran Tripay berstatus {$status}."]);
                 return $successResponse(null);
             }
         }

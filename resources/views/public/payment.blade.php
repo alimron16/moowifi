@@ -120,17 +120,64 @@
 
                             @if($manualMethods->count() > 0)
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Pilih Rekening Tujuan Transfer:</label>
+                                    <label class="form-label fw-bold">Pilihan Rekening &amp; QRIS Pembayaran:</label>
                                     @foreach($manualMethods as $m)
-                                        <div class="p-3 border rounded mb-2 bg-body">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <span class="badge bg-blue-lt mb-1">{{ $m->provider }}</span>
-                                                    <div class="fw-bold fs-3">{{ $m->account_number }}</div>
-                                                    <div class="text-secondary small">a.n. {{ $m->account_name }}</div>
+                                        @if($m->provider === 'QRIS' || $m->qr_code_image)
+                                            <div class="p-3 border border-purple rounded-3 mb-3 bg-purple-lt shadow-sm">
+                                                <div class="row align-items-center g-3">
+                                                    @if($m->qr_code_image)
+                                                        <div class="col-12 col-sm-auto text-center">
+                                                            <div class="bg-white p-2 rounded-2 border d-inline-block shadow-xs">
+                                                                <img src="{{ asset('storage/' . $m->qr_code_image) }}" alt="QRIS {{ $m->name }}" class="img-fluid" style="max-width: 180px; max-height: 180px; object-fit: contain;">
+                                                            </div>
+                                                            <div class="mt-2">
+                                                                <a href="{{ asset('storage/' . $m->qr_code_image) }}" download="QRIS-{{ $invoice->invoice_number }}.png" class="btn btn-sm btn-white text-purple">
+                                                                    <i class="ti ti-download me-1"></i> Simpan Gambar QRIS
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                    <div class="col">
+                                                        <span class="badge bg-purple text-white fw-bold mb-1">
+                                                            <i class="ti ti-qrcode me-1"></i> QRIS Pembayaran
+                                                        </span>
+                                                        <div class="fw-bold fs-3 text-dark">{{ $m->name }}</div>
+                                                        @if($m->account_number && $m->account_number !== 'QRIS Statis')
+                                                            <div class="text-secondary small mt-1">NMID / ID Merchant: <span class="font-monospace fw-bold text-dark">{{ $m->account_number }}</span></div>
+                                                        @endif
+                                                        @if($m->account_name)
+                                                            <div class="text-secondary small">Merchant: <strong class="text-dark">{{ $m->account_name }}</strong></div>
+                                                        @endif
+                                                        <div class="alert alert-info-lt py-2 px-3 small mt-2 mb-0">
+                                                            <i class="ti ti-scan me-1"></i> Buka aplikasi mobile banking (BCA, Mandiri, BRI, BNI) atau E-Wallet (GoPay, OVO, DANA, ShopeePay), lalu <strong>Scan QRIS</strong> di samping.
+                                                        </div>
+                                                        @if(!empty($m->instructions))
+                                                            <div class="text-secondary small mt-2 fst-italic">{{ $m->instructions }}</div>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @else
+                                            <div class="p-3 border rounded mb-2 bg-body">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <span class="badge bg-blue-lt mb-1">
+                                                            <i class="ti ti-building-bank me-1"></i> {{ $m->provider }}
+                                                        </span>
+                                                        <div class="fw-bold fs-3 font-monospace text-dark" id="copy-bank-{{ $m->id }}">{{ $m->account_number }}</div>
+                                                        <div class="text-secondary small">a.n. <strong class="text-dark">{{ $m->account_name }}</strong> ({{ $m->name }})</div>
+                                                        @if(!empty($m->instructions))
+                                                            <div class="text-muted small mt-1 fst-italic">{{ $m->instructions }}</div>
+                                                        @endif
+                                                    </div>
+                                                    <div>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('copy-bank-{{ $m->id }}').innerText.trim()); alert('Nomor rekening disalin!');">
+                                                            <i class="ti ti-copy me-1"></i> Salin No. Rek
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
 
@@ -141,7 +188,7 @@
                                     <h4 class="card-title mb-3">Konfirmasi Bukti Transfer</h4>
 
                                     <div class="mb-3">
-                                        <label class="form-label required">Rekening / E-Wallet Tujuan</label>
+                                        <label class="form-label required">Rekening / Kanal Tujuan</label>
                                         <select name="payment_method_id" class="form-select" required>
                                             <option value="">Pilih rekening yang Anda transfer...</option>
                                             @foreach($manualMethods as $m)
@@ -201,13 +248,16 @@
                                         @csrf
                                         <input type="hidden" name="payment_method_id" value="{{ $gm->id }}">
 
-                                        <div class="p-3 border rounded mb-3 bg-body text-center">
-                                            <div class="fw-bold fs-3 mb-1">{{ $gm->name }}</div>
+                                        <div class="p-4 border rounded-3 mb-3 bg-body text-center shadow-xs">
+                                            <div class="badge bg-success-lt text-success fw-bold px-3 py-1 mb-2">
+                                                <i class="ti ti-bolt me-1"></i> Verifikasi Otomatis Instan
+                                            </div>
+                                            <div class="fw-bold fs-2 mb-1">Pembayaran Otomatis</div>
                                             <p class="text-secondary small mb-3">
-                                                Mendukung pembayaran instan melalui QRIS, Virtual Account BCA, Mandiri, BRI, BNI, dan gerai minimarket.
+                                                Mendukung QRIS (Semua Bank &amp; E-Wallet), Virtual Account BCA, Mandiri, BRI, BNI, Permata, serta gerai minimarket.
                                             </p>
-                                            <button type="submit" class="btn btn-primary btn-lg w-100">
-                                                <i class="ti ti-qrcode me-1"></i> Bayar Otomatis via {{ $gm->provider }}
+                                            <button type="submit" class="btn btn-primary btn-lg w-100 py-3 fw-bold fs-3 shadow-sm">
+                                                <i class="ti ti-credit-card me-2"></i> Bayar Sekarang (Rp {{ number_format($invoice->total_amount, 0, ',', '.') }})
                                             </button>
                                         </div>
                                     </form>
