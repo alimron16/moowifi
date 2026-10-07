@@ -112,6 +112,7 @@ Route::middleware(['auth', 'tenant_user'])->name('tenant.')->group(function () {
     Route::get('subscription', [\App\Http\Controllers\Tenant\TenantSubscriptionController::class, 'index'])->name('subscription.index');
     Route::post('subscription/upgrade', [\App\Http\Controllers\Tenant\TenantSubscriptionController::class, 'upgrade'])->name('subscription.upgrade');
     Route::get('subscription/{subscription}/payment', [\App\Http\Controllers\Tenant\TenantSubscriptionController::class, 'payment'])->name('subscription.payment');
+    Route::post('subscription/{subscription}/pay-duitku', [\App\Http\Controllers\Tenant\TenantSubscriptionController::class, 'payDuitku'])->name('subscription.pay-duitku');
     Route::get('subscription/{subscription}/confirm-payment', fn(\App\Models\Subscription $subscription) => redirect()->route('tenant.subscription.payment', $subscription->id));
     Route::post('subscription/{subscription}/confirm-payment', [\App\Http\Controllers\Tenant\TenantSubscriptionController::class, 'confirmPayment'])->name('subscription.confirm-payment');
 

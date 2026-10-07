@@ -93,10 +93,34 @@
                         </div>
 
                         <div class="alert alert-info py-2 small mb-0">
-                            <i class="ti ti-info-circle me-1"></i> Silakan transfer <strong>tepat sesuai nominal di atas</strong> ke salah satu rekening resmi platform berikut agar proses verifikasi berjalan instan.
+                            <i class="ti ti-info-circle me-1"></i> Silakan pilih pembayaran instan via <strong>Duitku</strong> atau transfer <strong>tepat sesuai nominal di atas</strong> ke salah satu rekening resmi platform berikut.
                         </div>
                     </div>
                 </div>
+
+                @if(!empty($duitkuActive) && $subscription->status === 'PENDING')
+                    <!-- Card Pembayaran Instan via Duitku -->
+                    <div class="card mb-3 border-primary shadow-sm" style="border-width: 2px;">
+                        <div class="card-header bg-primary-lt d-flex justify-content-between align-items-center">
+                            <h3 class="card-title text-primary fw-bold mb-0">
+                                <i class="ti ti-bolt me-1"></i> Bayar Otomatis via Duitku (Instan &amp; Otomatis Aktif)
+                            </h3>
+                            <span class="badge bg-success text-white">Rekomendasi</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="small text-secondary mb-3">
+                                Bayar instan menggunakan <strong>QRIS (BCA, Mandiri, GoPay, OVO, ShopeePay, DANA)</strong> atau <strong>Virtual Account Bank</strong>. Tanpa perlu kirim bukti transfer, paket dan kuota langganan Anda akan langsung aktif otomatis dalam beberapa detik setelah transaksi selesai.
+                            </p>
+                            <form action="{{ route('tenant.subscription.pay-duitku', $subscription->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary w-100 py-2 fs-3 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                                    <i class="ti ti-qrcode fs-2"></i>
+                                    <span>Bayar Sekarang via Duitku (Rp {{ number_format($subscription->amount, 0, ',', '.') }})</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @endif
 
                 <!-- Card Rekening Tujuan Transfer Super Admin -->
                 <div class="card">
@@ -224,7 +248,7 @@
                             <div class="text-center">
                                 <span class="text-secondary small d-block mb-2">Butuh bantuan transaksi?</span>
                                 @php
-                                    $adminPhone = preg_replace('/[^0-9]/', '', $platformProfile['contact_phone'] ?? '081122334455');
+                                    $adminPhone = preg_replace('/[^0-9]/', '', $platformProfile['contact_phone'] ?? '088976291662');
                                     if (str_starts_with($adminPhone, '0')) {
                                         $adminPhone = '62' . substr($adminPhone, 1);
                                     }

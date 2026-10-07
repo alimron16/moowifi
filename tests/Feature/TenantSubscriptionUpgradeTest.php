@@ -102,4 +102,52 @@ class TenantSubscriptionUpgradeTest extends TestCase
         $response->assertSessionHas('error');
         $this->assertEquals(450, $this->tenant->fresh()->getMaxCustomers());
     }
+
+    public function test_tenant_can_pay_subscription_online_via_duitku_and_webhook_activates_it(): void
+    {
+        \App\Models\PlatformSetting::set('platform_gateways', [
+            'DUITKU' => [
+                'merchant_code' => 'D12345',
+                'api_key' => 'secret12345',
+                'environment' => 'sandbox',
+                'is_active' => true,
+            ],
+        ]);
+
+        $planEnterprise = SaasPlan::where('code', 'ENTERPRISE')->first();
+
+        // 1. Order enterprise
+        $this->actingAs($this->user)->post(route('tenant.subscription.upgrade'), [
+            'saas_plan_id' => $planEnterprise->id,
+            'billing_cycle' => 'monthly',
+        ]);
+
+        $order = Subscription::where('saas_plan_id', $planEnterprise->id)->first();
+        $this->assertNotNull($order);
+
+        // 2. Akses halaman pembayaran -> melihat opsi Duitku
+        $paymentPage = $this->actingAs($this->user)->get(route('tenant.subscription.payment', $order->id));
+        $paymentPage->assertStatus(200);
+        $paymentPage->assertSee('Bayar Otomatis via Duitku');
+
+        // 3. Simulasi webhook Duitku sukses
+        $merchantCode = 'D12345';
+        $amount = (string)(int)round($order->amount);
+        $merchantOrderId = $order->order_number;
+        $apiKey = 'secret12345';
+        $signature = md5($merchantCode . $amount . $merchantOrderId . $apiKey);
+
+        $webhookResponse = $this->postJson('/api/webhooks/duitku', [
+            'merchantCode' => $merchantCode,
+            'amount' => $amount,
+            'merchantOrderId' => $merchantOrderId,
+            'signature' => $signature,
+            'resultCode' => '00',
+        ]);
+
+        $webhookResponse->assertStatus(200);
+        $this->assertEquals('ACTIVE', $order->fresh()->status);
+        $this->assertEquals('DUITKU', $order->fresh()->payment_method);
+        $this->assertEquals(2000, $this->tenant->fresh()->getMaxCustomers());
+    }
 }

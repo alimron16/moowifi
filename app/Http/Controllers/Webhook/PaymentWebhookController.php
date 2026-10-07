@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Webhook;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\PaymentTransaction;
+use App\Models\PlatformSetting;
+use App\Models\Subscription;
 use App\Models\WebhookLog;
 use App\Services\BillingService;
 use App\Services\Payment\PaymentGatewayManager;
@@ -90,14 +93,20 @@ class PaymentWebhookController extends Controller
             return $errorResponse('01', 'Order ID not provided');
         }
 
-        // 2. Find Invoice across all tenants
+        // 2. Cek apakah ini pesanan Langganan SaaS Platform (ORD-SUB-...)
+        $subscription = Subscription::where('order_number', $orderId)->first();
+        if ($subscription) {
+            return $this->handleSubscriptionPayment($provider, $request, $subscription, $webhookLog, $successResponse, $errorResponse);
+        }
+
+        // 3. Find Customer Invoice across all tenants
         $invoice = Invoice::withoutGlobalScopes()
             ->with(['tenant', 'customer'])
             ->where('invoice_number', $orderId)
             ->first();
 
         if (!$invoice) {
-            $webhookLog->update(['status' => 'FAILED', 'error_message' => 'Invoice nomor ' . $orderId . ' tidak ditemukan.']);
+            $webhookLog->update(['status' => 'FAILED', 'error_message' => 'Invoice atau Order nomor ' . $orderId . ' tidak ditemukan.']);
             return $errorResponse('01', 'Invoice not found');
         }
 
@@ -163,5 +172,82 @@ class PaymentWebhookController extends Controller
 
         $webhookLog->update(['status' => 'IGNORED', 'error_message' => 'Status bukan sukses: ' . $webhookResult->status]);
         return $successResponse($webhookResult);
+    }
+
+    protected function handleSubscriptionPayment(
+        string $provider,
+        Request $request,
+        Subscription $subscription,
+        WebhookLog $webhookLog,
+        callable $successResponse,
+        callable $errorResponse
+    ) {
+        $platformGateways = PlatformSetting::get('platform_gateways', []);
+        $cfg = $platformGateways[$provider] ?? [];
+
+        if (empty($cfg['merchant_code']) || empty($cfg['api_key'])) {
+            $webhookLog->update(['status' => 'FAILED', 'error_message' => "Platform gateway {$provider} belum dikonfigurasi di Pengaturan Super Admin."]);
+            return $errorResponse('01', 'Platform gateway unconfigured');
+        }
+
+        // Signature Verification for Platform Duitku
+        if ($provider === 'DUITKU') {
+            $merchantCode = $cfg['merchant_code'];
+            $apiKey = $cfg['api_key'];
+            $amount = $request->input('amount');
+            $merchantOrderId = $request->input('merchantOrderId');
+            $signature = $request->input('signature');
+            $resultCode = $request->input('resultCode');
+
+            $expectedSig = md5($merchantCode . $amount . $merchantOrderId . $apiKey);
+            if ($signature !== $expectedSig) {
+                $webhookLog->update(['status' => 'FAILED', 'error_message' => 'Tanda tangan Duitku platform tidak valid.']);
+                return $errorResponse('02', 'Bad signature');
+            }
+
+            if ($resultCode !== '00') {
+                $webhookLog->update(['status' => 'FAILED', 'error_message' => "Pembayaran Duitku gagal dengan resultCode {$resultCode}."]);
+                return $successResponse(null);
+            }
+        }
+
+        // Idempotency: jika sudah ACTIVE, respon sukses langsung
+        if ($subscription->status === 'ACTIVE') {
+            $webhookLog->update(['status' => 'IGNORED', 'error_message' => 'Langganan sudah lunas dan aktif sebelumnya.']);
+            return $successResponse(null);
+        }
+
+        // Process activation inside DB transaction
+        DB::transaction(function () use ($subscription, $provider, $webhookLog) {
+            $tenant = $subscription->tenant;
+            $duration = $subscription->billing_cycle === 'yearly' ? 12 : 1;
+
+            $subscription->update([
+                'status' => 'ACTIVE',
+                'paid_at' => now(),
+                'payment_method' => $provider,
+                'starts_at' => now(),
+                'ends_at' => now()->addMonths($duration),
+            ]);
+
+            if ($tenant) {
+                $tenant->update([
+                    'saas_plan_id' => $subscription->saas_plan_id,
+                    'status' => 'ACTIVE',
+                    'trial_ends_at' => null,
+                ]);
+            }
+
+            AuditLog::create([
+                'tenant_id' => $tenant?->id,
+                'user_id' => null,
+                'event' => 'SUBSCRIPTION_PAID_ONLINE',
+                'description' => "Langganan paket {$subscription->saasPlan?->name} ({$subscription->order_number}) otomatis aktif via gateway platform {$provider}.",
+            ]);
+
+            $webhookLog->update(['status' => 'PROCESSED']);
+        });
+
+        return $successResponse(null);
     }
 }
