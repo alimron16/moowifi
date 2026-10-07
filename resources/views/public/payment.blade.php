@@ -119,6 +119,35 @@
                             @endphp
 
                             @if($manualMethods->count() > 0)
+                                @php
+                                    $uniqueCode = $invoice->unique_code > 0 ? $invoice->unique_code : 0;
+                                    $manualAmount = $invoice->manual_amount;
+                                @endphp
+
+                                <!-- Banner Nominal Transfer Manual Termasuk 3 Digit Kode Unik -->
+                                <div class="alert alert-warning-lt border-warning mb-4">
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                        <div>
+                                            <div class="text-secondary small fw-medium">Total Nominal Transfer Manual (Termasuk 3 Digit Kode Unik):</div>
+                                            <div class="display-6 fw-bold text-danger mt-1">
+                                                Rp {{ number_format($manualAmount, 0, ',', '.') }}
+                                            </div>
+                                            <div class="small text-muted mt-1">
+                                                Harga Tagihan: Rp {{ number_format($invoice->total_amount, 0, ',', '.') }} &bull; 
+                                                Kode Unik Verifikasi: <strong class="badge bg-danger text-white px-2 py-1">+{{ $uniqueCode }}</strong>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="navigator.clipboard.writeText('{{ (int)$manualAmount }}'); alert('Nominal transfer Rp {{ number_format($manualAmount, 0, ',', '.') }} berhasil disalin!');">
+                                                <i class="ti ti-copy me-1"></i> Salin Nominal Tepat
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="small text-danger fw-semibold mt-2 pt-2 border-top border-warning-subtle">
+                                        <i class="ti ti-alert-triangle me-1"></i> <strong>PENTING:</strong> Mohon transfer <strong>TEPAT</strong> hingga 3 digit terakhir (<span class="font-monospace fw-bold">Rp {{ number_format($manualAmount, 0, ',', '.') }}</span>) agar mutasi dapat diverifikasi cepat oleh admin RT/RW Net.
+                                    </div>
+                                </div>
+
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Pilihan Rekening &amp; QRIS Pembayaran:</label>
                                     @foreach($manualMethods as $m)
@@ -211,7 +240,8 @@
                                     <div class="row g-2 mb-3">
                                         <div class="col-6">
                                             <label class="form-label required">Nominal Ditransfer</label>
-                                            <input type="number" name="transfer_amount" class="form-control" value="{{ (int)$invoice->total_amount }}" required>
+                                            <input type="number" name="transfer_amount" class="form-control" value="{{ (int)$manualAmount }}" required>
+                                            <small class="form-hint text-danger">Termasuk kode unik: Rp {{ number_format($manualAmount, 0, ',', '.') }}</small>
                                         </div>
                                         <div class="col-6">
                                             <label class="form-label required">Tanggal Transfer</label>
@@ -256,6 +286,27 @@
                                             <p class="text-secondary small mb-3">
                                                 Mendukung QRIS (Semua Bank &amp; E-Wallet), Virtual Account BCA, Mandiri, BRI, BNI, Permata, serta gerai minimarket.
                                             </p>
+
+                                            @if($gm->provider === 'DUITKU')
+                                                <div class="mb-3 text-start">
+                                                    <label class="form-label small text-secondary">Pilih Saluran Pembayaran (Opsional):</label>
+                                                    <select name="payment_channel" class="form-select">
+                                                        <option value="" selected>Semua Saluran (Pilih di Halaman Checkout)</option>
+                                                        <optgroup label="QRIS">
+                                                            <option value="NQ">QRIS (Semua Bank &amp; E-Wallet)</option>
+                                                        </optgroup>
+                                                        <optgroup label="Virtual Account">
+                                                            <option value="BC">BCA Virtual Account</option>
+                                                            <option value="M2">Mandiri Virtual Account</option>
+                                                            <option value="BR">BRI Virtual Account (BRIVA)</option>
+                                                            <option value="I1">BNI Virtual Account</option>
+                                                            <option value="BT">Permata Virtual Account</option>
+                                                            <option value="B1">CIMB Niaga Virtual Account</option>
+                                                        </optgroup>
+                                                    </select>
+                                                </div>
+                                            @endif
+
                                             <button type="submit" class="btn btn-primary btn-lg w-100 py-3 fw-bold fs-3 shadow-sm">
                                                 <i class="ti ti-credit-card me-2"></i> Bayar Sekarang (Rp {{ number_format($invoice->total_amount, 0, ',', '.') }})
                                             </button>

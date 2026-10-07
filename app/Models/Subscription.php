@@ -15,6 +15,7 @@ class Subscription extends Model
         'saas_plan_id',
         'order_number',
         'amount',
+        'unique_code',
         'billing_cycle',
         'payment_method',
         'proof_path',
@@ -28,10 +29,26 @@ class Subscription extends Model
     {
         return [
             'amount' => 'decimal:2',
+            'unique_code' => 'integer',
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
             'paid_at' => 'datetime',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function ($subscription) {
+            if (empty($subscription->unique_code) || $subscription->unique_code <= 0) {
+                $subscription->unique_code = rand(100, 999);
+            }
+        });
+    }
+
+    public function getManualAmountAttribute(): float
+    {
+        $code = $this->unique_code > 0 ? $this->unique_code : 0;
+        return (float) ($this->amount + $code);
     }
 
     public function tenant(): BelongsTo

@@ -82,6 +82,11 @@
                             <div class="display-6 fw-bold text-success">
                                 Rp {{ number_format($subscription->amount, 0, ',', '.') }}
                             </div>
+                            @if($subscription->unique_code > 0)
+                                <div class="small text-muted mt-1">
+                                    Transfer Manual (+Kode Unik): <strong class="text-danger">Rp {{ number_format($subscription->manual_amount, 0, ',', '.') }}</strong>
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Hubungi Admin Terintegrasi -->
@@ -89,7 +94,8 @@
                             <div class="text-secondary small mb-2 text-center">Butuh bantuan transaksi atau konfirmasi?</div>
                             @php
                                 $adminPhone = '6288976291662';
-                                $waText = urlencode("Halo Admin MooWiFi, saya pemilik RT/RW Net ({$tenant->name}) ingin konfirmasi pembayaran langganan paket {$subscription->saasPlan?->name} (No Order: {$subscription->order_number}) sebesar Rp " . number_format($subscription->amount, 0, ',', '.') . ".");
+                                $manualTransferTotal = $subscription->manual_amount;
+                                $waText = urlencode("Halo Admin MooWiFi, saya pemilik RT/RW Net ({$tenant->name}) ingin konfirmasi pembayaran langganan paket {$subscription->saasPlan?->name} (No Order: {$subscription->order_number}) sebesar Rp " . number_format($manualTransferTotal, 0, ',', '.') . ".");
                             @endphp
                             <a href="https://wa.me/{{ $adminPhone }}?text={{ $waText }}" target="_blank" class="btn btn-outline-success w-100 py-2 d-inline-flex align-items-center justify-content-center gap-2">
                                 <i class="ti ti-brand-whatsapp fs-2"></i>
@@ -236,10 +242,39 @@
                                  TAB 2: TRANSFER BANK MANUAL
                             ============================================================ -->
                             <div class="tab-pane" id="tab-manual" role="tabpanel">
+                                @php
+                                    $uniqueCode = $subscription->unique_code > 0 ? $subscription->unique_code : 0;
+                                    $manualAmount = $subscription->manual_amount;
+                                @endphp
+
+                                <!-- Banner Kode Unik Transfer Manual -->
+                                <div class="alert alert-warning-lt border-warning mb-4">
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                        <div>
+                                            <div class="text-secondary small fw-medium">Total Nominal Transfer Manual (Termasuk 3 Digit Kode Unik):</div>
+                                            <div class="display-6 fw-bold text-danger mt-1">
+                                                Rp {{ number_format($manualAmount, 0, ',', '.') }}
+                                            </div>
+                                            <div class="small text-muted mt-1">
+                                                Harga Paket: Rp {{ number_format($subscription->amount, 0, ',', '.') }} &bull; 
+                                                Kode Unik Verifikasi: <strong class="badge bg-danger text-white px-2 py-1">+{{ $uniqueCode }}</strong>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="navigator.clipboard.writeText('{{ (int)$manualAmount }}'); alert('Nominal transfer Rp {{ number_format($manualAmount, 0, ',', '.') }} berhasil disalin!');">
+                                                <i class="ti ti-copy me-1"></i> Salin Nominal Tepat
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="small text-danger fw-semibold mt-2 pt-2 border-top border-warning-subtle">
+                                        <i class="ti ti-alert-triangle me-1"></i> <strong>PENTING:</strong> Mohon transfer <strong>TEPAT</strong> hingga 3 digit terakhir (<span class="font-monospace fw-bold">Rp {{ number_format($manualAmount, 0, ',', '.') }}</span>) agar mutasi rekening platform dapat diverifikasi cepat oleh Admin.
+                                    </div>
+                                </div>
+
                                 <!-- Bagian Rekening Resmi -->
                                 <div class="mb-4">
                                     <label class="form-label text-secondary fw-semibold mb-2">
-                                        1. Silakan transfer tepat sebesar <strong class="text-success">Rp {{ number_format($subscription->amount, 0, ',', '.') }}</strong> ke salah satu <strong>Rekening Resmi Pembayaran Platform</strong> berikut:
+                                        1. Rekening Resmi Pembayaran Platform MooWiFi:
                                     </label>
                                     
                                     <div class="row g-2">

@@ -58,7 +58,16 @@ class Invoice extends Model
             if (empty($invoice->payment_token)) {
                 $invoice->payment_token = (string) Str::uuid();
             }
+            if (empty($invoice->unique_code) || $invoice->unique_code <= 0) {
+                $invoice->unique_code = rand(100, 999);
+            }
         });
+    }
+
+    public function getManualAmountAttribute(): float
+    {
+        $code = $this->unique_code > 0 ? $this->unique_code : 0;
+        return (float) ($this->total_amount + $code);
     }
 
     public function customer(): BelongsTo

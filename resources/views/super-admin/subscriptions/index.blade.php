@@ -46,7 +46,13 @@
                                     <span class="badge bg-purple-lt">{{ $sub->saasPlan->name ?? 'Paket Kustom' }}</span>
                                 </td>
                                 <td class="fw-bold">
-                                    Rp {{ number_format($sub->saasPlan?->price ?? 0, 0, ',', '.') }}/bln
+                                    <div>Rp {{ number_format($sub->amount, 0, ',', '.') }}</div>
+                                    @if($sub->unique_code > 0)
+                                        <div class="small text-danger" style="font-size: 0.75rem;">
+                                            Transfer: <strong>Rp {{ number_format($sub->manual_amount, 0, ',', '.') }}</strong>
+                                            <span class="badge bg-danger-lt text-danger">+{{ $sub->unique_code }}</span>
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="text-secondary small font-monospace">
                                     {{ $sub->starts_at ? $sub->starts_at->format('d/m/Y') : '-' }}

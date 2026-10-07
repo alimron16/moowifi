@@ -71,8 +71,19 @@
                                     <div class="fw-medium">{{ $c->sender_name }}</div>
                                     <div class="text-secondary small">{{ $c->bank_name }} ({{ $c->account_number ?? '-' }})</div>
                                 </td>
-                                <td class="fw-bold text-success">
-                                    Rp {{ number_format($c->transfer_amount, 0, ',', '.') }}
+                                <td>
+                                    <div class="fw-bold text-success fs-3">
+                                        Rp {{ number_format($c->transfer_amount, 0, ',', '.') }}
+                                    </div>
+                                    <div class="small text-muted mt-1" style="font-size: 0.75rem;">
+                                        Tagihan: Rp {{ number_format($c->invoice->total_amount, 0, ',', '.') }}
+                                        @if($c->invoice->unique_code > 0)
+                                            <span class="badge bg-danger-lt text-danger fw-bold ms-1" title="Kode Unik 3 Digit">+{{ $c->invoice->unique_code }}</span>
+                                        @endif
+                                        @if((int)$c->transfer_amount === (int)$c->invoice->manual_amount)
+                                            <span class="badge bg-success-lt text-success ms-1"><i class="ti ti-check"></i> Pas</span>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="d-none d-md-table-cell">{{ $c->transfer_date->format('d/m/Y') }}</td>
                                 <td>

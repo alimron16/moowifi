@@ -320,4 +320,40 @@ class MultiGatewayAndWhatsAppQrTest extends TestCase
         $this->assertEquals('ACTIVE', $subscription->fresh()->status);
         $this->assertEquals('ACTIVE', $this->tenant->fresh()->status);
     }
+
+    public function test_manual_payment_unique_3_digit_code_for_subscription_and_invoice(): void
+    {
+        // 1. Subscription unique code
+        $subscription = \App\Models\Subscription::create([
+            'tenant_id' => $this->tenant->id,
+            'saas_plan_id' => \App\Models\SaasPlan::first()->id,
+            'order_number' => 'ORD-SUB-' . date('Ym') . '-1234',
+            'amount' => 149000,
+            'billing_cycle' => 'monthly',
+            'status' => 'PENDING',
+        ]);
+
+        $this->assertGreaterThanOrEqual(100, $subscription->unique_code);
+        $this->assertLessThanOrEqual(999, $subscription->unique_code);
+        $this->assertEquals($subscription->amount + $subscription->unique_code, $subscription->manual_amount);
+
+        // Check subscription payment page renders unique code
+        $subPageResponse = $this->actingAs($this->user)->get(route('tenant.subscription.payment', $subscription->id));
+        $subPageResponse->assertOk();
+        $subPageResponse->assertSee('Total Nominal Transfer Manual (Termasuk 3 Digit Kode Unik)');
+        $subPageResponse->assertSee(number_format($subscription->manual_amount, 0, ',', '.'));
+
+        // 2. Customer invoice unique code
+        $invoice = Invoice::withoutGlobalScopes()->where('tenant_id', $this->tenant->id)->first();
+        $this->assertNotNull($invoice);
+        $this->assertGreaterThanOrEqual(100, $invoice->unique_code);
+        $this->assertLessThanOrEqual(999, $invoice->unique_code);
+        $this->assertEquals($invoice->total_amount + $invoice->unique_code, $invoice->manual_amount);
+
+        // Check public payment page renders unique code
+        $payPageResponse = $this->get(route('payment.show', $invoice->payment_token));
+        $payPageResponse->assertOk();
+        $payPageResponse->assertSee('Total Nominal Transfer Manual (Termasuk 3 Digit Kode Unik)');
+        $payPageResponse->assertSee(number_format($invoice->manual_amount, 0, ',', '.'));
+    }
 }
