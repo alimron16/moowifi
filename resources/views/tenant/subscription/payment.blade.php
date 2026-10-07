@@ -3,7 +3,7 @@
 @section('title', 'Pembayaran Langganan SaaS')
 
 @section('tenant-content')
-<div class="page-header d-print-none">
+<div class="page-header d-print-none mb-3">
     <div class="container-xl">
         <div class="row g-2 align-items-center">
             <div class="col">
@@ -21,21 +21,7 @@
 
 <div class="page-body">
     <div class="container-xl">
-        {{-- Flash Alerts --}}
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
-                <i class="ti ti-check me-2"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-                <i class="ti ti-alert-triangle me-2"></i> {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
+        {{-- Form Validation Errors --}}
         @if($errors->any())
             <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
                 <i class="ti ti-alert-circle me-2"></i> <strong>Mohon periksa formulir konfirmasi:</strong>
@@ -50,12 +36,12 @@
 
         <div class="row g-3">
             <!-- ============================================================
-                 KOLOM KIRI: RINGKASAN TAGIHAN & BANTUAN (STICKY)
+                 KOLOM KIRI: RINGKASAN TAGIHAN & HUBUNGI ADMIN (STICKY)
             ============================================================ -->
             <div class="col-12 col-lg-4">
-                <div class="card mb-3 shadow-sm border-0">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span class="text-secondary small fw-medium">Ringkasan Tagihan</span>
+                <div class="card shadow-sm border-0 sticky-top" style="top: 1.5rem; z-index: 10;">
+                    <div class="card-header d-flex justify-content-between align-items-center py-3">
+                        <span class="text-secondary fw-semibold small">Ringkasan Tagihan</span>
                         <div>
                             @if($subscription->status === 'WAITING_VERIFICATION')
                                 <span class="badge bg-yellow text-dark px-2 py-1">
@@ -72,7 +58,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-4">
                         <div class="mb-3 pb-3 border-bottom">
                             <span class="text-secondary small d-block">Nomor Pesanan:</span>
                             <div class="fw-bold font-monospace text-dark fs-3">
@@ -91,40 +77,35 @@
                             </div>
                         </div>
 
-                        <div>
-                            <span class="text-secondary small d-block">Total Nominal:</span>
+                        <div class="mb-3 pb-3 border-bottom">
+                            <span class="text-secondary small d-block">Total Nominal Tagihan:</span>
                             <div class="display-6 fw-bold text-success">
                                 Rp {{ number_format($subscription->amount, 0, ',', '.') }}
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Card Butuh Bantuan / Kontak Admin -->
-                <div class="card shadow-sm border-0">
-                    <div class="card-body text-center p-3">
-                        <div class="text-secondary small mb-2">Butuh bantuan transaksi atau konfirmasi?</div>
-                        @php
-                            $adminPhone = preg_replace('/[^0-9]/', '', $platformProfile['contact_phone'] ?? '088976291662');
-                            if (str_starts_with($adminPhone, '0')) {
-                                $adminPhone = '62' . substr($adminPhone, 1);
-                            }
-                            $waText = urlencode("Halo Admin MooWiFi, saya pemilik RT/RW Net ({$tenant->name}) ingin konfirmasi pembayaran langganan paket {$subscription->saasPlan?->name} (No Order: {$subscription->order_number}) sebesar Rp " . number_format($subscription->amount, 0, ',', '.') . ".");
-                        @endphp
-                        <a href="https://wa.me/{{ $adminPhone }}?text={{ $waText }}" target="_blank" class="btn btn-outline-success w-100 d-inline-flex align-items-center justify-content-center gap-2">
-                            <i class="ti ti-brand-whatsapp fs-3"></i>
-                            <span>Hubungi Admin</span>
-                        </a>
+                        <!-- Hubungi Admin Terintegrasi -->
+                        <div class="pt-1">
+                            <div class="text-secondary small mb-2 text-center">Butuh bantuan transaksi atau konfirmasi?</div>
+                            @php
+                                $adminPhone = '6288976291662';
+                                $waText = urlencode("Halo Admin MooWiFi, saya pemilik RT/RW Net ({$tenant->name}) ingin konfirmasi pembayaran langganan paket {$subscription->saasPlan?->name} (No Order: {$subscription->order_number}) sebesar Rp " . number_format($subscription->amount, 0, ',', '.') . ".");
+                            @endphp
+                            <a href="https://wa.me/{{ $adminPhone }}?text={{ $waText }}" target="_blank" class="btn btn-outline-success w-100 py-2 d-inline-flex align-items-center justify-content-center gap-2">
+                                <i class="ti ti-brand-whatsapp fs-2"></i>
+                                <span class="fw-semibold">Hubungi Admin</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- ============================================================
-                 KOLOM KANAN: PILIHAN METODE PEMBAYARAN
+                 KOLOM KANAN: PILIHAN METODE PEMBAYARAN (TABEL CLEAN)
             ============================================================ -->
             <div class="col-12 col-lg-8">
 
-                {{-- Status Jika Sudah Menunggu Verifikasi --}}
+                {{-- Status Jika Sudah Menunggu Verifikasi Manual --}}
                 @if($subscription->status === 'WAITING_VERIFICATION')
                     <div class="card border-warning mb-3 shadow-sm bg-warning-lt">
                         <div class="card-body">
@@ -138,7 +119,7 @@
                             <div class="hr my-3"></div>
                             <div class="row align-items-center g-2">
                                 <div class="col-md-6 text-secondary small">
-                                    Metode Pembayaran: <strong class="text-dark">{{ $subscription->payment_method }}</strong>
+                                    Metode Transfer: <strong class="text-dark">{{ $subscription->payment_method }}</strong>
                                 </div>
                                 <div class="col-md-6 text-md-end">
                                     @if($subscription->proof_path)
@@ -152,169 +133,187 @@
                     </div>
                 @endif
 
-                {{-- OPSI 1: PEMBAYARAN INSTAN VIA DUITKU (JIKA AKTIF & BELUM LUNAS) --}}
-                @if(!empty($duitkuActive) && $subscription->status === 'PENDING')
-                    <div class="card mb-3 border-primary shadow-sm" style="border-width: 2px;">
-                        <div class="card-header bg-primary-lt d-flex justify-content-between align-items-center py-3">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="badge bg-primary text-white p-2 rounded">
-                                    <i class="ti ti-bolt fs-3"></i>
-                                </span>
-                                <div>
-                                    <h3 class="card-title text-primary fw-bold mb-0">Metode 1: Bayar Otomatis via Duitku</h3>
-                                    <div class="text-muted small">QRIS (Semua E-Wallet &amp; m-Banking) &bull; Virtual Account &bull; Aktivasi Otomatis Instan</div>
-                                </div>
-                            </div>
-                            <span class="badge bg-success text-white px-2 py-1">Otomatis Aktif</span>
-                        </div>
-                        <div class="card-body p-4">
-                            <p class="text-secondary mb-3">
-                                Bayar instan menggunakan <strong>QRIS</strong> atau <strong>Virtual Account Bank</strong>. Sistem akan langsung memverifikasi transaksi dan mengaktifkan paket Anda secara otomatis dalam beberapa detik tanpa perlu unggah bukti transfer.
-                            </p>
-                            <form action="{{ route('tenant.subscription.pay-duitku', $subscription->id) }}" method="POST">
-                                @csrf
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold text-dark">Pilih Jalur Pembayaran Duitku:</label>
-                                    <select name="payment_channel" class="form-select">
-                                        <option value="" selected>Semua Metode (Duitku POP Checkout: QRIS &amp; Virtual Account)</option>
-                                        <optgroup label="QRIS Instan">
-                                            <option value="NQ">QRIS (BCA, Mandiri, GoPay, OVO, ShopeePay, DANA, dll)</option>
-                                            <option value="SP">QRIS ShopeePay</option>
-                                        </optgroup>
-                                        <optgroup label="Virtual Account Bank">
-                                            <option value="BC">BCA Virtual Account</option>
-                                            <option value="M2">Mandiri Virtual Account</option>
-                                            <option value="BR">BRI Virtual Account (BRIVA)</option>
-                                            <option value="I1">BNI Virtual Account</option>
-                                            <option value="BT">Permata Bank Virtual Account</option>
-                                            <option value="B1">CIMB Niaga Virtual Account</option>
-                                            <option value="BV">BSI Virtual Account</option>
-                                        </optgroup>
-                                        <optgroup label="E-Wallet">
-                                            <option value="DA">DANA</option>
-                                            <option value="OV">OVO</option>
-                                            <option value="SA">ShopeePay Apps</option>
-                                        </optgroup>
-                                        <optgroup label="Kartu Kredit">
-                                            <option value="VC">Kartu Kredit (Visa / MasterCard / JCB)</option>
-                                        </optgroup>
-                                    </select>
-                                    <small class="form-hint text-muted">Pilih jalur langsung (QRIS / Virtual Account bank pilihan) atau pilih Semua Metode.</small>
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100 py-3 fs-3 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm">
-                                    <i class="ti ti-qrcode fs-2"></i>
-                                    <span>Bayar Sekarang via Duitku (Rp {{ number_format($subscription->amount, 0, ',', '.') }})</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="text-center my-3 text-muted position-relative">
-                        <span class="bg-white px-3 fw-semibold small text-secondary position-relative" style="z-index: 2;">
-                            ATAU TRANSFER BANK MANUAL
-                        </span>
-                        <div class="position-absolute top-50 start-0 end-0 border-top" style="z-index: 1;"></div>
-                    </div>
-                @endif
-
-                {{-- OPSI 2: TRANSFER BANK MANUAL & FORM UPLOAD BUKTI (TERPADU DALAM 1 CARD) --}}
+                {{-- Card Utama Nav-Tabs Pembayaran --}}
                 <div class="card shadow-sm border-0">
-                    <div class="card-header d-flex justify-content-between align-items-center py-3">
-                        <h3 class="card-title text-dark fw-bold mb-0">
-                            <i class="ti ti-building-bank me-2 text-primary"></i> 
-                            @if(!empty($duitkuActive))
-                                Metode 2: Transfer Bank Manual (Rekening Resmi Pembayaran Platform)
-                            @else
-                                Rekening Resmi Pembayaran Platform
-                            @endif
-                        </h3>
-                        <span class="badge bg-secondary-lt text-dark">Verifikasi Manual</span>
+                    <div class="card-header border-bottom-0 pb-0 pt-3 px-3">
+                        <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a href="#tab-otomatis" class="nav-link active fw-bold py-2 px-3" data-bs-toggle="tab" aria-selected="true" role="tab">
+                                    <i class="ti ti-bolt text-primary me-2 fs-2"></i>
+                                    <span>Bayar Otomatis</span>
+                                    <span class="badge bg-success-lt ms-2 text-success">Instan</span>
+                                </a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a href="#tab-manual" class="nav-link fw-bold py-2 px-3" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">
+                                    <i class="ti ti-building-bank text-secondary me-2 fs-2"></i>
+                                    <span>Transfer Bank Manual</span>
+                                    <span class="badge bg-secondary-lt ms-2 text-dark">Verifikasi</span>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
 
                     <div class="card-body p-4">
-                        <!-- Daftar Rekening Bank Platform -->
-                        <div class="mb-4">
-                            <label class="form-label text-secondary fw-semibold mb-2">
-                                1. Silakan transfer tepat sebesar <strong class="text-success">Rp {{ number_format($subscription->amount, 0, ',', '.') }}</strong> ke salah satu rekening resmi berikut:
-                            </label>
-                            
-                            <div class="row g-2">
-                                @forelse($manualBanks as $index => $bank)
-                                    <div class="col-12 col-md-6">
-                                        <div class="p-3 border rounded-3 bg-light h-100">
-                                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                                <span class="badge bg-primary text-white fw-bold">{{ $bank['bank_name'] ?? 'BANK' }}</span>
-                                                <button type="button" class="btn btn-sm btn-white py-1 px-2" onclick="copyAccNumber('accNumber-{{ $index }}')">
-                                                    <i class="ti ti-copy me-1"></i> Salin
-                                                </button>
-                                            </div>
-                                            <div class="font-monospace fs-2 fw-bold text-dark mt-1" id="accNumber-{{ $index }}">
-                                                {{ $bank['account_number'] ?? '-' }}
-                                            </div>
-                                            <div class="small text-secondary mt-1">
-                                                Atas Nama: <strong class="text-dark">{{ $bank['account_name'] ?? '-' }}</strong>
-                                            </div>
-                                            @if(!empty($bank['instructions']))
-                                                <div class="small text-muted mt-2 border-top pt-2 fst-italic">
-                                                    {{ $bank['instructions'] }}
+                        <div class="tab-content">
+                            <!-- ============================================================
+                                 TAB 1: BAYAR OTOMATIS (QRIS & VIRTUAL ACCOUNT)
+                            ============================================================ -->
+                            <div class="tab-pane active show" id="tab-otomatis" role="tabpanel">
+                                @if(!empty($duitkuActive) && $subscription->status === 'PENDING')
+                                    <div class="alert alert-info-lt mb-4 border-0">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="ti ti-shield-check fs-2 text-info"></i>
+                                            <div>
+                                                <strong>Aktivasi Otomatis &amp; Instan</strong>
+                                                <div class="small text-secondary">
+                                                    Pembayaran diverifikasi secara real-time dalam hitungan detik tanpa perlu konfirmasi atau unggah struk manual.
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form action="{{ route('tenant.subscription.pay-duitku', $subscription->id) }}" method="POST">
+                                        @csrf
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold text-dark">Pilih Saluran Pembayaran:</label>
+                                            <select name="payment_channel" class="form-select form-select-lg">
+                                                <option value="" selected>Semua Saluran (Pilih di Halaman Checkout: QRIS / Virtual Account)</option>
+                                                <optgroup label="QRIS (Semua E-Wallet &amp; m-Banking)">
+                                                    <option value="NQ">QRIS (BCA, Mandiri, GoPay, OVO, ShopeePay, DANA)</option>
+                                                    <option value="SP">QRIS ShopeePay</option>
+                                                </optgroup>
+                                                <optgroup label="Virtual Account Bank">
+                                                    <option value="BC">BCA Virtual Account</option>
+                                                    <option value="M2">Mandiri Virtual Account</option>
+                                                    <option value="BR">BRI Virtual Account (BRIVA)</option>
+                                                    <option value="I1">BNI Virtual Account</option>
+                                                    <option value="BT">Permata Bank Virtual Account</option>
+                                                    <option value="B1">CIMB Niaga Virtual Account</option>
+                                                    <option value="BV">BSI Virtual Account</option>
+                                                </optgroup>
+                                                <optgroup label="E-Wallet">
+                                                    <option value="DA">DANA</option>
+                                                    <option value="OV">OVO</option>
+                                                    <option value="SA">ShopeePay Apps</option>
+                                                </optgroup>
+                                                <optgroup label="Kartu Kredit">
+                                                    <option value="VC">Kartu Kredit (Visa / MasterCard / JCB)</option>
+                                                </optgroup>
+                                            </select>
+                                            <small class="form-hint text-muted mt-1">
+                                                Pilih saluran spesifik untuk langsung membuka barcode / nomor VA, atau biarkan pilihan pertama untuk memilih di layar checkout.
+                                            </small>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary w-100 py-3 fs-3 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                                            <i class="ti ti-bolt fs-2"></i>
+                                            <span>Bayar Otomatis (Rp {{ number_format($subscription->amount, 0, ',', '.') }})</span>
+                                        </button>
+                                    </form>
+                                @else
+                                    <div class="text-center py-4 text-muted">
+                                        <i class="ti ti-info-circle fs-1 mb-2 d-block text-secondary"></i>
+                                        <p class="mb-0">
+                                            @if($subscription->status !== 'PENDING')
+                                                Tagihan ini tidak lagi dalam status menunggu pembayaran.
+                                            @else
+                                                Metode pembayaran otomatis sedang disiapkan oleh Admin. Silakan gunakan metode <strong>Transfer Bank Manual</strong> pada tab di samping.
                                             @endif
-                                        </div>
+                                        </p>
                                     </div>
-                                @empty
-                                    <div class="col-12">
-                                        <div class="p-3 text-center text-muted border rounded">
-                                            Rekening pembayaran manual belum diatur oleh Admin.
-                                        </div>
+                                @endif
+                            </div>
+
+                            <!-- ============================================================
+                                 TAB 2: TRANSFER BANK MANUAL
+                            ============================================================ -->
+                            <div class="tab-pane" id="tab-manual" role="tabpanel">
+                                <!-- Bagian Rekening Resmi -->
+                                <div class="mb-4">
+                                    <label class="form-label text-secondary fw-semibold mb-2">
+                                        1. Silakan transfer tepat sebesar <strong class="text-success">Rp {{ number_format($subscription->amount, 0, ',', '.') }}</strong> ke salah satu <strong>Rekening Resmi Pembayaran Platform</strong> berikut:
+                                    </label>
+                                    
+                                    <div class="row g-2">
+                                        @forelse($manualBanks as $index => $bank)
+                                            <div class="col-12 col-md-6">
+                                                <div class="p-3 border rounded-3 bg-light h-100">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span class="badge bg-primary text-white fw-bold">{{ $bank['bank_name'] ?? 'BANK' }}</span>
+                                                        <button type="button" class="btn btn-sm btn-white py-1 px-2" onclick="copyAccNumber('accNumber-{{ $index }}')">
+                                                            <i class="ti ti-copy me-1"></i> Salin
+                                                        </button>
+                                                    </div>
+                                                    <div class="font-monospace fs-2 fw-bold text-dark mt-1" id="accNumber-{{ $index }}">
+                                                        {{ $bank['account_number'] ?? '-' }}
+                                                    </div>
+                                                    <div class="small text-secondary mt-1">
+                                                        Atas Nama: <strong class="text-dark">{{ $bank['account_name'] ?? '-' }}</strong>
+                                                    </div>
+                                                    @if(!empty($bank['instructions']))
+                                                        <div class="small text-muted mt-2 border-top pt-2 fst-italic">
+                                                            {{ $bank['instructions'] }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div class="col-12">
+                                                <div class="p-3 text-center text-muted border rounded">
+                                                    Rekening Resmi Pembayaran Platform belum dikonfigurasi oleh Admin.
+                                                </div>
+                                            </div>
+                                        @endforelse
                                     </div>
-                                @endforelse
+                                </div>
+
+                                <div class="hr my-4"></div>
+
+                                <!-- Bagian Form Unggah Bukti -->
+                                @if($subscription->status !== 'WAITING_VERIFICATION' && $subscription->status !== 'ACTIVE')
+                                    <div>
+                                        <label class="form-label text-secondary fw-semibold mb-3">
+                                            2. Setelah melakukan transfer, unggah foto bukti transfer di bawah ini:
+                                        </label>
+
+                                        <form action="{{ route('tenant.subscription.confirm-payment', $subscription->id) }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row g-3">
+                                                <div class="col-12 col-md-6">
+                                                    <label class="form-label required">Bank Tujuan yang Ditransfer</label>
+                                                    <select name="payment_method" class="form-select" required>
+                                                        <option value="" disabled selected>-- Pilih Bank Tujuan --</option>
+                                                        @foreach($manualBanks as $b)
+                                                            <option value="{{ $b['bank_name'] }} - {{ $b['account_number'] }}">
+                                                                {{ $b['bank_name'] }} ({{ $b['account_number'] }} a.n {{ $b['account_name'] }})
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-12 col-md-6">
+                                                    <label class="form-label required">Unggah File Bukti / Struk</label>
+                                                    <input type="file" name="proof" class="form-control" accept="image/*,.pdf" required>
+                                                    <small class="form-hint">Format file: JPG, PNG, atau PDF (Maks. 3 MB).</small>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <button type="submit" class="btn btn-success w-100 py-2 fs-3 fw-bold d-flex align-items-center justify-content-center gap-2">
+                                                        <i class="ti ti-send fs-2"></i>
+                                                        <span>Kirim Bukti Pembayaran Manual</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                @else
+                                    <div class="text-center py-2 text-secondary small">
+                                        <i class="ti ti-check text-success me-1"></i> Bukti pembayaran telah tercatat. Hubungi admin jika butuh verifikasi mendesak.
+                                    </div>
+                                @endif
                             </div>
                         </div>
-
-                        <div class="hr my-4"></div>
-
-                        <!-- Form Unggah Bukti Transfer -->
-                        @if($subscription->status !== 'WAITING_VERIFICATION' && $subscription->status !== 'ACTIVE')
-                            <div>
-                                <label class="form-label text-secondary fw-semibold mb-3">
-                                    2. Setelah melakukan transfer, unggah foto bukti transfer di bawah ini:
-                                </label>
-
-                                <form action="{{ route('tenant.subscription.confirm-payment', $subscription->id) }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="row g-3">
-                                        <div class="col-12 col-md-6">
-                                            <label class="form-label required">Bank Tujuan yang Ditransfer</label>
-                                            <select name="payment_method" class="form-select" required>
-                                                <option value="" disabled selected>-- Pilih Bank Tujuan --</option>
-                                                @foreach($manualBanks as $b)
-                                                    <option value="{{ $b['bank_name'] }} - {{ $b['account_number'] }}">
-                                                        {{ $b['bank_name'] }} ({{ $b['account_number'] }} a.n {{ $b['account_name'] }})
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="col-12 col-md-6">
-                                            <label class="form-label required">Unggah File Bukti / Struk</label>
-                                            <input type="file" name="proof" class="form-control" accept="image/*,.pdf" required>
-                                            <small class="form-hint">Format file: JPG, PNG, atau PDF (Maks. 3 MB).</small>
-                                        </div>
-
-                                        <div class="col-12">
-                                            <button type="submit" class="btn btn-success w-100 py-2 fs-3 fw-bold d-flex align-items-center justify-content-center gap-2">
-                                                <i class="ti ti-send fs-2"></i>
-                                                <span>Kirim Bukti Pembayaran Manual</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        @else
-                            <div class="text-center py-2 text-secondary small">
-                                <i class="ti ti-check text-success me-1"></i> Bukti pembayaran telah tercatat. Hubungi admin jika butuh verifikasi mendesak.
-                            </div>
-                        @endif
                     </div>
                 </div>
 
