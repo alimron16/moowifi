@@ -150,7 +150,7 @@ class TenantSubscriptionController extends Controller
         ));
     }
 
-    public function payDuitku(Subscription $subscription)
+    public function payDuitku(Request $request, Subscription $subscription)
     {
         $tenant = Auth::user()->tenant;
 
@@ -167,25 +167,81 @@ class TenantSubscriptionController extends Controller
         $duitku = $platformGateways['DUITKU'] ?? [];
 
         if (empty($duitku['is_active']) || empty($duitku['merchant_code']) || empty($duitku['api_key'])) {
-            return back()->with('error', 'Pembayaran online Duitku untuk platform SaaS belum diaktifkan atau belum diisi oleh Super Admin di menu Pengaturan Platform.');
+            return back()->with('error', 'Pembayaran online Duitku untuk platform SaaS belum diaktifkan atau belum diisi oleh Admin di menu Pengaturan Platform.');
         }
 
         $merchantCode = trim($duitku['merchant_code']);
         $apiKey = trim($duitku['api_key']);
         $isSandbox = ($duitku['environment'] ?? 'sandbox') === 'sandbox';
 
+        $merchantOrderId = $subscription->order_number;
+        $amount = (int) round($subscription->amount);
+        $channel = trim((string) $request->input('payment_channel', ''));
+
+        // 1. Jika channel kosong ("Semua Channel"), coba terlebih dahulu Duitku POP createInvoice
+        if (empty($channel)) {
+            $timestamp = (string) round(microtime(true) * 1000);
+            $signaturePop = hash_hmac('sha256', $merchantCode . $timestamp, $apiKey);
+
+            $popEndpoint = $isSandbox
+                ? 'https://api-sandbox.duitku.com/api/merchant/createInvoice'
+                : 'https://api-prod.duitku.com/api/merchant/createInvoice';
+
+            $popPayload = [
+                'paymentAmount' => $amount,
+                'merchantOrderId' => $merchantOrderId,
+                'productDetails' => 'Langganan MooWiFi Paket ' . ($subscription->saasPlan?->name ?? 'Pro') . ' (' . $merchantOrderId . ')',
+                'customerVaName' => substr(Auth::user()->name ?: $tenant->name, 0, 30),
+                'email' => Auth::user()->email,
+                'phoneNumber' => Auth::user()->phone ?? '088976291662',
+                'callbackUrl' => url('/api/webhooks/duitku'),
+                'returnUrl' => route('tenant.subscription.payment', $subscription->id),
+                'expiryPeriod' => 1440,
+            ];
+
+            try {
+                $popResponse = Http::withHeaders([
+                    'Content-Type' => 'application/json',
+                    'x-duitku-signature' => $signaturePop,
+                    'x-duitku-timestamp' => $timestamp,
+                    'x-duitku-merchantcode' => $merchantCode,
+                ])->timeout(15)->post($popEndpoint, $popPayload);
+
+                $popData = $popResponse->json();
+
+                if ($popResponse->successful() && !empty($popData['paymentUrl'])) {
+                    $subscription->update([
+                        'payment_method' => 'DUITKU',
+                    ]);
+
+                    AuditLog::create([
+                        'tenant_id' => $tenant->id,
+                        'user_id' => Auth::id(),
+                        'event' => 'SUBSCRIPTION_PAYMENT_REDIRECTED',
+                        'description' => "Tenant menginisiasi pembayaran online via Duitku POP untuk order {$subscription->order_number}.",
+                    ]);
+
+                    return redirect()->away($popData['paymentUrl']);
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Duitku POP createInvoice warning: ' . $e->getMessage());
+            }
+
+            // Fallback default ke QRIS jika akun merchant menggunakan Direct API
+            $channel = 'NQ';
+        }
+
+        // 2. Direct API Inquiry (v2) dengan channel spesifik (NQ untuk QRIS, BC untuk BCA VA, dsb)
         $endpoint = $isSandbox
             ? 'https://sandbox.duitku.com/webapi/api/merchant/v2/inquiry'
             : 'https://passport.duitku.com/webapi/api/merchant/v2/inquiry';
 
-        $merchantOrderId = $subscription->order_number;
-        $amount = (int) round($subscription->amount);
         $signature = md5($merchantCode . $merchantOrderId . $amount . $apiKey);
 
         $payload = [
             'merchantCode' => $merchantCode,
             'paymentAmount' => $amount,
-            'paymentMethod' => '', // Kosongkan agar Duitku menampilkan seluruh pilihan channel (QRIS, VA Bank, E-Wallet)
+            'paymentMethod' => $channel,
             'merchantOrderId' => $merchantOrderId,
             'productDetails' => 'Langganan MooWiFi Paket ' . ($subscription->saasPlan?->name ?? 'Pro') . ' (' . $merchantOrderId . ')',
             'email' => Auth::user()->email,
@@ -210,13 +266,23 @@ class TenantSubscriptionController extends Controller
                     'tenant_id' => $tenant->id,
                     'user_id' => Auth::id(),
                     'event' => 'SUBSCRIPTION_PAYMENT_REDIRECTED',
-                    'description' => "Tenant menginisiasi pembayaran online via Duitku untuk order {$subscription->order_number}.",
+                    'description' => "Tenant menginisiasi pembayaran online via Duitku ({$channel}) untuk order {$subscription->order_number}.",
                 ]);
 
                 return redirect()->away($data['paymentUrl']);
             }
 
-            $errorMessage = $data['statusMessage'] ?? 'Gagal membuat tagihan di Duitku. Pastikan Merchant Code dan API Key Duitku Platform sudah sesuai.';
+            $errorMessage = $data['statusMessage'] 
+                ?? $data['Message'] 
+                ?? $data['message'] 
+                ?? ($response->body() ?: 'Gagal membuat tagihan di Duitku. Pastikan Merchant Code dan API Key Duitku Platform sudah sesuai.');
+
+            Log::error('Duitku subscription payment failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'payload' => $payload,
+            ]);
+
             return back()->with('error', 'Duitku Response: ' . $errorMessage);
         } catch (\Throwable $e) {
             Log::error('Duitku subscription payment error: ' . $e->getMessage(), [

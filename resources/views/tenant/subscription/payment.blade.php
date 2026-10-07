@@ -173,6 +173,34 @@
                             </p>
                             <form action="{{ route('tenant.subscription.pay-duitku', $subscription->id) }}" method="POST">
                                 @csrf
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold text-dark">Pilih Jalur Pembayaran Duitku:</label>
+                                    <select name="payment_channel" class="form-select">
+                                        <option value="" selected>Semua Metode (Duitku POP Checkout: QRIS &amp; Virtual Account)</option>
+                                        <optgroup label="QRIS Instan">
+                                            <option value="NQ">QRIS (BCA, Mandiri, GoPay, OVO, ShopeePay, DANA, dll)</option>
+                                            <option value="SP">QRIS ShopeePay</option>
+                                        </optgroup>
+                                        <optgroup label="Virtual Account Bank">
+                                            <option value="BC">BCA Virtual Account</option>
+                                            <option value="M2">Mandiri Virtual Account</option>
+                                            <option value="BR">BRI Virtual Account (BRIVA)</option>
+                                            <option value="I1">BNI Virtual Account</option>
+                                            <option value="BT">Permata Bank Virtual Account</option>
+                                            <option value="B1">CIMB Niaga Virtual Account</option>
+                                            <option value="BV">BSI Virtual Account</option>
+                                        </optgroup>
+                                        <optgroup label="E-Wallet">
+                                            <option value="DA">DANA</option>
+                                            <option value="OV">OVO</option>
+                                            <option value="SA">ShopeePay Apps</option>
+                                        </optgroup>
+                                        <optgroup label="Kartu Kredit">
+                                            <option value="VC">Kartu Kredit (Visa / MasterCard / JCB)</option>
+                                        </optgroup>
+                                    </select>
+                                    <small class="form-hint text-muted">Pilih jalur langsung (QRIS / Virtual Account bank pilihan) atau pilih Semua Metode.</small>
+                                </div>
                                 <button type="submit" class="btn btn-primary w-100 py-3 fs-3 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm">
                                     <i class="ti ti-qrcode fs-2"></i>
                                     <span>Bayar Sekarang via Duitku (Rp {{ number_format($subscription->amount, 0, ',', '.') }})</span>

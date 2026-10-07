@@ -26,14 +26,64 @@ class DuitkuGateway implements PaymentGatewayInterface
 
         $merchantOrderId = $invoice->invoice_number;
         $amount = (int) round($invoice->total_amount);
-        $signature = md5($merchantCode . $merchantOrderId . $amount . $apiKey);
-
         $customer = $invoice->customer;
+        $channel = trim((string) ($options['payment_channel'] ?? ''));
+
+        // 1. Coba Duitku POP jika channel kosong (menampilkan semua opsi di Duitku POP)
+        if (empty($channel)) {
+            $timestamp = (string) round(microtime(true) * 1000);
+            $signaturePop = hash_hmac('sha256', $merchantCode . $timestamp, $apiKey);
+
+            $popEndpoint = $isSandbox
+                ? 'https://api-sandbox.duitku.com/api/merchant/createInvoice'
+                : 'https://api-prod.duitku.com/api/merchant/createInvoice';
+
+            $popPayload = [
+                'paymentAmount' => $amount,
+                'merchantOrderId' => $merchantOrderId,
+                'productDetails' => 'Pembayaran Tagihan Internet ' . $invoice->invoice_number,
+                'customerVaName' => substr($customer?->name ?? 'Pelanggan', 0, 30),
+                'email' => $customer?->email ?? 'billing@domain.com',
+                'phoneNumber' => $customer?->phone ?: '081234567890',
+                'callbackUrl' => url('/api/webhooks/duitku'),
+                'returnUrl' => url('/pay/' . $invoice->payment_token),
+                'expiryPeriod' => 1440,
+            ];
+
+            try {
+                $popResponse = Http::withHeaders([
+                    'Content-Type' => 'application/json',
+                    'x-duitku-signature' => $signaturePop,
+                    'x-duitku-timestamp' => $timestamp,
+                    'x-duitku-merchantcode' => $merchantCode,
+                ])->timeout(10)->post($popEndpoint, $popPayload);
+
+                $popData = $popResponse->json();
+
+                if ($popResponse->successful() && !empty($popData['paymentUrl'])) {
+                    return new PaymentRedirectResponse(
+                        success: true,
+                        paymentUrl: $popData['paymentUrl'],
+                        providerReference: $popData['reference'] ?? null,
+                        paymentChannel: 'DUITKU_POP',
+                        rawResponse: $popData
+                    );
+                }
+            } catch (\Exception $e) {
+                Log::warning('DuitkuGateway POP createInvoice warning: ' . $e->getMessage());
+            }
+
+            // Fallback jika Direct API
+            $channel = 'NQ';
+        }
+
+        // 2. Direct API inquiry (v2)
+        $signature = md5($merchantCode . $merchantOrderId . $amount . $apiKey);
 
         $payload = [
             'merchantCode' => $merchantCode,
             'paymentAmount' => $amount,
-            'paymentMethod' => $options['payment_channel'] ?? '', // Kosongkan agar Duitku menampilkan seluruh channel jika tidak dispesifikasikan khusus
+            'paymentMethod' => $channel,
             'merchantOrderId' => $merchantOrderId,
             'productDetails' => 'Pembayaran Tagihan Internet ' . $invoice->invoice_number,
             'email' => $customer->email ?? 'billing@domain.com',
@@ -54,14 +104,14 @@ class DuitkuGateway implements PaymentGatewayInterface
                     success: true,
                     paymentUrl: $data['paymentUrl'] ?? null,
                     providerReference: $data['reference'] ?? null,
-                    paymentChannel: $data['paymentMethod'] ?? 'DUITKU',
+                    paymentChannel: $data['paymentMethod'] ?? $channel,
                     rawResponse: $data
                 );
             }
 
             return new PaymentRedirectResponse(
                 success: false,
-                errorMessage: $data['statusMessage'] ?? 'Gagal membuat pembayaran di Duitku.',
+                errorMessage: $data['statusMessage'] ?? $data['Message'] ?? 'Gagal membuat pembayaran di Duitku.',
                 rawResponse: $data ?? []
             );
         } catch (\Exception $e) {
