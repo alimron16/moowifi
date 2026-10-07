@@ -96,7 +96,7 @@
                     'url' => url('/'),
                     'logo' => asset('logo.png'),
                     'sameAs' => [
-                        'https://wa.me/6281234567890',
+                        'https://wa.me/6288976291662',
                     ],
                     'address' => [
                         '@type' => 'PostalAddress',
@@ -108,7 +108,7 @@
                     ],
                     'contactPoint' => [
                         '@type' => 'ContactPoint',
-                        'telephone' => '+62-812-3456-7890',
+                        'telephone' => '+62-889-7629-1662',
                         'contactType' => 'customer service',
                         'areaServed' => 'ID',
                         'availableLanguage' => ['Indonesian', 'English'],
@@ -1550,7 +1550,7 @@
                             </div>
                         </li>
                         <li class="d-flex align-items-center gap-2 mb-2">
-                            <i class="ti ti-brand-whatsapp text-primary"></i> <a href="https://wa.me/6281234567890" target="_blank" rel="noopener" class="text-reset text-decoration-none">Hotline WhatsApp</a>
+                            <i class="ti ti-brand-whatsapp text-primary"></i> <a href="https://wa.me/6288976291662" target="_blank" rel="noopener" class="text-reset text-decoration-none">Hotline WhatsApp (+62 889-7629-1662)</a>
                         </li>
                         <li class="d-flex align-items-center gap-2 mb-2">
                             <i class="ti ti-mail text-primary"></i> <a href="mailto:support@moowifi.id" class="text-reset text-decoration-none">support@moowifi.id</a>

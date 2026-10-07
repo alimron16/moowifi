@@ -484,7 +484,7 @@
                                 </div>
                                 <div class="d-flex align-items-center gap-2 text-secondary">
                                     <i class="ti ti-brand-whatsapp text-primary"></i>
-                                    <div><strong>Layanan Kontak:</strong> +62 812-3456-7890</div>
+                                    <div><strong>Layanan Kontak:</strong> <a href="https://wa.me/6288976291662" target="_blank" rel="noopener" class="text-success text-decoration-none fw-medium">+62 889-7629-1662</a></div>
                                 </div>
                             </div>
                         </div>
@@ -554,7 +554,7 @@
                             </div>
                         </li>
                         <li class="d-flex align-items-center gap-2 mb-2">
-                            <i class="ti ti-brand-whatsapp text-primary"></i> <a href="https://wa.me/6281234567890" target="_blank" rel="noopener" class="text-reset text-decoration-none">Hotline WhatsApp</a>
+                            <i class="ti ti-brand-whatsapp text-primary"></i> <a href="https://wa.me/6288976291662" target="_blank" rel="noopener" class="text-reset text-decoration-none">Hotline WhatsApp (+62 889-7629-1662)</a>
                         </li>
                         <li class="d-flex align-items-center gap-2 mb-2">
                             <i class="ti ti-mail text-primary"></i> <a href="mailto:support@moowifi.id" class="text-reset text-decoration-none">support@moowifi.id</a>

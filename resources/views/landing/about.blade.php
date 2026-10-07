@@ -223,9 +223,6 @@
     ============================================================ -->
     <header class="page-header-box">
         <div class="container text-center">
-            <span class="badge bg-white text-secondary border px-3 py-2 rounded-pill fw-semibold mb-3 shadow-sm">
-                <i class="ti ti-sparkles text-primary me-1"></i> Platform SaaS RT/RW Net &amp; ISP Lokal No. 1
-            </span>
             <h1 class="display-4 fw-bold text-dark mb-3">Tentang MooWiFi</h1>
             <p class="lead text-muted mx-auto" style="max-width: 760px;">
                 Kami berdedikasi membangun perangkat lunak modern untuk mengotomatisasi operasional, tagihan bulanan, dan integrasi router bagi ribuan wirausahawan internet komunitas di Indonesia.
@@ -403,7 +400,7 @@
                             </div>
                             <div>
                                 <span class="fw-bold text-dark d-block">Hotline WhatsApp:</span>
-                                <a href="https://wa.me/6281234567890" target="_blank" rel="noopener" class="text-decoration-none text-success fw-medium">+62 812-3456-7890</a>
+                                <a href="https://wa.me/6288976291662" target="_blank" rel="noopener" class="text-decoration-none text-success fw-medium">+62 889-7629-1662</a>
                             </div>
                         </div>
                     </div>
@@ -513,7 +510,7 @@
                             </div>
                         </li>
                         <li class="d-flex align-items-center gap-2 mb-2">
-                            <i class="ti ti-brand-whatsapp text-primary"></i> <a href="https://wa.me/6281234567890" target="_blank" rel="noopener" class="text-reset text-decoration-none">Hotline WhatsApp</a>
+                            <i class="ti ti-brand-whatsapp text-primary"></i> <a href="https://wa.me/6288976291662" target="_blank" rel="noopener" class="text-reset text-decoration-none">Hotline WhatsApp</a>
                         </li>
                         <li class="d-flex align-items-center gap-2 mb-2">
                             <i class="ti ti-mail text-primary"></i> <a href="mailto:support@moowifi.id" class="text-reset text-decoration-none">support@moowifi.id</a>

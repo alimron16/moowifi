@@ -129,7 +129,7 @@ class TenantSubscriptionController extends Controller
         ]);
 
         $platformProfile = PlatformSetting::get('platform_profile', [
-            'contact_phone' => '081122334455',
+            'contact_phone' => '088976291662',
             'contact_email' => 'support@moowifi.id',
         ]);
 

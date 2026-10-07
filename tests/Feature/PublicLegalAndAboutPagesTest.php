@@ -31,6 +31,9 @@ class PublicLegalAndAboutPagesTest extends TestCase
         $response->assertSee('Visi &amp; Komitmen Kami', false);
         $response->assertSee('Gang Mahi Salam, RT 001/021, No. 25');
         $response->assertSee('Kota Tangerang Selatan');
+        $response->assertDontSee('Platform SaaS RT/RW Net &amp; ISP Lokal No. 1', false);
+        $response->assertSee('wa.me/6288976291662');
+        $response->assertSee('+62 889-7629-1662');
     }
 
     public function test_terms_and_conditions_page_renders_protective_legal_clauses(): void

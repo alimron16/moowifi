@@ -20,7 +20,7 @@ class PlatformSettingsController extends Controller
             'currency' => 'IDR',
             'timezone' => 'Asia/Jakarta',
             'contact_email' => 'support@moowifi.id',
-            'contact_phone' => '081122334455',
+            'contact_phone' => '088976291662',
         ]);
 
         return view('super-admin.settings.platform', compact('settings'));
